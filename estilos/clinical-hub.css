@@ -1,0 +1,279 @@
+/* ============================================================
+   Clinical Hub — hoja de estilo de la marca
+   Sale del panel de administradores (admin.clinicalhub).
+   Cómo usarla: enlaza este archivo y pon class="ch" en el <body>
+   (o en el contenedor). Todas las piezas llevan el prefijo ch-.
+   ============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+:root{
+  /* Colores */
+  --bg:#f3f3f1;
+  --surface:#ffffff;
+  --surface2:#f6f7f4;
+  --border:rgba(24,24,27,.08);
+  --border2:rgba(24,24,27,.16);
+  --ink:#18181b;
+  --muted:#3f3f46;
+  --faint:#6b6b76;
+  --brand:#c1e187;
+  --brand-ink:#2a4927;
+  --brand-bg:#eff7df;
+  --brand-line:rgba(42,73,39,.28);
+  --on-brand:var(--brand-ink);
+  --sel:#2a4927;
+  --on-sel:#ffffff;
+  --side:#2a4927;
+  --side-ink:#ffffff;
+  --side-faint:#b9cdb2;
+  --side-hover:rgba(255,255,255,.10);
+  --hub-verde:#7d9c3c;
+  --dato-verde:#e9f4d6;
+  --nota-amarilla:#fff6e0;
+  --ok:#207b52;
+  --warn:#c2412d;
+  --warn-bg:rgba(194,65,45,.09);
+  --rojo-pendiente:#dc4a3d;
+  --track:rgba(24,24,27,.06);
+  --s1:#d9654d;
+  --s2:#e0914a;
+  --s3:#d4aa2f;
+  --s4:#3fae7a;
+  --s5:#9cc700;
+  --login-fondo:#afd7a0;
+  --login-boton:#7ab447;
+  --login-campo:#eff0f2;
+  /* Letra */
+  --font-sans:"DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* Espacios */
+  --esp-4:4px;
+  --esp-6:6px;
+  --esp-8:8px;
+  --esp-12:12px;
+  --esp-16:16px;
+  --esp-20:20px;
+  --esp-22:22px;
+  --esp-26:26px;
+  --esp-32:32px;
+  /* Radios */
+  --r-pill:999px;
+  --r:24px;
+  --r-ventana:26px;
+  --r-menu:22px;
+  --r-area:18px;
+  --r-bloque:16px;
+  --r-item:14px;
+  --r-sm:10px;
+  /* Sombras */
+  --sombra:0 24px 48px -20px rgba(24,24,27,.28), 0 2px 6px rgba(24,24,27,.06);
+  --sombra-suave:0 10px 24px -16px rgba(24,24,27,.35);
+  --sombra-boton:0 12px 22px -12px rgba(0,0,0,.6);
+  --sombra-elevada:0 18px 30px -18px rgba(0,0,0,.45);
+  color-scheme:light;
+}
+
+/* ============================================================
+   Clinical Hub — piezas del panel, listas para reutilizar.
+   Todas las clases llevan el prefijo ch- para no chocar con otros
+   estilos. Los valores salen de los tokens (--bg, --brand, --r…).
+   ============================================================ */
+:root{
+  --ease:cubic-bezier(.34,1.35,.64,1);
+}
+
+/* ---------- Base ---------- */
+.ch{
+  background:var(--bg); color:var(--ink);
+  font-family:var(--font-sans); font-size:15.5px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.ch *,.ch *::before,.ch *::after{box-sizing:border-box}
+.ch button,.ch input,.ch select,.ch textarea{font:inherit;color:inherit}
+.ch button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ch :focus-visible{outline:2px solid var(--brand);outline-offset:3px}
+.ch-tabular{font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){.ch *,.ch *::before,.ch *::after{transition:none!important;animation:none!important}}
+
+/* ---------- Logotipo escrito ---------- */
+.ch-logotipo{margin:0;font-size:33px;font-weight:800;letter-spacing:-.035em;line-height:1.02;color:var(--ink)}
+.ch-logotipo span{color:var(--hub-verde)}
+.ch-logotipo small{display:block;font-size:13px;font-weight:500;letter-spacing:0;line-height:1.4;color:var(--muted);margin-top:5px}
+
+/* ---------- Títulos ---------- */
+.ch-miga{font-size:12.5px;font-weight:500;color:var(--faint)}
+.ch-titulo{font-size:34px;font-weight:400;letter-spacing:-.02em;line-height:1.1;margin:4px 0 0}
+.ch-bajada{margin:6px 0 0;color:var(--muted);font-size:14px}
+.ch-cabeza-seccion{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.ch-titulo-seccion{margin:0;font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.25;color:var(--ink)}
+.ch-subtitulo-seccion{margin:3px 0 0;font-size:12.5px;color:var(--faint);line-height:1.4}
+.ch-ayuda{flex:none;display:inline-flex;align-items:center;gap:5px;padding:4px 2px;background:none;border:0;font-size:12.5px;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.ch-ayuda:hover{color:var(--ink)}
+.ch-ayuda svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+
+/* ---------- Botones ---------- */
+.ch-boton{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:13px 20px; border:none; border-radius:var(--r-pill);
+  background:var(--sel); color:var(--on-sel); font-weight:700; letter-spacing:-.005em;
+  box-shadow:var(--sombra-boton);
+  transition:transform .35s var(--ease),box-shadow .25s,opacity .2s;
+}
+.ch-boton:hover{transform:translateY(-2px);box-shadow:0 16px 26px -12px rgba(0,0,0,.7)}
+.ch-boton:active{transform:translateY(1px) scale(.97);box-shadow:0 4px 10px -6px rgba(0,0,0,.6);transition-duration:.08s}
+.ch-boton[disabled]{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.ch-boton.secundario{background:var(--surface);color:var(--ink);border:1px solid var(--border2);font-weight:600;box-shadow:none}
+.ch-boton.secundario:hover{background:var(--surface2)}
+.ch-boton.ancho{width:100%}
+
+.ch-boton-chico{
+  padding:8px 20px; border-radius:var(--r-pill); border:0;
+  background:var(--brand); font-size:13px; font-weight:500; color:var(--brand-ink);
+  transition:background .35s var(--ease),color .2s,transform .3s var(--ease);
+}
+.ch-boton-chico:hover{background:#b2d974}
+.ch-boton-chico:active{transform:scale(.94)}
+.ch-boton-chico[disabled]{opacity:.45;cursor:not-allowed}
+.ch-boton-chico.activo{background:var(--sel);color:var(--on-sel);font-weight:600}
+
+.ch-boton-redondo{
+  flex:none; width:42px; height:42px; border-radius:50%;
+  display:inline-grid; place-items:center; color:var(--ink);
+  background:var(--surface); border:1px solid var(--border); box-shadow:var(--sombra-suave);
+  transition:background .25s,color .25s,transform .3s var(--ease);
+}
+.ch-boton-redondo:hover{background:var(--brand);color:var(--brand-ink)}
+.ch-boton-redondo:hover svg{transform:rotate(90deg)}
+.ch-boton-redondo:active{transform:scale(.92)}
+.ch-boton-redondo svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .45s var(--ease)}
+
+.ch-enlace{background:none;border:none;padding:0;color:var(--faint);text-decoration:underline;text-underline-offset:3px;font-size:13px;transition:color .2s}
+.ch-enlace:hover{color:var(--ink)}
+
+/* ---------- Pestañas en píldora ---------- */
+.ch-pestanas{
+  display:inline-flex; gap:4px; padding:6px; max-width:100%; overflow-x:auto; scrollbar-width:none;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r-pill);
+  box-shadow:var(--sombra-suave);
+}
+.ch-pestanas::-webkit-scrollbar{display:none}
+.ch-pestana{
+  flex:none; font-size:13.5px; font-weight:600; letter-spacing:-.005em; color:var(--faint);
+  background:transparent; border:none; border-radius:var(--r-pill); padding:10px 16px;
+  transition:background .4s var(--ease),color .3s,transform .35s var(--ease);
+}
+.ch-pestana:hover{color:var(--ink)}
+.ch-pestana:active{transform:scale(.95)}
+.ch-pestana[aria-selected="true"]{background:var(--brand);color:var(--brand-ink)}
+.ch-pestana[aria-disabled="true"]{cursor:default;opacity:.5}
+.ch-globo{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;margin-left:6px;border-radius:var(--r-pill);background:var(--rojo-pendiente);color:#fff;font-size:10.5px;font-weight:800;line-height:1}
+
+/* ---------- Riel lateral (computador) ---------- */
+.ch-riel{
+  width:70px; padding:18px 0; min-height:320px;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  background:var(--side); color:var(--side-faint);
+}
+.ch-riel-icono{width:36px;height:36px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px var(--side),0 0 0 3px rgba(255,255,255,.2);margin-bottom:30px}
+.ch-riel-item{
+  position:relative; width:44px; height:44px; border-radius:50%; border:0;
+  display:grid; place-items:center; color:var(--side-faint); background:transparent;
+  transition:color .3s,background .3s,transform .5s var(--ease),box-shadow .3s;
+}
+.ch-riel-item svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ch-riel-item:hover{color:var(--side-ink)}
+.ch-riel-item[aria-selected="true"]{color:var(--brand-ink);background:var(--brand);transform:translateX(9px);box-shadow:0 8px 18px -10px rgba(0,0,0,.9)}
+.ch-avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--brand);color:var(--brand-ink);font-weight:800;font-size:12px;letter-spacing:.02em;margin-top:auto}
+
+/* ---------- Campos ---------- */
+.ch-campo{
+  width:100%; padding:12px 20px;
+  background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-pill);
+  transition:border-color .2s,box-shadow .25s,background .2s;
+}
+.ch-campo:hover{border-color:var(--border2)}
+.ch-campo::placeholder{color:var(--faint)}
+.ch-campo:focus{outline:none;background:var(--surface);border-color:var(--sel);box-shadow:0 0 0 4px var(--brand-bg)}
+.ch-campo[disabled]{opacity:.5;cursor:not-allowed}
+textarea.ch-campo,select.ch-campo{border-radius:var(--r-area)}
+textarea.ch-campo{min-height:90px;resize:vertical}
+.ch-campo.codigo{font-family:var(--font-mono);font-size:24px;letter-spacing:.4em;text-align:center;padding:14px}
+.ch-rotulo{display:block;margin:0 0 6px;font-size:12.5px;font-weight:500;color:var(--faint)}
+.ch-buscador{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:var(--r-pill);background:var(--surface2);border:1px solid var(--border);color:var(--faint);transition:border-color .2s,background .2s}
+.ch-buscador:focus-within{border-color:var(--sel);background:var(--surface)}
+.ch-buscador svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.ch-buscador input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:14px;color:var(--ink)}
+
+/* ---------- Chips de filtro ---------- */
+.ch-chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.ch-chip{
+  padding:8px 18px; border-radius:var(--r-pill); font-size:13px; font-weight:450;
+  background:var(--surface); border:1px solid var(--border); color:var(--muted);
+  transition:background .35s var(--ease),color .25s,border-color .2s,transform .3s var(--ease);
+}
+.ch-chip:hover{border-color:var(--border2);color:var(--ink)}
+.ch-chip:active{transform:scale(.94)}
+.ch-chip[aria-pressed="true"]{background:var(--brand);border-color:var(--brand-line);color:var(--brand-ink);font-weight:500}
+
+/* ---------- Etiquetas y variaciones ---------- */
+.ch-etq{
+  display:inline-block; font-size:11.5px; font-weight:600; padding:3px 9px; border-radius:var(--r-pill);
+  background:var(--surface2); border:1px solid var(--border); color:var(--muted);
+}
+.ch-etq.lima{background:var(--brand-bg);border-color:var(--brand-line);color:var(--brand-ink)}
+.ch-etq.alerta{background:var(--warn-bg);border-color:transparent;color:var(--warn)}
+.ch-etq.ok{color:var(--ok)}
+.ch-delta{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.ch-delta.sube{color:var(--ok)}
+.ch-delta.baja{color:var(--warn)}
+
+/* ---------- Tarjetas ---------- */
+.ch-caja{
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:20px 20px 22px; box-shadow:var(--sombra-suave);
+}
+.ch-dato{transition:transform .3s cubic-bezier(.34,1.5,.64,1),box-shadow .3s}
+.ch-dato:hover{transform:translateY(-5px);box-shadow:var(--sombra-elevada)}
+.ch-cifra-bloque{display:grid;gap:3px;padding:16px;border-radius:var(--r-bloque);background:var(--dato-verde)}
+.ch-cifra-bloque.gris{background:var(--surface2)}
+.ch-cifra-bloque .ch-rotulo{margin:0}
+.ch-cifra{font-size:28px;font-weight:700;letter-spacing:-.01em;line-height:1.2;color:var(--brand-ink);font-variant-numeric:tabular-nums}
+.ch-mini{display:block;margin:0;font-size:12.5px;color:var(--muted);line-height:1.45}
+.ch-nota{padding:10px 12px;border-radius:12px;background:var(--nota-amarilla);font-size:13px;line-height:1.45;color:var(--ink)}
+.ch-aviso{font-size:14px}
+.ch-aviso.ok{color:var(--ok)}
+.ch-aviso.mal{color:var(--warn)}
+
+/* ---------- Barras de reparto ---------- */
+.ch-reparto{display:flex;flex-direction:column;gap:10px}
+.ch-fila{display:grid;grid-template-columns:minmax(80px,130px) 1fr auto;align-items:center;gap:12px}
+.ch-fila-etq{font-size:13.5px;font-weight:500;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch-barra{height:9px;background:var(--track);border-radius:var(--r-pill);overflow:hidden}
+.ch-barra span{display:block;height:100%;border-radius:var(--r-pill);background:var(--brand-ink);transition:width .8s var(--ease)}
+.ch-fila-num{font-size:13px;color:var(--faint);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+.ch-fila-num b{color:var(--ink);font-weight:700}
+
+/* ---------- Tabla ---------- */
+.ch-tabla-caja{overflow-x:auto}
+.ch-tabla{width:100%;border-collapse:separate;border-spacing:0;font-size:14px}
+.ch-tabla th{text-align:left;font-size:12px;color:var(--faint);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--border)}
+.ch-tabla td{padding:11px 10px;border-bottom:1px solid var(--border);vertical-align:middle;transition:background .2s}
+.ch-tabla tr:last-child td{border-bottom:none}
+.ch-tabla tbody tr:hover td{background:var(--surface2)}
+.ch-tabla .der{text-align:right;font-variant-numeric:tabular-nums}
+
+/* ---------- Ventanas ---------- */
+.ch-velo{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow:auto;animation:ch-aparece .2s ease}
+.ch-ventana{
+  width:100%; max-width:410px; background:var(--surface);
+  border:1px solid var(--border2); border-radius:var(--r-ventana); padding:26px; box-shadow:var(--sombra);
+  animation:ch-pop .4s var(--ease);
+}
+.ch-ventana.ancha{max-width:620px}
+.ch-ventana h2{margin:0;font-size:21px;font-weight:400;letter-spacing:-.02em;line-height:1.1}
+.ch-ventana p{margin:12px 0 18px;color:var(--muted);font-size:14px}
+.ch-ventana-botones{display:flex;gap:8px;margin-top:8px}
+.ch-ventana-botones .ch-boton{flex:1}
+
+@keyframes ch-aparece{from{opacity:0}to{opacity:1}}
+@keyframes ch-pop{0%{opacity:0;transform:scale(.6)}65%{opacity:1;transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
