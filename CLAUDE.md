@@ -38,10 +38,19 @@ Resúmenes de guías · Videos · Clinical News.
 5. Contenido clínico, citas y referencias no se inventan ni se reescriben. Donde falte
    un dato real, marcador entre corchetes: `[DOSIS]`, `[FUENTE]`.
 6. Español de Colombia, segunda persona, mayúscula solo al inicio, sin emojis.
+7. Antes de cada pantalla, el proceso de la parte 0 de la guía: anclar (tema · quién
+   lo usa · único trabajo · modo Leer/Operar), layout en una frase + boceto ASCII,
+   revisión contra el default. Recién después, código.
+8. Orden de mando cuando dos reglas chocan: **Paula > manual de marca >
+   `docs/estetica-anti-ia.md` > skill `frontend-design`**. De `frontend-design` se
+   toma el proceso, el piso de calidad y el copy; nunca una paleta, letra, fondo o
+   animación distinta de la del manual.
 
 ### Lo que nunca aparece (resumen de `docs/estetica-anti-ia.md`)
 
-- Degradados, texto degradado, resplandores, vidrio esmerilado, neón, morados.
+- Degradados, texto degradado, resplandores, vidrio esmerilado, neón, morados; y los
+  «nuevos defaults»: crema + serif + terracota, negro + verde ácido, verde esmeralda.
+- Numeración 01/02/03 sin una secuencia real; raya larga (—) en los textos.
 - Otra letra que no sea DM Sans; títulos de página en negrita; MAYÚSCULAS espaciadas.
 - Héroe centrado con dos botones, rejilla de tres tarjetas iguales con ícono arriba,
   fila de cifras, «cómo funciona 1-2-3», testimonios, precios con «Más popular»,
