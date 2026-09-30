@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 50">
+  <!-- Favicon: el logo de algoritmo. Un archivo suelto no lee las variables
+       del manual, así que lleva sus valores: side #2a4927 · brand #c1e187 -->
+  <path d="M24 12V19M16.5 26.3H12.5Q8.5 26.3 8.5 30.3V35M31.5 26.3H35.5Q39.5 26.3 39.5 30.3V35" fill="none" stroke="#2a4927" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M5.2 34.4H11.8L8.5 38.2ZM36.2 34.4H42.8L39.5 38.2Z" fill="#2a4927"/>
+  <circle cx="24" cy="7.5" r="5.8" fill="#2a4927"/>
+  <path d="M24 18.8L31.5 26.3L24 33.8L16.5 26.3Z" fill="#c1e187" stroke="#2a4927" stroke-width="2.4" stroke-linejoin="round"/>
+  <circle cx="8.5" cy="44" r="5.5" fill="#2a4927"/>
+  <circle cx="39.5" cy="44" r="5.5" fill="#c1e187"/>
+</svg>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Menú · opciones</title>
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<link rel="stylesheet" href="panel.css">
+<style>
+  .ch-opciones-pagina{max-width:1180px;margin:0 auto;padding:var(--esp-32) var(--esp-22)}
+  .ch-opciones{display:flex;flex-wrap:wrap;gap:var(--esp-26);margin-top:var(--esp-26)}
+  .ch-opcion-nombre{margin:0 0 var(--esp-8);font-size:14px;font-weight:600;color:var(--ink)}
+  .ch-opcion-nota{margin:0 0 var(--esp-12);max-width:264px;font-size:12.5px;line-height:1.4;color:var(--faint)}
+
+  /* La hoja verde, quieta, sin la goma: lo elegido lleva su lima directo */
+  .ch-opcion .ch-menu{display:block;position:static;height:auto;margin:0;overflow:visible}
+  .ch-opcion .ch-menu-item[aria-current="page"]{background:var(--brand)}
+  .ch-opcion .ch-menu-item.sub .ch-menu-flecha{width:14px;height:14px}
+  .ch-opcion .ch-menu-grupo{display:grid;grid-template-rows:auto 0fr;transition:grid-template-rows .35s var(--ease-suave),background .3s}
+  .ch-opcion .ch-menu-grupo.abierto{grid-template-rows:auto 1fr}
+  .ch-opcion .ch-menu-grupo > .ch-menu-rama{min-height:0;overflow:hidden;visibility:hidden;transition:visibility .35s}
+  .ch-opcion .ch-menu-grupo.abierto > .ch-menu-rama{visibility:visible}
+  .ch-opcion button.ch-menu-item{width:100%;border:0;background:none;text-align:left;font:inherit;font-size:14px}
+  .ch-opcion button.ch-menu-item.sub{font-size:13.5px}
+  .ch-opcion button.ch-menu-item:hover{background:var(--side-hover)}
+  .ch-opcion button.ch-menu-item[aria-current="page"]{background:var(--brand)}
+
+  /* 1 · Línea guía: una línea recta y fina que baja desde el ícono del grupo */
+  .op-linea .ch-menu-rama{margin-left:calc(var(--esp-16) + 9px);padding-left:var(--esp-12);border-left:1px solid color-mix(in srgb, var(--side-faint) 40%, transparent)}
+  .op-linea .ch-menu-rama .ch-menu-rama{margin-left:var(--esp-12)}
+
+  /* 2 · Bloque: el grupo abierto queda dentro de un fondo un poco más claro */
+  .op-bloque .ch-menu-grupo.abierto{border-radius:var(--r-item);background:var(--side-hover)}
+  .op-bloque .ch-menu-grupo.abierto .ch-menu-grupo.abierto{background:var(--side-hover)}
+  .op-bloque .ch-menu-rama{margin-left:calc(var(--esp-16) + 20px);padding-bottom:var(--esp-6)}
+  .op-bloque .ch-menu-rama .ch-menu-rama{margin-left:var(--esp-12);margin-right:var(--esp-6)}
+
+  /* 3 · Puntos: un punto bajo el ícono del grupo marca cada sección interna */
+  .op-puntos .ch-menu-rama{margin-left:0}
+  .op-puntos .ch-menu-item.sub{padding-left:calc(var(--esp-16) + 20px + var(--esp-12))}
+  .op-puntos .ch-menu-rama li{position:relative}
+  .op-puntos .ch-menu-rama li::before{content:"";position:absolute;left:calc(var(--esp-16) + 7px);top:19px;width:6px;height:6px;border-radius:50%;background:var(--side-faint)}
+  .op-puntos .ch-menu-rama .ch-menu-rama .ch-menu-item.sub{padding-left:calc(var(--esp-16) + 20px + var(--esp-12) + var(--esp-16))}
+  .op-puntos .ch-menu-rama .ch-menu-rama li::before{left:calc(var(--esp-16) + 20px + var(--esp-12) + 2px);background:none;border:1.5px solid var(--side-faint)}
+  .op-bloque.op-puntos .ch-menu-rama{margin-left:0}
+  .op-bloque.op-puntos .ch-menu-rama .ch-menu-rama{margin:0 var(--esp-6) 0 0}
+
+  /* 4 · Línea y grupo marcado: la línea guía, y el grupo abierto con un fondo suave */
+  .op-linea-grupo .ch-menu-grupo.abierto > .ch-menu-item:not([aria-current]){background:var(--side-hover);color:var(--side-ink)}
+  .op-linea-grupo .ch-menu-rama{margin:var(--esp-4) 0 var(--esp-4) calc(var(--esp-16) + 9px);padding-left:var(--esp-12);border-left:1px solid color-mix(in srgb, var(--side-faint) 40%, transparent)}
+  .op-linea-grupo .ch-menu-rama .ch-menu-rama{margin-left:var(--esp-12)}
+
+  /* 5 · Filetes: una línea fina arriba y abajo separa el grupo abierto del resto */
+  .op-filetes .ch-menu-lista > .ch-menu-grupo.abierto{margin:var(--esp-4) 0;padding:var(--esp-4) 0;border-top:1px solid color-mix(in srgb, var(--side-faint) 30%, transparent);border-bottom:1px solid color-mix(in srgb, var(--side-faint) 30%, transparent)}
+  .op-filetes .ch-menu-rama{margin-left:calc(var(--esp-16) + 20px)}
+  .op-filetes .ch-menu-rama .ch-menu-rama{margin-left:var(--esp-12)}
+
+  /* 6 · Contorno: el grupo abierto queda rodeado por un borde fino, sin relleno */
+  .op-contorno .ch-menu-grupo.abierto{border:1px solid color-mix(in srgb, var(--side-faint) 35%, transparent);border-radius:var(--r-area)}
+  .op-contorno .ch-menu-grupo.abierto .ch-menu-grupo.abierto{margin-right:var(--esp-6);border-radius:var(--r-item)}
+  .op-contorno .ch-menu-rama{margin-left:calc(var(--esp-16) + 20px);padding-bottom:var(--esp-6)}
+  .op-contorno .ch-menu-rama .ch-menu-rama{margin-left:var(--esp-12)}
+</style>
+</head>
+<body class="ch">
+<main class="ch-opciones-pagina">
+  <h1 class="ch-titulo">Menú · cómo se conecta lo desplegado</h1>
+  <p class="ch-bajada">Empiezan cerrados · entra a «Guías de práctica clínica», luego a «Guías contrastadas» y llega a «Galería».</p>
+  <div class="ch-opciones" id="opciones"></div>
+</main>
+
+<svg class="ch-sprite" aria-hidden="true">
+  <symbol id="i-estrella" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <symbol id="i-nuevo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+  <symbol id="i-guias" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h13"/><path d="M9 7h6"/></symbol>
+  <symbol id="i-news" viewBox="0 0 24 24"><path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1-4 0V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a3 3 0 0 0 3 3h11"/><path d="M8 8h4M8 12h4M8 16h4"/></symbol>
+  <symbol id="i-autoevaluacion" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11l2 2 4-4M9 17h6"/></symbol>
+  <symbol id="i-ia" viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 7V4M9.5 12h.01M14.5 12h.01M10 15h4M3 11v3M21 11v3"/></symbol>
+  <symbol id="i-flecha" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+</svg>
+
+<script>
+const opciones = [
+  ['op-bloque', 'Bloque', 'El grupo abierto queda dentro de un fondo un poco más claro, como una carpeta abierta.'],
+  ['op-puntos', 'Puntos', 'Un punto bajo el ícono del libro marca cada sección de adentro; «Galería» lleva un aro.'],
+  ['op-bloque op-puntos', 'Bloque + puntos', 'El fondo claro agrupa y los puntos alinean lo de adentro.'],
+];
+const flecha = '<svg class="ch-menu-flecha" aria-hidden="true"><use href="#i-flecha"/></svg>';
+const arbol = [
+  {id:'favoritos', nombre:'Mis favoritos', icono:'i-estrella'},
+  {id:'nuevo', nombre:'Nuevo', icono:'i-nuevo'},
+  {id:'guias', nombre:'Guías de práctica clínica', icono:'i-guias', hijos:[
+    {id:'resumenes', nombre:'Resúmenes individuales'},
+    {id:'contrastadas', nombre:'Guías contrastadas', hijos:[{id:'galeria', nombre:'Galería'}]},
+    {id:'herramientas', nombre:'Herramientas interactivas'},
+    {id:'videos', nombre:'Videos de procedimientos'},
+  ]},
+  {id:'news', nombre:'Clinical News', icono:'i-news'},
+  {id:'autoevaluacion', nombre:'Autoevaluación', icono:'i-autoevaluacion'},
+  {id:'ia', nombre:'Entrenamiento en IA', icono:'i-ia'},
+];
+const items = (lista, nivel) => lista.map(s => `
+  <li${s.hijos ? ' class="ch-menu-grupo"' : ''}>
+    <button type="button" class="ch-menu-item${nivel ? ' sub' : ''}" data-id="${s.id}"${s.hijos ? ' aria-expanded="false"' : ''}>${s.icono ? `<svg aria-hidden="true"><use href="#${s.icono}"/></svg>` : ''}${s.nombre}${s.hijos ? flecha : ''}</button>
+    ${s.hijos ? `<ul class="ch-menu-rama">${items(s.hijos, nivel + 1)}</ul>` : ''}
+  </li>`).join('');
+
+document.getElementById('opciones').innerHTML = opciones.map(([clase, nombre, nota]) => `
+  <section class="ch-opcion ${clase}">
+    <p class="ch-opcion-nombre">${nombre}</p>
+    <p class="ch-opcion-nota">${nota}</p>
+    <nav class="ch-menu" aria-label="${nombre}"><ul class="ch-menu-lista">${items(arbol, 0)}</ul></nav>
+  </section>`).join('');
+
+// Cada vista previa es un menú real: el clic marca la sección y abre su rama.
+function elegir(nav, id){
+  const actual = nav.querySelector(`[data-id="${id}"]`);
+  nav.querySelectorAll('.ch-menu-item').forEach(b => b === actual ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'));
+  nav.querySelectorAll('.ch-menu-grupo').forEach(g => {
+    const abierta = g.contains(actual);
+    g.classList.toggle('abierto', abierta);
+    g.querySelector(':scope > button').setAttribute('aria-expanded', abierta);
+  });
+}
+document.querySelectorAll('.ch-opcion .ch-menu').forEach(nav => {
+  elegir(nav, 'nuevo');
+  nav.addEventListener('click', e => {
+    const b = e.target.closest('.ch-menu-item');
+    if (b) elegir(nav, b.dataset.id);
+  });
+});
+</script>
+</body>
+</html>

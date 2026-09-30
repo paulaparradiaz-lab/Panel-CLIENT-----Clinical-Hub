@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clinical Hub</title>
+<link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<link rel="stylesheet" href="panel.css">
+</head>
+<body class="ch ch-panel">
+
+<svg class="ch-sprite" aria-hidden="true">
+  <symbol id="i-estrella" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <symbol id="i-nuevo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+  <symbol id="i-autoevaluacion" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11l2 2 4-4M9 17h6"/></symbol>
+  <symbol id="i-ia" viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 7V4M9.5 12h.01M14.5 12h.01M10 15h4M3 11v3M21 11v3"/></symbol>
+  <symbol id="i-guias" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h13"/><path d="M9 7h6"/></symbol>
+  <symbol id="i-videos" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4-2.5z"/></symbol>
+  <symbol id="i-news" viewBox="0 0 24 24"><path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1-4 0V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a3 3 0 0 0 3 3h11"/><path d="M8 8h4M8 12h4M8 16h4"/></symbol>
+  <symbol id="i-flecha" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-cuenta" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></symbol>
+  <symbol id="i-buscar" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+</svg>
+
+<!-- Cabecera blanca de lado a lado -->
+<header class="ch-cabecera">
+  <a class="ch-marca" href="#nuevo">
+    <span class="ch-logotipo">Clinical <span>hub</span><small>powered by Sustancia Pro</small></span>
+  </a>
+  <label class="ch-buscador">
+    <svg aria-hidden="true"><use href="#i-buscar"/></svg>
+    <input type="search" id="buscar" aria-label="Buscar en Clinical Hub" placeholder="Buscar">
+  </label>
+  <a class="ch-boton-redondo" href="#cuenta" aria-label="Mi cuenta"><svg aria-hidden="true"><use href="#i-cuenta"/></svg></a>
+</header>
+
+<!-- Celular: las secciones en pestañas -->
+<div class="ch-pestanas-celular">
+  <nav class="ch-pestanas" id="pestanas" aria-label="Secciones"></nav>
+  <nav class="ch-pestanas ch-subpestanas" id="subpestanas" aria-label="Dentro de la sección" hidden></nav>
+</div>
+
+<div class="ch-cuerpo">
+  <!-- Computador: menú lateral -->
+  <aside class="ch-menu">
+    <nav aria-label="Secciones">
+      <ul class="ch-menu-lista" id="menu"></ul>
+    </nav>
+  </aside>
+
+  <main class="ch-contenido">
+    <div class="ch-pagina">
+      <div class="ch-pagina-cabeza">
+        <h1 class="ch-titulo" id="titulo"></h1>
+        <p class="ch-bajada" id="bajada"></p>
+      </div>
+      <div id="secciones"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+// El menú, en el orden que pidió Paula. «hijos» son las secciones que cuelgan de un grupo.
+const menu = [
+  {id:'favoritos', nombre:'Mis favoritos', icono:'i-estrella', bajada:'Lo que guardaste y lo que más consultas.'},
+  {id:'nuevo', nombre:'Nuevo', icono:'i-nuevo', bajada:'Lo último que se publicó, de todas las secciones.'},
+  {id:'guias', nombre:'Guías de práctica clínica', icono:'i-guias', hijos:[
+    {id:'resumenes', nombre:'Resúmenes individuales', tipo:'Resumen individual'},
+    {id:'contrastadas', nombre:'Guías contrastadas', tipo:'Guía contrastada', hijos:[
+      {id:'galeria', nombre:'Galería', tipo:'Galería'},
+    ]},
+    {id:'herramientas', nombre:'Herramientas interactivas', tipo:'Herramienta interactiva'},
+    {id:'videos', nombre:'Videos de procedimientos', tipo:'Video de procedimiento'},
+  ]},
+  {id:'news', nombre:'Clinical News', icono:'i-news', tipo:'Clinical News'},
+  {id:'autoevaluacion', nombre:'Autoevaluación', icono:'i-autoevaluacion', tipo:'Autoevaluación'},
+  {id:'ia', nombre:'Entrenamiento en IA', icono:'i-ia', tipo:'Entrenamiento en IA'},
+];
+
+// Cada sección muestra su tipo y el de todo lo que cuelga de ella.
+const secciones = [];
+(function aplanar(lista){
+  lista.forEach(s => {
+    aplanar(s.hijos || []);
+    const tipos = [s.tipo, ...(s.hijos || []).flatMap(h => secciones.find(x => x.id === h.id).tipos)].filter(Boolean);
+    secciones.push({...s, tipos, bajada: s.bajada || '[Qué encuentras en esta sección]'});
+  });
+})(menu);
+const seccion = id => secciones.find(x => x.id === id);
+
+// Marcadores: aún no hay contenido real publicado.
+const contenido = [
+  {tipo:'Resumen individual',     titulo:'[Título del resumen]'},
+  {tipo:'Guía contrastada',       titulo:'[Título de la guía contrastada]'},
+  {tipo:'Video de procedimiento', titulo:'[Título del video]'},
+  {tipo:'Herramienta interactiva', titulo:'[Nombre de la herramienta]'},
+  {tipo:'Clinical News',          titulo:'[Título de la noticia]'},
+  {tipo:'Galería',                titulo:'[Título de la figura]'},
+  {tipo:'Autoevaluación',         titulo:'[Título de la autoevaluación]'},
+  {tipo:'Entrenamiento en IA',    titulo:'[Título del entrenamiento]'},
+];
+
+const $ = id => document.getElementById(id);
+
+// Desde afuera solo se ven las secciones principales; la rama de un grupo
+// se abre cuando se está en él o en algo que cuelga de él.
+function items(lista, nivel){
+  return lista.map(s => `
+    <li${s.hijos ? ' class="ch-menu-grupo"' : ''}><a class="ch-menu-item${nivel ? ' sub' : ''}" href="#${s.id}"${s.hijos ? ` aria-expanded="false" aria-controls="rama-${s.id}"` : ''}>${s.icono ? `<svg aria-hidden="true"><use href="#${s.icono}"/></svg>` : ''}${s.nombre}${s.hijos ? '<svg class="ch-menu-flecha" aria-hidden="true"><use href="#i-flecha"/></svg>' : ''}</a>
+    ${s.hijos ? `<ul class="ch-menu-rama" id="rama-${s.id}">${items(s.hijos, nivel + 1)}</ul>` : ''}</li>`).join('');
+}
+$('menu').innerHTML = items(menu, 0);
+// Celular: arriba las principales; debajo, lo que cuelga de la que está abierta.
+const descendientes = s => (s.hijos || []).flatMap(h => [h, ...descendientes(h)]);
+const principalDe = id => menu.find(p => p.id === id || descendientes(p).some(d => d.id === id));
+$('pestanas').innerHTML = menu.map(s => `<a class="ch-pestana" href="#${s.id}">${s.nombre}</a>`).join('');
+
+function mostrar(){
+  const s = seccion(location.hash.slice(1)) || seccion('nuevo');
+  const principal = principalDe(s.id);
+  const hijos = descendientes(principal);
+  $('subpestanas').hidden = !hijos.length;
+  $('subpestanas').innerHTML = hijos.map(h => `<a class="ch-pestana" href="#${h.id}">${h.nombre}</a>`).join('');
+  document.querySelectorAll('.ch-menu-item, #subpestanas .ch-pestana').forEach(a => {
+    if (a.getAttribute('href') === '#' + s.id) a.setAttribute('aria-current', 'page');
+    else a.removeAttribute('aria-current');
+  });
+  document.querySelectorAll('#pestanas .ch-pestana').forEach(a => {
+    if (a.getAttribute('href') === '#' + principal.id) a.setAttribute('aria-current', 'page');
+    else a.removeAttribute('aria-current');
+  });
+  const actual = document.querySelector('.ch-menu-item[aria-current]');
+  document.querySelectorAll('.ch-menu-grupo').forEach(g => {
+    const abierta = g.contains(actual);
+    g.classList.toggle('abierto', abierta);
+    g.querySelector(':scope > a').setAttribute('aria-expanded', abierta);
+  });
+  document.querySelectorAll('.ch-pestanas-celular .ch-pestana[aria-current]').forEach(a => a.scrollIntoView({block:'nearest', inline:'nearest'}));
+  $('titulo').textContent = s.nombre;
+  $('bajada').textContent = s.bajada;
+  if (s.id === 'favoritos') {
+    // Marcadores: aún no hay médicos ni datos de uso.
+    $('secciones').innerHTML =
+      bloque('Guardados', 'Lo que marcaste como favorito.', contenido.slice(0, 3), true) +
+      bloque('Lo que más consultas', 'Según lo que más abres.', contenido.slice(3, 7), true);
+    return;
+  }
+  const filas = s.tipos.length ? contenido.filter(c => s.tipos.includes(c.tipo)) : contenido;
+  $('secciones').innerHTML = lista(filas, s.tipos.length !== 1, 'titulo');
+}
+
+function lista(filas, conTipo, rotulo){
+  return `<section class="ch-lista" aria-labelledby="${rotulo}"><ul>${filas.map(c => `
+    <li><a class="ch-lista-fila" href="#">
+      <span class="ch-lista-titulo">${c.titulo}</span>
+      <span class="ch-lista-meta">[Especialidad] · [Fecha de publicación]</span>
+      ${conTipo ? `<span class="ch-etq">${c.tipo}</span>` : ''}
+    </a></li>`).join('')}</ul></section>`;
+}
+
+function bloque(titulo, sub, filas, conTipo){
+  const id = 'b-' + titulo.length;
+  return `<div class="ch-bloque">
+    <h2 class="ch-titulo-seccion" id="${id}">${titulo}</h2>
+    <p class="ch-subtitulo-seccion">${sub}</p>
+    ${lista(filas, conTipo, id)}
+  </div>`;
+}
+window.addEventListener('hashchange', mostrar);
+mostrar();
+</script>
+</body>
+</html>

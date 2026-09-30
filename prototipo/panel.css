@@ -1,0 +1,130 @@
+/* ============================================================
+   Panel de usuarios · prototipo
+   Piezas nuevas del panel. Solo variables del manual
+   (estilos/clinical-hub.css). Cuando Paula las apruebe, pasan
+   al manual y luego a componentes.
+   ============================================================ */
+
+.ch-panel{
+  margin:0; min-height:100vh; background:var(--surface);
+  /* Curva sin rebote para el menú (despliegue y flecha): sale rápido y frena suave. */
+  --ease-suave:cubic-bezier(.22,.61,.36,1);
+  --alto-cabecera:96px;
+  --ancho-menu:264px;
+  --aire-menu:var(--esp-20);   /* blanco entre la cabecera y la hoja verde */
+  --sangria-pagina:calc(var(--esp-32) + var(--esp-20));
+}
+.ch-sprite{position:absolute;width:0;height:0}
+
+/* ---------- Cabecera blanca de lado a lado ---------- */
+/* Sus columnas calzan con las de abajo: la marca sobre el menú y el
+   buscador alineado con el título de la página. */
+.ch-cabecera{
+  position:sticky; top:0; z-index:2;
+  height:var(--alto-cabecera); padding-right:var(--esp-22);
+  display:grid; grid-template-columns:var(--ancho-menu) minmax(0,1fr) auto; align-items:center;
+  background:var(--surface);
+}
+.ch-marca{justify-self:start;display:flex;align-items:center;gap:var(--esp-12);margin-left:var(--esp-22);color:var(--ink);text-decoration:none}
+.ch-marca .ch-logotipo{color:var(--side)}
+.ch-cabecera .ch-buscador{max-width:420px;margin-left:var(--sangria-pagina)}
+
+/* ---------- Cuerpo: menú + contenido ---------- */
+.ch-cuerpo{display:flex}
+
+/* Menú lateral: una hoja verde que sale por debajo de la cabecera,
+   con la esquina de arriba a la derecha muy redondeada. */
+.ch-menu{
+  position:sticky; top:calc(var(--alto-cabecera) + var(--aire-menu)); z-index:1; flex:none;
+  width:var(--ancho-menu); height:calc(100vh - var(--alto-cabecera) - var(--aire-menu));
+  margin-top:var(--aire-menu);
+  padding:var(--esp-32) var(--esp-16); overflow-y:auto;
+  background:var(--side); color:var(--side-faint);
+  border-top-right-radius:calc(var(--r) * 2);
+}
+.ch-menu-lista{display:flex;flex-direction:column;gap:var(--esp-4);margin:0;padding:0;list-style:none}
+.ch-menu-item{
+  display:flex; align-items:center; gap:var(--esp-12);
+  min-height:44px; padding:0 var(--esp-16); border-radius:var(--r-pill);
+  font-size:14px; font-weight:500; color:var(--side-faint); text-decoration:none; white-space:nowrap;
+  transition:color .3s,background .3s;
+}
+.ch-menu-item svg{flex:none;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ch-menu-item:hover{color:var(--side-ink);background:var(--side-hover)}
+.ch-menu-item[aria-current="page"]{color:var(--brand-ink);font-weight:600;background:var(--brand)}
+
+/* Grupos que se despliegan (Guías de práctica clínica, Guías contrastadas).
+   Bloque: el grupo abierto queda sobre un fondo un poco más claro.
+   La rama se abre deslizándose: la segunda fila del grupo pasa de 0 a su alto. */
+.ch-menu-grupo{
+  display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:auto 0fr; border-radius:var(--r-item);
+  transition:grid-template-rows .35s var(--ease-suave),background .3s;
+}
+.ch-menu-grupo.abierto{grid-template-rows:auto 1fr;background:var(--side-hover)}
+.ch-menu-rama{min-height:0;overflow:hidden;visibility:hidden;list-style:none;margin:0;padding:0;transition:visibility .35s}
+.ch-menu-grupo.abierto > .ch-menu-rama{visibility:visible;padding-bottom:var(--esp-6)}
+.ch-menu-rama .ch-menu-grupo{margin-right:var(--esp-6)}
+
+/* Puntos: cada sección de adentro lleva un punto bajo el ícono del grupo;
+   un nivel más adentro (Galería), un aro. */
+.ch-menu-item.sub{
+  position:relative; padding-left:calc(var(--esp-16) + 20px + var(--esp-12));
+  font-size:13.5px; font-weight:400;
+}
+.ch-menu-item.sub::before{
+  content:""; position:absolute; left:calc(var(--esp-16) + 7px); top:calc(50% - 3px);
+  width:6px; height:6px; border-radius:50%; background:currentColor;
+}
+.ch-menu-rama .ch-menu-rama .ch-menu-item.sub{padding-left:calc(var(--esp-16) + 20px + var(--esp-12) + var(--esp-16))}
+.ch-menu-rama .ch-menu-rama .ch-menu-item.sub::before{left:calc(var(--esp-16) + 20px + var(--esp-12) + 2px);background:none;border:1.5px solid currentColor}
+.ch-menu-item.sub[aria-current="page"]{font-weight:600}
+.ch-menu-item .ch-menu-flecha{width:16px;height:16px;margin-left:auto;transition:transform .35s var(--ease-suave)}
+.ch-menu-item.sub .ch-menu-flecha{width:14px;height:14px}
+.ch-menu-item[aria-expanded="true"] .ch-menu-flecha{transform:rotate(90deg)}
+
+/* ---------- Área de contenido ---------- */
+.ch-contenido{flex:1;min-width:0}
+.ch-pagina{max-width:1080px;padding:var(--esp-32) var(--esp-22) var(--esp-32) var(--sangria-pagina)}
+.ch-pagina-cabeza{margin-bottom:var(--esp-26)}
+
+/* ---------- Lista tipo índice ---------- */
+.ch-lista{border-top:1px solid var(--border)}
+.ch-bloque + .ch-bloque{margin-top:var(--esp-32)}
+.ch-bloque .ch-lista{margin-top:var(--esp-12)}
+.ch-lista ul{margin:0;padding:0;list-style:none}
+.ch-lista li{border-bottom:1px solid var(--border)}
+.ch-lista-fila{
+  display:grid; grid-template-columns:1fr auto; align-items:center; gap:var(--esp-4) var(--esp-16);
+  margin:var(--esp-4) calc(-1 * var(--esp-12)); padding:var(--esp-12); border-radius:var(--r-item);
+  color:var(--ink); text-decoration:none; transition:background .2s;
+}
+.ch-lista-fila:hover{background:var(--surface2)}
+.ch-lista-titulo{font-size:15.5px;font-weight:600;letter-spacing:-.005em;line-height:1.35}
+.ch-lista-meta{grid-column:1;font-size:12.5px;color:var(--faint);line-height:1.4}
+.ch-lista-fila .ch-etq{grid-column:2;grid-row:1 / span 2}
+
+/* ---------- Celular ---------- */
+.ch-pestanas-celular{display:none}
+
+@media (max-width:720px){
+  .ch-cabecera{
+    position:static; height:auto; padding:var(--esp-12) var(--esp-22);
+    grid-template-columns:1fr auto; gap:var(--esp-12);
+  }
+  .ch-marca{margin-left:0}
+  .ch-cabecera .ch-buscador{grid-column:1 / -1;grid-row:2;max-width:none;margin:0}
+  .ch-menu{display:none}
+  .ch-pestanas-celular{
+    position:sticky; top:0; z-index:1; display:block;
+    padding:var(--esp-12) var(--esp-22); background:var(--surface);
+  }
+  .ch-pestanas-celular .ch-pestanas{display:flex}
+  .ch-pestanas-celular .ch-subpestanas{margin-top:var(--esp-8);box-shadow:none}
+  .ch-pestanas-celular .ch-subpestanas[hidden]{display:none}
+  .ch-pestanas-celular .ch-pestana{text-decoration:none}
+  .ch-pestanas-celular .ch-pestana[aria-current="page"]{background:var(--brand);color:var(--brand-ink)}
+  .ch-pagina{padding:var(--esp-12) var(--esp-22) var(--esp-22)}
+  .ch-lista-fila{grid-template-columns:1fr}
+  .ch-lista-fila .ch-etq{grid-column:1;grid-row:auto;justify-self:start}
+}
+

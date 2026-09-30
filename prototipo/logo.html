@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logo algoritmo</title>
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<link rel="stylesheet" href="panel.css">
+<style>
+  .ch-logo-pagina{max-width:1180px;margin:0 auto;padding:var(--esp-32) var(--esp-22)}
+  .ch-previa{margin-top:var(--esp-32)}
+  .ch-previa-nombre{margin:0 0 var(--esp-8);font-size:14px;font-weight:600;color:var(--ink)}
+  .ch-previa-nombre span{font-weight:400;color:var(--faint)}
+  .ch-previa-marco{min-height:0;overflow:hidden;border:1px solid var(--border);border-radius:var(--r);background:var(--surface);box-shadow:var(--sombra-suave)}
+  .ch-previa-marco .ch-cabecera{position:static}
+  .ch-previa-marco .ch-menu{position:static;height:150px}
+  .ch-previa-marco .ch-menu-item{pointer-events:none}
+  .ch-previa-marco .ch-menu-nav{position:relative}
+  .ch-previa-marco .ch-cabecera .ch-boton-redondo svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+  .ch-previa-marco .ch-menu-goma{top:0;height:44px}
+  .ch-previa-marco .ch-pagina{padding-bottom:0}
+
+  /* Piezas del logo */
+  .l-linea{fill:none;stroke:var(--side);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+  .l-nodo{fill:var(--surface);stroke:var(--side);stroke-width:3;stroke-linejoin:round}
+  .l-lleno{fill:var(--side);stroke:var(--side);stroke-width:3;stroke-linejoin:round}
+  .l-lima{fill:var(--brand);stroke:var(--brand-ink);stroke-width:3;stroke-linejoin:round}
+  .l-fondo{fill:var(--side)}
+  .l-linea.clara{stroke:var(--side-ink)}
+  .l-nodo.clara{fill:var(--side);stroke:var(--side-ink)}
+  .l-lima.clara{stroke:var(--brand)}
+  .clara{stroke-width:2.5}
+  .n-linea{fill:none;stroke:var(--side);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .n-lleno{fill:var(--side)}
+  .n-decision{fill:var(--brand);stroke:var(--side);stroke-width:2.4;stroke-linejoin:round}
+  .n-lima{fill:var(--brand)}
+  .ch-previa-marco .ch-logo.t48{width:48px;height:50px}
+  .ch-previa-marco .ch-logo{width:44px;height:46px}
+  .ch-previa-marco .ch-marca{gap:var(--esp-12)}
+  .ch-previa-marco .ch-logotipo{white-space:nowrap}
+  /* Opciones de color del nombre */
+  .nom-2{color:var(--side)}
+  .nom-3{color:var(--side)} .nom-3 span{color:var(--brand)}
+  .nom-4{color:var(--side)} .nom-4 span{display:inline-block;margin-left:var(--esp-4);padding:0 var(--esp-8) var(--esp-4);border-radius:var(--r-pill);background:var(--brand);color:var(--brand-ink)}
+  .nom-5{color:var(--side)} .nom-5 span{color:var(--side);font-weight:400}
+</style>
+</head>
+<body class="ch">
+<main class="ch-logo-pagina">
+  <h1 class="ch-titulo">Nombre · colores</h1>
+  <p class="ch-bajada">Cada una puesta en el panel, tal como se vería.</p>
+  <div id="opciones"></div>
+</main>
+
+<svg class="ch-sprite" aria-hidden="true">
+  <symbol id="i-nuevo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+  <symbol id="i-herramientas" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></symbol>
+  <symbol id="i-cuenta" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></symbol>
+  <symbol id="i-buscar" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+  <!-- 1 · Camino elegido anterior -->
+  <symbol id="v1" viewBox="0 0 48 50">
+    <path class="l-linea" d="M24 8V30Q24 34 20 34H14Q10 34 10 38V42M24 30Q24 34 28 34H34Q38 34 38 38V42"/>
+    <circle class="l-lleno" cx="24" cy="8" r="4.5"/>
+    <path class="l-lleno" d="M24 16L31 23L24 30L17 23Z"/>
+    <circle class="l-nodo" cx="10" cy="42" r="4.5"/>
+    <circle class="l-lima" cx="38" cy="42" r="4.5"/>
+  </symbol>
+  <!-- 2 y 3 · Nuevo, el de la imagen de Paula -->
+  <symbol id="v2" viewBox="0 0 48 50">
+    <path class="n-linea" d="M24 12V19M16.5 26.3H12.5Q8.5 26.3 8.5 30.3V35M31.5 26.3H35.5Q39.5 26.3 39.5 30.3V35"/>
+    <path class="n-lleno" d="M5.2 34.4H11.8L8.5 38.2ZM36.2 34.4H42.8L39.5 38.2Z"/>
+    <circle class="n-lleno" cx="24" cy="7.5" r="5.8"/>
+    <path class="n-decision" d="M24 18.8L31.5 26.3L24 33.8L16.5 26.3Z"/>
+    <circle class="n-lleno" cx="8.5" cy="44" r="5.5"/>
+    <circle class="n-lima" cx="39.5" cy="44" r="5.5"/>
+  </symbol>
+  <!-- 4 · Nuevo, con borde verde en la salida lima -->
+  <symbol id="v4" viewBox="0 0 48 50">
+    <path class="n-linea" d="M24 12V19M16.5 26.3H12.5Q8.5 26.3 8.5 30.3V35M31.5 26.3H35.5Q39.5 26.3 39.5 30.3V35"/>
+    <path class="n-lleno" d="M5.2 34.4H11.8L8.5 38.2ZM36.2 34.4H42.8L39.5 38.2Z"/>
+    <circle class="n-lleno" cx="24" cy="7.5" r="5.8"/>
+    <path class="n-decision" d="M24 18.8L31.5 26.3L24 33.8L16.5 26.3Z"/>
+    <circle class="n-lleno" cx="8.5" cy="44" r="5.5"/>
+    <circle class="n-decision" cx="39.5" cy="44" r="4.6"/>
+  </symbol>
+</svg>
+
+<script>
+const opciones = [
+  ['v2', '1 · Como está hoy', '«Clinical» negro · «hub» verde oliva', 'nom-1'],
+  ['v2', '2 · Todo en verde oscuro con «hub» oliva', '«Clinical» en el verde del menú · «hub» verde oliva', 'nom-2'],
+  ['v2', '3 · «hub» en lima', 'Se ve cómo el lima se pierde sobre el blanco · no pasa contraste', 'nom-3'],
+  ['v2', '4 · «hub» en píldora lima', 'Como la sección elegida del menú · se lee bien', 'nom-4'],
+  ['v2', '5 · Un solo verde, dos pesos', '«Clinical» grueso · «hub» liviano, como los títulos de página', 'nom-5'],
+];
+document.getElementById('opciones').innerHTML = opciones.map(([id, nombre, nota, nom], i) => `
+  <section class="ch-previa" aria-labelledby="t-${i}">
+    <p class="ch-previa-nombre" id="t-${i}">${nombre} <span>· ${nota}</span></p>
+    <div class="ch-previa-marco ch-panel">
+      <div class="ch-cabecera">
+        <span class="ch-marca"><svg class="ch-logo" viewBox="0 0 48 50" aria-hidden="true"><use href="#${id}"/></svg><span class="ch-logotipo ${nom}">Clinical <span>hub</span></span></span>
+        <span class="ch-buscador"><svg aria-hidden="true"><use href="#i-buscar"/></svg>Buscar</span>
+        <span class="ch-boton-redondo"><svg aria-hidden="true"><use href="#i-cuenta"/></svg></span>
+      </div>
+      <div class="ch-cuerpo">
+        <div class="ch-menu"><div class="ch-menu-nav">
+          <span class="ch-menu-goma lista"></span>
+          <ul class="ch-menu-lista">
+            <li><span class="ch-menu-item" aria-current="page"><svg aria-hidden="true"><use href="#i-nuevo"/></svg>Nuevo</span></li>
+            <li><span class="ch-menu-item"><svg aria-hidden="true"><use href="#i-herramientas"/></svg>Herramientas interactivas</span></li>
+          </ul>
+        </div></div>
+        <div class="ch-contenido"><div class="ch-pagina">
+          <h2 class="ch-titulo">Nuevo</h2>
+          <p class="ch-bajada">Lo último que se publicó, de todas las secciones.</p>
+        </div></div>
+      </div>
+    </div>
+  </section>`).join('');
+</script>
+</body>
+</html>
