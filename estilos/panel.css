@@ -1,8 +1,7 @@
 /* ============================================================
-   Panel de usuarios · prototipo
-   Piezas nuevas del panel. Solo variables del manual
-   (estilos/clinical-hub.css). Cuando Paula las apruebe, pasan
-   al manual y luego a componentes.
+   Panel de usuarios · piezas del marco y de las vistas
+   Solo variables del manual (estilos/clinical-hub.css).
+   Sale de prototipo/panel.css, que queda como maqueta.
    ============================================================ */
 
 .ch-panel{

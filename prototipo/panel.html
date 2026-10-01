@@ -21,10 +21,7 @@
   <symbol id="i-videos" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4-2.5z"/></symbol>
   <symbol id="i-news" viewBox="0 0 24 24"><path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1-4 0V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a3 3 0 0 0 3 3h11"/><path d="M8 8h4M8 12h4M8 16h4"/></symbol>
   <symbol id="i-flecha" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
-  <!-- Consulta rápida: libro con lupa, buscar dentro de las guías -->
-  <symbol id="i-consulta" viewBox="0 0 24 24"><path d="M4 18V5a2 2 0 0 1 2-2h12v7"/><path d="M4 18a2 2 0 0 0 2 2h5"/><path d="M8 7h6"/><circle cx="16.5" cy="16.5" r="3"/><path d="m21 21-2.3-2.3"/></symbol>
   <symbol id="i-cerrar" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
-  <symbol id="i-enviar" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <!-- Huella: para entrar con passkey -->
   <symbol id="i-huella" viewBox="0 0 24 24"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></symbol>
@@ -154,30 +151,6 @@
     </div>
   </div>
 </div>
-
-<!-- Consulta rápida: búsqueda con IA dentro del contenido. En computador se abre con el botón flotante, en un
-     panel al costado; en celular es lo único que hay, a pantalla completa.
-     Las conversaciones no se guardan: al cerrar, se borran. -->
-<button type="button" class="ch-chat-boton" id="abrir-chat" aria-expanded="false" aria-controls="chat">
-  <svg aria-hidden="true"><use href="#i-consulta"/></svg>Consulta rápida
-</button>
-<section class="ch-chat" id="chat" aria-labelledby="chat-titulo">
-  <div class="ch-chat-cabeza">
-    <div>
-      <h2 class="ch-titulo-seccion" id="chat-titulo">Consulta rápida</h2>
-      <p class="ch-subtitulo-seccion">Respuestas hechas con IA a partir del contenido de Clinical Hub, con su fuente. Las conversaciones no se guardan.</p>
-    </div>
-    <button type="button" class="ch-boton-redondo ch-chat-cerrar" id="cerrar-chat" aria-label="Cerrar la consulta rápida"><svg aria-hidden="true"><use href="#i-cerrar"/></svg></button>
-  </div>
-  <div class="ch-chat-mensajes" id="mensajes" aria-live="polite">
-    <p class="ch-chat-vacio">Pregunta por una recomendación y te respondemos con el dato.</p>
-  </div>
-  <form class="ch-chat-pregunta" id="form-chat">
-    <label class="ch-sr" for="pregunta">Tu pregunta</label>
-    <input class="ch-campo" id="pregunta" autocomplete="off" placeholder="Escribe tu pregunta">
-    <button type="submit" class="ch-boton-redondo ch-chat-enviar" aria-label="Enviar"><svg aria-hidden="true"><use href="#i-enviar"/></svg></button>
-  </form>
-</section>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
@@ -493,36 +466,6 @@ document.addEventListener('click', e => { if (!e.target.closest('.ch-cuenta')) c
 document.addEventListener('keydown', e => {
   const abierta = [...document.querySelectorAll('.ch-cuenta')].find(estaAbierta);
   if (e.key === 'Escape' && abierta) { cuenta(abierta, false); abierta.querySelector('.ch-cuenta-boton').focus(); }
-});
-
-// Consulta rápida: abrir y cerrar (computador). Al cerrar, la conversación se borra.
-const vacio = $('mensajes').innerHTML;
-function chat(abrir){
-  document.body.classList.toggle('chat-abierto', abrir);
-  $('abrir-chat').setAttribute('aria-expanded', abrir);
-  if (abrir) $('pregunta').focus();
-  else { $('mensajes').innerHTML = vacio; $('abrir-chat').focus(); }
-}
-$('abrir-chat').addEventListener('click', () => chat(true));
-$('cerrar-chat').addEventListener('click', () => chat(false));
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.body.classList.contains('chat-abierto')) chat(false); });
-
-// Marcador de respuesta: aún no hay asistente conectado. La respuesta real trae
-// el dato de la guía y su fuente; aquí no se inventa ningún contenido clínico.
-$('form-chat').addEventListener('submit', e => {
-  e.preventDefault();
-  const texto = $('pregunta').value.trim();
-  if (!texto) return;
-  $('mensajes').querySelector('.ch-chat-vacio')?.remove();
-  const pregunta = document.createElement('p');
-  pregunta.className = 'ch-chat-yo';
-  pregunta.textContent = texto;
-  const respuesta = document.createElement('div');
-  respuesta.className = 'ch-chat-respuesta';
-  respuesta.innerHTML = '<p>[Respuesta del asistente: la recomendación puntual]</p><a class="ch-etq lima" href="' + (location.hash || '#favoritos') + '">Fuente: [FUENTE]</a>';
-  $('mensajes').append(pregunta, respuesta);
-  $('pregunta').value = '';
-  respuesta.scrollIntoView({block:'end'});
 });
 
 // Celular: la hoja verde sube desde abajo. Se cierra con la agarradera, tocando

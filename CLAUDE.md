@@ -18,6 +18,16 @@ este panel (se crea en la fase de cuentas, con permiso de Paula). Pagos con Hotm
 Ghost se deja de usar. Solo cruzan con el admin: el contenido **publicado**
 (admin → médicos) y **métricas agregadas** de solo lectura (médicos → admin).
 
+**Dónde vive cada cosa (Next.js):**
+- `app/layout.tsx` es el marco: envuelve todas las páginas. Sus piezas están en
+  `componentes/` (Cabecera, MenuLateral, Cuenta, Entrar, Aceptar, AvisoPago, OfrecerPasskey).
+- Cada vista es un `app/…/page.tsx` y solo llena el centro. El menú, sus direcciones y los
+  estados de la suscripción están en `lib/datos.ts`; la sesión y la cuenta, en `lib/sesion.tsx`.
+- Estilos: `estilos/clinical-hub.css` (manual) y `estilos/panel.css` (piezas del panel).
+- Para verlo en este computador: `npm run dev` (http://localhost:3000); `?sin-login` muestra
+  el panel sin entrar y `?simular=activa` (u otro estado) simula la suscripción.
+- `prototipo/` queda como maqueta de referencia (sigue en GitHub Pages).
+
 **Usuarios:** los crea **n8n** a partir del webhook de Hotmart; el panel nunca crea
 cuentas (entrada con enlace mágico + código). Todo se arma según `docs/usuarios.md`.
 
