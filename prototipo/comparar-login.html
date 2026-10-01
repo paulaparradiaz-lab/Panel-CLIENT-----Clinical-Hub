@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login · admin y médicos</title>
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<style>
+  .pag{padding:var(--esp-22);background:var(--bg);min-height:100vh}
+  .barra{display:flex;align-items:center;gap:var(--esp-12);margin-top:var(--esp-12)}
+  .lado{display:grid;grid-template-columns:1fr 1fr;gap:var(--esp-22);margin-top:var(--esp-20)}
+  .lado.celular{grid-template-columns:repeat(2,390px);justify-content:center}
+  .lado h2{margin:0 0 var(--esp-8);font-size:14px;font-weight:600}
+  iframe{width:100%;height:720px;border:1px solid var(--border2);border-radius:var(--r-bloque);background:var(--surface)}
+  .celular iframe{height:780px}
+</style>
+</head>
+<body class="ch">
+<main class="pag">
+  <h1 class="ch-titulo">Login · admin y médicos</h1>
+  <div class="barra">
+    <button type="button" class="ch-chip" aria-pressed="true" data-modo="computador">Computador</button>
+    <button type="button" class="ch-chip" aria-pressed="false" data-modo="celular">Celular</button>
+  </div>
+  <div class="lado" id="lado">
+    <section><h2>Admin</h2><iframe src="http://127.0.0.1:4175/index.html" title="Login del admin"></iframe></section>
+    <section><h2>Médicos (este panel)</h2><iframe src="panel.html" title="Login de médicos"></iframe></section>
+  </div>
+</main>
+<script>
+document.querySelector('.barra').addEventListener('click', e => {
+  const b = e.target.closest('[data-modo]'); if (!b) return;
+  document.querySelectorAll('[data-modo]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  document.getElementById('lado').classList.toggle('celular', b.dataset.modo === 'celular');
+});
+</script>
+</body>
+</html>

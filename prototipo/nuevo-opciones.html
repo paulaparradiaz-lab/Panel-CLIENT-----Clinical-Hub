@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marca de nuevo · opciones</title>
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<link rel="stylesheet" href="panel.css">
+<style>
+  .ch-opciones-pagina{max-width:1240px;margin:0 auto;padding:var(--esp-32) var(--esp-22);background:var(--surface)}
+  .ch-opciones{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--esp-32);margin-top:var(--esp-26)}
+  .ch-opcion-nombre{margin:0 0 var(--esp-8);font-size:14px;font-weight:600;color:var(--ink)}
+  .ch-opcion-nota{margin:0 0 var(--esp-12);max-width:280px;min-height:36px;font-size:12.5px;line-height:1.4;color:var(--faint)}
+
+  /* El menú real, quieto, con botones que se pueden usar */
+  .ch-opcion .ch-menu{display:block;position:static;height:auto;margin:0;overflow:visible}
+  .ch-opcion button.ch-menu-item{width:100%;border:0;background:none;text-align:left;font:inherit;font-size:14px;font-weight:500;color:var(--side-faint);cursor:pointer}
+  .ch-opcion button.ch-menu-item.sub{font-size:13.5px;font-weight:400}
+  .ch-opcion button.ch-menu-item:hover{color:var(--side-ink);background:var(--side-hover)}
+  .ch-opcion button.ch-menu-item[aria-current="page"]{color:var(--brand-ink);background:var(--brand)}
+  .ch-opcion .ch-menu-item svg{position:relative}
+  .ch-opcion .ch-menu-icono{position:relative;display:inline-grid;flex:none}
+
+  /* La marca, oculta por defecto; cada opción la muestra a su manera */
+  .ch-nuevo{display:none}
+
+  /* 1 · Píldora (hoy) */
+  .op-pildora .ch-nuevo{display:inline-block;flex:none;margin-left:calc(var(--esp-6) - var(--esp-12));padding:2px var(--esp-6);border-radius:var(--r-pill);background:var(--brand);color:var(--brand-ink);font-size:11.5px;font-weight:600;line-height:1.4}
+  .op-pildora [aria-current] .ch-nuevo{background:var(--side);color:var(--brand)}
+
+  /* 2 · Punto al final: un punto lima a la derecha del nombre */
+  .op-punto .ch-nuevo{display:block;flex:none;width:8px;height:8px;margin-right:var(--esp-4);border-radius:50%;background:var(--brand);font-size:0}
+  .op-punto [aria-current] .ch-nuevo{background:var(--side)}
+
+  /* 3 · Punto en el ícono: un punto lima pequeño en la esquina del ícono */
+  .op-icono .ch-nuevo{display:block;position:absolute;top:-2px;right:-3px;width:8px;height:8px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 2px var(--side);font-size:0}
+  .op-icono [aria-current] .ch-nuevo{background:var(--side);box-shadow:0 0 0 2px var(--brand)}
+
+  /* 4 · Palabra en lima: «New» en lima, sin fondo */
+  .op-palabra .ch-nuevo{display:inline;flex:none;margin-left:calc(var(--esp-6) - var(--esp-12));color:var(--brand);font-size:11.5px;font-weight:600}
+  .op-palabra [aria-current] .ch-nuevo{color:var(--brand-ink)}
+
+  /* 5 · Contorno: «New» en una píldora con borde lima, sin relleno */
+  .op-contorno .ch-nuevo{display:inline-block;flex:none;margin-left:calc(var(--esp-6) - var(--esp-12));padding:1px var(--esp-6);border:1px solid var(--brand);border-radius:var(--r-pill);color:var(--brand);font-size:11.5px;font-weight:600;line-height:1.4}
+  .op-contorno [aria-current] .ch-nuevo{border-color:var(--brand-ink);color:var(--brand-ink)}
+
+  /* 6 · Arriba del nombre: «New» pequeño en lima, como un superíndice */
+  .op-super .ch-menu-nombre{overflow:visible}
+  .op-super .ch-nuevo{display:inline;margin-left:3px;vertical-align:super;color:var(--brand);font-size:11.5px;font-weight:600;line-height:0}
+  .op-super [aria-current] .ch-nuevo{color:var(--brand-ink)}
+
+  /* 7 · Nombre resaltado: la sección con novedades va en blanco y con un punto */
+  .op-resaltado .con-nuevo:not([aria-current]){color:var(--side-ink)}
+  .op-resaltado .ch-nuevo{display:block;flex:none;width:6px;height:6px;margin-right:var(--esp-4);border-radius:50%;background:var(--side-ink);font-size:0}
+  .op-resaltado [aria-current] .ch-nuevo{background:var(--brand-ink)}
+</style>
+</head>
+<body class="ch">
+<main class="ch-opciones-pagina">
+  <h1 class="ch-titulo">Menú · cómo marcar lo nuevo</h1>
+  <p class="ch-bajada">Haz clic en Clinical News, Autoevaluación o Entrenamiento en IA para ver la marca también cuando está elegida.</p>
+  <div class="ch-opciones" id="opciones"></div>
+</main>
+
+<svg class="ch-sprite" aria-hidden="true">
+  <symbol id="i-estrella" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <symbol id="i-nuevo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+  <symbol id="i-guias" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h13"/><path d="M9 7h6"/></symbol>
+  <symbol id="i-news" viewBox="0 0 24 24"><path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1-4 0V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a3 3 0 0 0 3 3h11"/><path d="M8 8h4M8 12h4M8 16h4"/></symbol>
+  <symbol id="i-autoevaluacion" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11l2 2 4-4M9 17h6"/></symbol>
+  <symbol id="i-ia" viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 7V4M9.5 12h.01M14.5 12h.01M10 15h4M3 11v3M21 11v3"/></symbol>
+  <symbol id="i-flecha" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+</svg>
+
+<script>
+const opciones = [
+  ['op-pildora', '1 · Píldora (hoy)', 'Etiqueta lima llena con la palabra.'],
+  ['op-punto', '2 · Punto al final', 'Un punto lima a la derecha. Discreto; se entiende como «hay algo nuevo».'],
+  ['op-icono', '3 · Punto en el ícono', 'Un punto lima pequeño en la esquina del ícono.'],
+  ['op-palabra', '4 · Palabra en lima', '«New» en lima, sin fondo. Se lee sin pesar.'],
+  ['op-contorno', '5 · Contorno', '«New» en una píldora con borde lima, sin relleno.'],
+  ['op-super', '6 · Arriba del nombre', '«New» pequeño en lima, pegado al nombre como un superíndice.'],
+  ['op-resaltado', '7 · Nombre resaltado', 'La sección con novedades va en blanco, más visible, con un punto blanco.'],
+];
+const flecha = '<svg class="ch-menu-flecha" aria-hidden="true"><use href="#i-flecha"/></svg>';
+const arbol = [
+  {id:'favoritos', nombre:'Mis favoritos', icono:'i-estrella'},
+  {id:'nuevo', nombre:'Nuevo', icono:'i-nuevo'},
+  {id:'guias', nombre:'Guías de práctica clínica', icono:'i-guias', hijos:[
+    {id:'resumenes', nombre:'Resúmenes individuales'},
+    {id:'contrastadas', nombre:'Guías contrastadas'},
+    {id:'herramientas', nombre:'Herramientas interactivas'},
+    {id:'videos', nombre:'Videos de procedimientos'},
+  ]},
+  {id:'news', nombre:'Clinical News', icono:'i-news', nuevo:true},
+  {id:'autoevaluacion', nombre:'Autoevaluación', icono:'i-autoevaluacion', nuevo:true},
+  {id:'ia', nombre:'Entrenamiento en IA', icono:'i-ia', nuevo:true},
+];
+const marca = '<span class="ch-nuevo">New</span>';
+const items = (lista, nivel) => lista.map(s => `
+  <li${s.hijos ? ' class="ch-menu-grupo"' : ''}>
+    <button type="button" class="ch-menu-item${nivel ? ' sub' : ''}${s.nuevo ? ' con-nuevo' : ''}" data-id="${s.id}"${s.hijos ? ' aria-expanded="false"' : ''}>${s.icono ? `<span class="ch-menu-icono"><svg aria-hidden="true"><use href="#${s.icono}"/></svg>${s.nuevo ? marca : ''}</span>` : ''}<span class="ch-menu-nombre">${s.nombre}${s.nuevo ? marca : ''}</span>${s.nuevo ? marca : ''}${s.hijos ? flecha : ''}</button>
+    ${s.hijos ? `<ul class="ch-menu-rama">${items(s.hijos, nivel + 1)}</ul>` : ''}
+  </li>`).join('');
+
+document.getElementById('opciones').innerHTML = opciones.map(([clase, nombre, nota]) => `
+  <section class="ch-opcion ${clase}">
+    <p class="ch-opcion-nombre">${nombre}</p>
+    <p class="ch-opcion-nota">${nota}</p>
+    <nav class="ch-menu" aria-label="${nombre}"><ul class="ch-menu-lista">${items(arbol, 0)}</ul></nav>
+  </section>`).join('');
+
+// Cada opción usa la marca en un solo lugar (en el ícono, junto al nombre o al final);
+// las otras dos copias se quitan para que no se dupliquen.
+document.querySelectorAll('.ch-opcion').forEach(o => {
+  const lugar = o.classList.contains('op-icono') ? '.ch-menu-icono'
+              : o.classList.contains('op-super') ? '.ch-menu-nombre'
+              : 'button';
+  o.querySelectorAll('.ch-nuevo').forEach(m => {
+    const donde = m.parentElement.matches('.ch-menu-icono') ? '.ch-menu-icono'
+                : m.parentElement.matches('.ch-menu-nombre') ? '.ch-menu-nombre' : 'button';
+    if (donde !== lugar) m.remove();
+  });
+});
+
+// Igual que el panel: clic en un grupo cerrado lo abre y lo elige;
+// clic en un grupo abierto lo cierra sin cambiar de sección.
+document.querySelectorAll('.ch-opcion .ch-menu').forEach(nav => {
+  const cerrados = new Set();
+  const abrir = () => {
+    const actual = nav.querySelector('[aria-current]');
+    nav.querySelectorAll('.ch-menu-grupo').forEach(g => {
+      const b = g.querySelector(':scope > button');
+      const abierta = g.contains(actual) && !cerrados.has(b.dataset.id);
+      g.classList.toggle('abierto', abierta);
+      b.setAttribute('aria-expanded', abierta);
+    });
+  };
+  const elegir = id => {
+    cerrados.clear();
+    nav.querySelectorAll('.ch-menu-item').forEach(b => b.dataset.id === id ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'));
+    abrir();
+  };
+  nav.addEventListener('click', e => {
+    const b = e.target.closest('.ch-menu-item');
+    if (!b) return;
+    const grupo = b.parentElement.classList.contains('ch-menu-grupo');
+    if (grupo && b.getAttribute('aria-expanded') === 'true') { cerrados.add(b.dataset.id); abrir(); }
+    else if (grupo && b.hasAttribute('aria-current')) { cerrados.delete(b.dataset.id); abrir(); }
+    else elegir(b.dataset.id);
+  });
+  elegir('news');
+});
+</script>
+</body>
+</html>

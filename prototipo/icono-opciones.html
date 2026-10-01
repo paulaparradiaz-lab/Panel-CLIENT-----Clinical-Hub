@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ícono · opciones</title>
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<link rel="stylesheet" href="panel.css">
+<style>
+  .ch-opciones-pagina{max-width:1080px;margin:0 auto;padding:var(--esp-32) var(--esp-22);background:var(--surface)}
+  .ch-opciones{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--esp-26);margin-top:var(--esp-26)}
+  .ch-opcion{display:grid;gap:var(--esp-12);align-content:start}
+  .ch-opcion-nombre{margin:0;font-size:14px;font-weight:600;color:var(--ink)}
+  .ch-opcion-nota{margin:0;font-size:12.5px;line-height:1.4;color:var(--faint)}
+  /* El botón tal cual, pero quieto dentro de la hoja */
+  .ch-opcion button.ch-chat-boton{position:static;justify-self:start}
+</style>
+</head>
+<body class="ch">
+<main class="ch-opciones-pagina">
+  <h1 class="ch-titulo">Consulta rápida · ícono</h1>
+  <p class="ch-bajada">El botón real con cada ícono · pasa el mouse para ver cómo responde.</p>
+  <div class="ch-opciones" id="opciones"></div>
+</main>
+
+<svg class="ch-sprite" aria-hidden="true">
+  <!-- 1 · Burbuja (hoy) -->
+  <symbol id="o1" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></symbol>
+  <!-- 2 · Burbuja con pregunta -->
+  <symbol id="o2" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M10 9.2a2 2 0 1 1 2.6 1.9c-.4.2-.6.5-.6.9v.4M12 14h.01"/></symbol>
+  <!-- 3 · Lupa -->
+  <symbol id="o3" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+  <!-- 4 · Libro con lupa: buscar dentro del contenido -->
+  <symbol id="o4" viewBox="0 0 24 24"><path d="M4 18V5a2 2 0 0 1 2-2h12v7"/><path d="M4 18a2 2 0 0 0 2 2h5"/><path d="M8 7h6"/><circle cx="16.5" cy="16.5" r="3"/><path d="m21 21-2.3-2.3"/></symbol>
+  <!-- 5 · Decisión: el rombo del algoritmo del favicon -->
+  <symbol id="o5" viewBox="0 0 24 24"><circle cx="12" cy="3.8" r="1.8"/><path d="M12 5.6V8"/><path d="M12 8l4 4-4 4-4-4z"/><path d="M8 12H5.5a1.5 1.5 0 0 0-1.5 1.5V17M16 12h2.5a1.5 1.5 0 0 1 1.5 1.5V17"/><circle cx="4" cy="19.5" r="1.8"/><circle cx="20" cy="19.5" r="1.8"/></symbol>
+</svg>
+
+<script>
+const opciones = [
+  ['o1', '1 · Burbuja (hoy)', 'Dice «conversación». Claro, pero es el ícono de chat de cualquier sitio.'],
+  ['o2', '2 · Burbuja con pregunta', 'Dice «pregunta y te respondo». Más preciso que la burbuja sola.'],
+  ['o3', '3 · Lupa', 'Dice «buscar». Todos lo entienden, pero no dice que responde.'],
+  ['o4', '4 · Libro con lupa', 'Dice «buscar dentro de las guías». Explica de dónde sale la respuesta.'],
+  ['o5', '5 · Decisión', 'El rombo del algoritmo del favicon: dice «te ayudo a decidir» y es propio de Clinical Hub.'],
+];
+document.getElementById('opciones').innerHTML = opciones.map(([id, nombre, nota]) => `
+  <section class="ch-opcion">
+    <p class="ch-opcion-nombre">${nombre}</p>
+    <p class="ch-opcion-nota">${nota}</p>
+    <button type="button" class="ch-chat-boton"><svg aria-hidden="true"><use href="#${id}"/></svg>Consulta rápida</button>
+  </section>`).join('');
+</script>
+</body>
+</html>

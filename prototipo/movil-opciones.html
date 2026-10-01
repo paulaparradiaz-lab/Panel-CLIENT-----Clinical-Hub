@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Menú móvil · opciones</title>
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<style>
+  .pag{max-width:1240px;margin:0 auto;padding:var(--esp-32) var(--esp-22)}
+  .opciones{display:flex;flex-wrap:wrap;gap:var(--esp-32);margin-top:var(--esp-26)}
+  .op-nombre{margin:0 0 var(--esp-4);font-size:14px;font-weight:600;color:var(--ink)}
+  .op-nota{margin:0 0 var(--esp-12);max-width:360px;min-height:54px;font-size:12.5px;line-height:1.4;color:var(--faint)}
+
+  /* Una pantalla de celular: solo el recorte, sin dibujar un teléfono */
+  .tel{position:relative;width:360px;height:680px;overflow:hidden;border:1px solid var(--border2);border-radius:var(--r-bloque);background:var(--surface)}
+  .t-cab{display:flex;align-items:center;justify-content:space-between;gap:var(--esp-8);height:60px;padding:0 var(--esp-12) 0 var(--esp-16);border-bottom:1px solid var(--border);background:var(--surface);position:relative;z-index:3}
+  .t-cab .ch-logotipo{font-size:20px;color:var(--side)}
+  .t-cab .ch-logotipo small{font-size:10.5px;margin-top:1px}
+  .t-btn{display:inline-grid;place-items:center;width:44px;height:44px;border:1px solid var(--border);border-radius:50%;background:var(--surface);color:var(--ink)}
+  .t-btn svg,.t-ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .t-cuerpo{padding:var(--esp-20) var(--esp-16)}
+  .t-cuerpo h2{margin:0;font-size:28px;font-weight:400;letter-spacing:-.02em;line-height:1.1}
+  .t-cuerpo p{margin:var(--esp-6) 0 var(--esp-16);font-size:14px;color:var(--muted)}
+  .t-fila{padding:var(--esp-12) 0;border-top:1px solid var(--border)}
+  .t-fila b{display:block;font-size:15px;font-weight:600}
+  .t-fila span{font-size:12.5px;color:var(--faint)}
+  .t-velo{position:absolute;inset:0;z-index:4;background:color-mix(in srgb, var(--ink) 45%, transparent);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+  .abierto .t-velo{opacity:1;visibility:visible}
+
+  /* Lista del menú (la misma en todas las opciones) */
+  .t-lista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+  .t-lista ul{list-style:none;margin:0;padding:0 0 var(--esp-4)}
+  .t-item{display:flex;align-items:center;gap:var(--esp-12);width:100%;min-height:44px;padding:0 var(--esp-12);border:0;border-radius:var(--r-item);background:none;font:inherit;font-size:14px;font-weight:500;color:var(--side-faint);text-align:left;cursor:pointer}
+  .t-item.sub{padding-left:calc(var(--esp-12) + 20px + var(--esp-12));font-size:13.5px;font-weight:400;position:relative}
+  .t-item.sub::before{content:"";position:absolute;left:calc(var(--esp-12) + 7px);top:calc(50% - 3px);width:6px;height:6px;border-radius:50%;background:currentColor}
+  .t-item[aria-current="page"]{background:var(--brand);color:var(--brand-ink)}
+  .t-item .t-new{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--brand)}
+  .t-item[aria-current="page"] .t-new{color:var(--brand-ink)}
+  .t-item .t-flecha{margin-left:auto;width:16px;height:16px;transition:transform .4s var(--ease)}
+  .t-item[aria-expanded="true"] .t-flecha{transform:rotate(90deg)}
+  .t-rama{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease)}
+  .t-rama.abierta{grid-template-rows:1fr}
+  .t-rama > ul{min-height:0;overflow:hidden}
+  .t-cuenta{display:flex;align-items:center;gap:var(--esp-12);margin-top:auto;padding:var(--esp-12) var(--esp-12) 0;border-top:1px solid var(--side-hover);color:var(--side-faint);font-size:14px;font-weight:500;line-height:1.3}
+  .t-cuenta small{display:block;font-size:12.5px;font-weight:400}
+  .t-verde{display:flex;flex-direction:column;background:var(--side);color:var(--side-faint)}
+  .t-cerrar{align-self:flex-end;border-color:var(--side-hover);background:var(--side);color:var(--side-ink)}
+  .t-consulta{position:absolute;right:var(--esp-12);bottom:var(--esp-12);z-index:2;display:inline-flex;align-items:center;gap:var(--esp-8);padding:12px 16px;border:0;border-radius:var(--r-pill);background:var(--side);color:var(--side-faint);font:inherit;font-size:14px;font-weight:700;box-shadow:var(--sombra-boton)}
+
+  /* 1 · Hoja lateral (hoy) */
+  .lat .t-verde{position:absolute;top:0;left:0;bottom:0;z-index:5;width:80%;padding:var(--esp-12);border-top-right-radius:calc(var(--r) * 2);transform:translateX(-100%);transition:transform .4s var(--ease)}
+  .lat.abierto .t-verde{transform:none}
+
+  /* 2 · Hoja desde abajo */
+  .aba .t-verde{position:absolute;left:0;right:0;bottom:0;z-index:5;max-height:86%;overflow-y:auto;padding:var(--esp-8) var(--esp-12) var(--esp-16);border-radius:var(--r) var(--r) 0 0;transform:translateY(100%);transition:transform .4s var(--ease)}
+  .aba.abierto .t-verde{transform:none}
+  .t-agarre{align-self:center;width:40px;height:4px;margin:var(--esp-4) 0 var(--esp-12);border-radius:var(--r-pill);background:var(--side-hover)}
+
+  /* 3 · Barra abajo + «Más» */
+  .bar .t-barra{position:absolute;left:0;right:0;bottom:0;z-index:6;display:flex;justify-content:space-around;padding:var(--esp-6) var(--esp-8) var(--esp-8);background:var(--side);border-radius:var(--r) var(--r) 0 0}
+  .bar .t-barra button{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:56px;min-height:52px;padding:var(--esp-4);border:0;border-radius:var(--r-item);background:none;font:inherit;font-size:11.5px;font-weight:500;color:var(--side-faint)}
+  .bar .t-barra button[aria-current="page"]{background:var(--brand);color:var(--brand-ink)}
+  .bar .t-verde{position:absolute;left:0;right:0;bottom:68px;z-index:5;padding:var(--esp-12) var(--esp-12) var(--esp-16);border-radius:var(--r) var(--r) 0 0;transform:translateY(130%);transition:transform .4s var(--ease)}
+  .bar.abierto .t-verde{transform:none}
+  .bar .t-consulta{display:none}
+
+  /* 4 · Pantalla completa */
+  .com .t-verde{position:absolute;inset:0;z-index:5;padding:var(--esp-12) var(--esp-16) var(--esp-16);opacity:0;visibility:hidden;transform:scale(.97);transition:opacity .25s,transform .35s var(--ease),visibility .35s}
+  .com.abierto .t-verde{opacity:1;visibility:visible;transform:none}
+  .com .t-item{min-height:52px;font-size:17px}
+  .com .t-item.sub{font-size:15px}
+  .com .t-velo{display:none}
+
+  /* 5 · Pestañas arriba */
+  .pes .t-pestanas{display:flex;gap:var(--esp-4);overflow-x:auto;scrollbar-width:none;padding:var(--esp-8) var(--esp-12);border-bottom:1px solid var(--border)}
+  .pes .t-pestanas button{flex:none;min-height:40px;padding:0 var(--esp-12);border:0;border-radius:var(--r-item);background:none;font:inherit;font-size:13.5px;font-weight:600;color:var(--faint);white-space:nowrap}
+  .pes .t-pestanas button[aria-current="page"]{background:var(--brand);color:var(--brand-ink)}
+  .pes .t-pestanas.sub{background:var(--surface2)}
+  .pes .t-pestanas.sub button{font-weight:500}
+  .pes .t-pestanas.sub[hidden]{display:none}
+
+  /* 6 · Cortina desde la cabecera */
+  .cor .t-verde{position:absolute;top:60px;left:0;right:0;z-index:5;max-height:calc(100% - 60px);overflow-y:auto;padding:var(--esp-12) var(--esp-12) var(--esp-16);border-radius:0 0 var(--r) var(--r);clip-path:inset(0 0 100% 0);transition:clip-path .45s var(--ease)}
+  .cor.abierto .t-verde{clip-path:inset(0 0 0 0)}
+  .cor .t-velo{top:60px}
+</style>
+</head>
+<body class="ch">
+<main class="pag">
+  <h1 class="ch-titulo">Celular · cómo se organiza el menú</h1>
+  <p class="ch-bajada">Seis organizaciones distintas · abre el menú, entra a Guías y elige secciones.</p>
+  <div class="opciones" id="opciones"></div>
+</main>
+
+<svg width="0" height="0" class="ch-sr" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-cerrar" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-cuenta" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></symbol>
+  <symbol id="i-estrella" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <symbol id="i-nuevo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+  <symbol id="i-guias" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h13"/><path d="M9 7h6"/></symbol>
+  <symbol id="i-news" viewBox="0 0 24 24"><path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1-4 0V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a3 3 0 0 0 3 3h11"/><path d="M8 8h4M8 12h4M8 16h4"/></symbol>
+  <symbol id="i-autoevaluacion" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11l2 2 4-4M9 17h6"/></symbol>
+  <symbol id="i-ia" viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 7V4M9.5 12h.01M14.5 12h.01M10 15h4M3 11v3M21 11v3"/></symbol>
+  <symbol id="i-flecha" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-consulta" viewBox="0 0 24 24"><path d="M4 18V5a2 2 0 0 1 2-2h12v7"/><path d="M4 18a2 2 0 0 0 2 2h5"/><path d="M8 7h6"/><circle cx="16.5" cy="16.5" r="3"/><path d="m21 21-2.3-2.3"/></symbol>
+  <symbol id="i-mas" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></symbol>
+</svg>
+
+<script>
+const ico = id => `<svg class="t-ico" aria-hidden="true"><use href="#${id}"/></svg>`;
+const secciones = [
+  {id:'favoritos', nombre:'Mis favoritos', icono:'i-estrella'},
+  {id:'nuevo', nombre:'Nuevo', icono:'i-nuevo'},
+  {id:'guias', nombre:'Guías de práctica clínica', icono:'i-guias', hijos:[
+    {id:'resumenes', nombre:'Resúmenes individuales'}, {id:'contrastadas', nombre:'Guías contrastadas'},
+    {id:'herramientas', nombre:'Herramientas interactivas'}, {id:'videos', nombre:'Videos de procedimientos'}]},
+  {id:'news', nombre:'Clinical News', icono:'i-news', nuevo:true},
+  {id:'autoevaluacion', nombre:'Autoevaluación', icono:'i-autoevaluacion', nuevo:true},
+  {id:'ia', nombre:'Entrenamiento en IA', icono:'i-ia', nuevo:true},
+];
+const item = s => `<li><button type="button" class="t-item" data-id="${s.id}"${s.hijos ? ' aria-expanded="false"' : ''}>${ico(s.icono)}<span>${s.nombre}</span>${s.nuevo ? '<span class="t-new">New</span>' : ''}${s.hijos ? `<svg class="t-ico t-flecha" aria-hidden="true"><use href="#i-flecha"/></svg>` : ''}</button>
+  ${s.hijos ? `<div class="t-rama"><ul>${s.hijos.map(h => `<li><button type="button" class="t-item sub" data-id="${h.id}">${h.nombre}</button></li>`).join('')}</ul></div>` : ''}</li>`;
+const lista = (filtro = () => true) => `<ul class="t-lista">${secciones.filter(filtro).map(item).join('')}</ul>`;
+const cuenta = `<div class="t-cuenta">${ico('i-cuenta')}<span>[Nombre del médico]<small>[Especialidad]</small></span></div>`;
+const cuerpo = `<div class="t-cuerpo"><h2>Mis favoritos</h2><p>Lo que guardaste y lo que más consultas.</p>
+  ${[1,2,3,4].map(() => '<div class="t-fila"><b>[Título del contenido]</b><span>[Especialidad] · [Fecha]</span></div>').join('')}</div>`;
+const cabMenu = `<header class="t-cab"><span class="ch-logotipo">Clinical <span>hub</span><small>powered by Sustancia Pro</small></span><button type="button" class="t-btn abre" aria-label="Abrir el menú">${ico('i-menu')}</button></header>`;
+const consulta = `<button type="button" class="t-consulta">${ico('i-consulta')}Consulta rápida</button>`;
+
+const opciones = [
+  ['lat', '1 · Hoja lateral (hoy)', 'La hoja verde entra desde la izquierda, igual que en computador.',
+    cabMenu + cuerpo + consulta + `<div class="t-velo"></div><nav class="t-verde"><button type="button" class="t-btn t-cerrar cierra" aria-label="Cerrar">${ico('i-cerrar')}</button>${lista()}${cuenta}</nav>`],
+  ['aba', '2 · Hoja desde abajo', 'El menú sube desde abajo, al alcance del pulgar. Se cierra tocando afuera.',
+    cabMenu + cuerpo + consulta + `<div class="t-velo cierra"></div><nav class="t-verde"><span class="t-agarre"></span>${lista()}${cuenta}</nav>`],
+  ['bar', '3 · Barra abajo + «Más»', 'Lo más usado siempre a la vista abajo, con la consulta en el centro. «Más» abre el resto y la cuenta.',
+    `<header class="t-cab"><span class="ch-logotipo">Clinical <span>hub</span><small>powered by Sustancia Pro</small></span></header>` + cuerpo +
+    `<div class="t-velo cierra"></div><nav class="t-verde" data-hoja></nav>
+     <div class="t-barra">
+       <button type="button" data-id="favoritos" aria-current="page">${ico('i-estrella')}Favoritos</button>
+       <button type="button" data-id="nuevo">${ico('i-nuevo')}Nuevo</button>
+       <button type="button" data-hoja="guias">${ico('i-guias')}Guías</button>
+       <button type="button" data-id="consulta">${ico('i-consulta')}Consulta</button>
+       <button type="button" data-hoja="mas">${ico('i-mas')}Más</button>
+     </div>`],
+  ['com', '4 · Pantalla completa', 'El menú ocupa toda la pantalla en verde, con letra más grande y la cuenta abajo.',
+    cabMenu + cuerpo + consulta + `<nav class="t-verde"><button type="button" class="t-btn t-cerrar cierra" aria-label="Cerrar">${ico('i-cerrar')}</button>${lista()}${cuenta}</nav>`],
+  ['pes', '5 · Pestañas arriba', 'Sin botón de menú: las secciones van en una fila que se desliza; Guías abre una segunda fila. La cuenta, arriba.',
+    `<header class="t-cab"><span class="ch-logotipo">Clinical <span>hub</span><small>powered by Sustancia Pro</small></span><button type="button" class="t-btn" aria-label="Mi cuenta">${ico('i-cuenta')}</button></header>
+     <nav class="t-pestanas">${secciones.map(s => `<button type="button" data-id="${s.id}"${s.id === 'favoritos' ? ' aria-current="page"' : ''}>${s.nombre}${s.nuevo ? ' · New' : ''}</button>`).join('')}</nav>
+     <nav class="t-pestanas sub" hidden>${secciones[2].hijos.map(h => `<button type="button" data-id="${h.id}">${h.nombre}</button>`).join('')}</nav>` + cuerpo + consulta],
+  ['cor', '6 · Cortina desde la cabecera', 'El menú baja desde la cabecera, a todo lo ancho, con las esquinas de abajo redondeadas.',
+    cabMenu + cuerpo + consulta + `<div class="t-velo cierra"></div><nav class="t-verde">${lista()}${cuenta}</nav>`],
+];
+document.getElementById('opciones').innerHTML = opciones.map(([clase, nombre, nota, html]) => `
+  <section><p class="op-nombre">${nombre}</p><p class="op-nota">${nota}</p><div class="tel ${clase}">${html}</div></section>`).join('');
+
+// Comportamiento común: abrir y cerrar, desplegar Guías, elegir una sección.
+document.querySelectorAll('.tel').forEach(tel => {
+  const marcar = id => tel.querySelectorAll('[data-id]').forEach(b => b.dataset.id === id ? b.setAttribute('aria-current', 'page') : b.removeAttribute('aria-current'));
+  const cerrar = () => tel.classList.remove('abierto');
+  tel.addEventListener('click', e => {
+    const b = e.target.closest('button, .t-velo');
+    if (!b) return;
+    if (b.matches('.abre')) return tel.classList.add('abierto');
+    if (b.matches('.cierra')) return cerrar();
+    // 3 · la barra abre hojas con Guías o con «Más»
+    if (b.dataset.hoja) {
+      const hoja = tel.querySelector('[data-hoja].t-verde');
+      hoja.innerHTML = b.dataset.hoja === 'guias'
+        ? `<ul class="t-lista">${secciones[2].hijos.map(h => `<li><button type="button" class="t-item" data-id="${h.id}">${h.nombre}</button></li>`).join('')}</ul>`
+        : lista(s => s.nuevo) + cuenta;
+      return tel.classList.add('abierto');
+    }
+    // 5 · pestañas: Guías muestra la segunda fila
+    if (tel.classList.contains('pes') && b.dataset.id) {
+      const enGuias = b.dataset.id === 'guias' || secciones[2].hijos.some(h => h.id === b.dataset.id);
+      tel.querySelector('.t-pestanas.sub').hidden = !enGuias;
+      marcar(b.dataset.id);
+      if (b.dataset.id !== 'guias' && enGuias) tel.querySelector('.t-pestanas [data-id="guias"]').setAttribute('aria-current', 'page');
+      return;
+    }
+    if (b.getAttribute('aria-expanded') !== null) {
+      const abierta = b.getAttribute('aria-expanded') !== 'true';
+      b.setAttribute('aria-expanded', abierta);
+      b.closest('li').querySelector('.t-rama').classList.toggle('abierta', abierta);
+      return marcar(b.dataset.id);
+    }
+    if (b.dataset.id) { marcar(b.dataset.id); cerrar(); }
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cuenta · ubicación</title>
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<link rel="stylesheet" href="panel.css">
+<style>
+  .ch-opciones-pagina{max-width:1240px;margin:0 auto;padding:var(--esp-32) var(--esp-22);background:var(--bg)}
+  .ch-opciones{display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:var(--esp-26);margin-top:var(--esp-26)}
+  .ch-opcion-nombre{margin:0 0 var(--esp-4);font-size:14px;font-weight:600;color:var(--ink)}
+  .ch-opcion-nota{margin:0 0 var(--esp-12);min-height:36px;font-size:12.5px;line-height:1.4;color:var(--faint)}
+
+  /* El panel en miniatura: cabecera, hoja verde y contenido */
+  .esc{position:relative;display:grid;grid-template-columns:190px 1fr;grid-template-rows:64px 360px;border:1px solid var(--border);border-radius:var(--r-bloque);background:var(--surface)}
+  .esc-cabecera{grid-column:1 / -1;display:flex;align-items:center;justify-content:space-between;gap:var(--esp-12);padding:0 var(--esp-16)}
+  .esc-cabecera .ch-logotipo{font-size:22px;color:var(--side)}
+  .esc-cabecera .ch-logotipo small{font-size:10.5px;margin-top:2px}
+  .esc-menu{display:flex;flex-direction:column;gap:var(--esp-4);margin-top:var(--esp-8);padding:var(--esp-16) var(--esp-8);background:var(--side);border-top-right-radius:var(--r);border-bottom-left-radius:var(--r-bloque);color:var(--side-faint);font-size:12.5px}
+  .esc-item{display:flex;align-items:center;gap:var(--esp-8);min-height:32px;padding:0 var(--esp-8);border-radius:var(--r-sm)}
+  .esc-item svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .esc-item.actual{background:var(--brand);color:var(--brand-ink)}
+  .esc-contenido{padding:var(--esp-20) var(--esp-22)}
+  .esc-contenido .ch-titulo{font-size:24px}
+  .esc-linea{height:10px;margin-top:var(--esp-16);border-radius:var(--r-pill);background:var(--surface2)}
+  .esc-linea.corta{width:60%}
+
+  /* El botón de la cuenta y su menú, dentro de la miniatura */
+  .esc .ch-cuenta{position:relative;grid-column:auto}
+  .esc .ch-cuenta-menu{width:230px}
+  .esc .ch-cuenta .ch-boton-redondo{width:36px;height:36px}
+
+  /* 2 · Con nombre: píldora con ícono, nombre y flecha */
+  button.esc-pildora{display:inline-flex;align-items:center;gap:var(--esp-8);padding:6px var(--esp-12) 6px 6px;border:1px solid var(--border);border-radius:var(--r-pill);background:var(--surface);color:var(--ink);font-size:13px;font-weight:500;box-shadow:var(--sombra-suave)}
+  .esc-pildora .esc-circulo{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--surface2)}
+  .esc-pildora svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* 3 · Círculo lima */
+  button.esc-lima{display:grid;place-items:center;width:36px;height:36px;border:0;border-radius:50%;background:var(--brand);color:var(--brand-ink)}
+  .esc-lima svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+  /* 4 y 6 · Al pie de la hoja verde: el menú se abre hacia arriba */
+  .esc-pie{margin-top:auto;padding-top:var(--esp-8);border-top:1px solid var(--side-hover)}
+  button.esc-fila{display:flex;align-items:center;gap:var(--esp-8);width:100%;min-height:36px;padding:var(--esp-4) var(--esp-8);border:0;border-radius:var(--r-sm);background:none;color:var(--side-faint);font-size:12.5px;text-align:left}
+  button.esc-fila:hover{background:var(--side-hover);color:var(--side-ink)}
+  .esc-fila svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .esc-fila .esc-dos{display:flex;flex-direction:column;line-height:1.25}
+  .esc-fila .esc-dos small{font-size:11.5px;color:var(--side-faint);opacity:.8}
+  .esc-pie .ch-cuenta-menu,.esc-arriba .ch-cuenta-menu{left:0;right:auto;transform-origin:top left}
+  .esc-pie .ch-cuenta-menu{top:auto;bottom:calc(100% + var(--esp-8));transform-origin:bottom left}
+
+  /* 5 · Arriba de la hoja verde, antes de Mis favoritos */
+  .esc-arriba{padding-bottom:var(--esp-8);margin-bottom:var(--esp-4);border-bottom:1px solid var(--side-hover)}
+</style>
+</head>
+<body class="ch">
+<main class="ch-opciones-pagina">
+  <h1 class="ch-titulo">Cuenta · dónde va el botón</h1>
+  <p class="ch-bajada">El panel en miniatura · haz clic en la cuenta de cada opción para abrir su menú.</p>
+  <div class="ch-opciones" id="opciones"></div>
+</main>
+
+<svg class="ch-sprite" aria-hidden="true">
+  <symbol id="i-cuenta" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></symbol>
+  <symbol id="i-estrella" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <symbol id="i-nuevo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+  <symbol id="i-guias" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h13"/><path d="M9 7h6"/></symbol>
+  <symbol id="i-news" viewBox="0 0 24 24"><path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1-4 0V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a3 3 0 0 0 3 3h11"/><path d="M8 8h4M8 12h4M8 16h4"/></symbol>
+  <symbol id="i-flecha-abajo" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+</svg>
+
+<script>
+const menuCuenta = `<div class="ch-cuenta-menu" hidden>
+  <div class="ch-cuenta-datos"><p class="ch-cuenta-nombre">[Nombre del médico]</p><p class="ch-mini">[Correo] · [Especialidad]</p></div>
+  <a class="ch-cuenta-item" href="#">Mis datos</a>
+  <a class="ch-cuenta-item" href="#">Suscripción<span class="ch-mini">[Plan] · activa hasta [fecha]</span></a>
+  <a class="ch-cuenta-item" href="#">Ayuda o contacto</a>
+  <button type="button" class="ch-cuenta-item ch-cuenta-salir">Cerrar sesión</button></div>`;
+const ico = id => `<svg aria-hidden="true"><use href="#${id}"/></svg>`;
+const botones = {
+  redondo: `<div class="ch-cuenta"><button type="button" class="ch-boton-redondo abre" aria-label="Mi cuenta" aria-expanded="false">${ico('i-cuenta')}</button>${menuCuenta}</div>`,
+  pildora: `<div class="ch-cuenta"><button type="button" class="esc-pildora abre" aria-expanded="false"><span class="esc-circulo">${ico('i-cuenta')}</span>[Nombre]${ico('i-flecha-abajo')}</button>${menuCuenta}</div>`,
+  lima: `<div class="ch-cuenta"><button type="button" class="esc-lima abre" aria-label="Mi cuenta" aria-expanded="false">${ico('i-cuenta')}</button>${menuCuenta}</div>`,
+  pie: `<div class="ch-cuenta esc-pie"><button type="button" class="esc-fila abre" aria-expanded="false">${ico('i-cuenta')}Mi cuenta</button>${menuCuenta}</div>`,
+  arriba: `<div class="ch-cuenta esc-arriba"><button type="button" class="esc-fila abre" aria-expanded="false">${ico('i-cuenta')}<span class="esc-dos">[Nombre del médico]<small>[Especialidad]</small></span></button>${menuCuenta}</div>`,
+  piePlan: `<div class="ch-cuenta esc-pie"><button type="button" class="esc-fila abre" aria-expanded="false">${ico('i-cuenta')}<span class="esc-dos">[Nombre del médico]<small>[Plan] · activa</small></span></button>${menuCuenta}</div>`,
+};
+const opciones = [
+  ['1 · Arriba a la derecha (hoy)', 'El círculo con la persona, solo. Es donde la mayoría busca su cuenta.', 'cabecera', 'redondo'],
+  ['2 · Arriba, con el nombre', 'Una píldora con el ícono, el nombre del médico y una flecha. Se siente más personal.', 'cabecera', 'pildora'],
+  ['3 · Arriba, en círculo lima', 'El mismo lugar, pero el círculo en lima: se ve más y conecta con el menú.', 'cabecera', 'lima'],
+  ['4 · Al pie del menú verde', '«Mi cuenta» abajo en la hoja verde, como el avatar del panel del admin. El menú se abre hacia arriba.', 'pie', 'pie'],
+  ['5 · Arriba del menú verde', 'El nombre y la especialidad antes de Mis favoritos: el menú empieza por ti.', 'arriba', 'arriba'],
+  ['6 · Al pie, con nombre y plan', 'Como la 4, pero muestra el nombre y el estado de la suscripción.', 'pie', 'piePlan'],
+];
+const item = (i, n, actual) => `<div class="esc-item${actual ? ' actual' : ''}">${ico(i)}${n}</div>`;
+const itemsMenu = item('i-estrella','Mis favoritos',true) + item('i-nuevo','Nuevo') + item('i-guias','Guías de práctica clínica') + item('i-news','Clinical News');
+document.getElementById('opciones').innerHTML = opciones.map(([nombre, nota, lugar, boton]) => `
+  <section class="ch-opcion">
+    <p class="ch-opcion-nombre">${nombre}</p>
+    <p class="ch-opcion-nota">${nota}</p>
+    <div class="esc">
+      <div class="esc-cabecera"><span class="ch-logotipo">Clinical <span>hub</span><small>powered by Sustancia Pro</small></span>${lugar === 'cabecera' ? botones[boton] : ''}</div>
+      <div class="esc-menu">${lugar === 'arriba' ? botones[boton] : ''}${itemsMenu}${lugar === 'pie' ? botones[boton] : ''}</div>
+      <div class="esc-contenido"><h2 class="ch-titulo">Mis favoritos</h2><div class="esc-linea"></div><div class="esc-linea corta"></div><div class="esc-linea"></div></div>
+    </div>
+  </section>`).join('');
+
+document.querySelectorAll('.esc .abre').forEach(b => b.addEventListener('click', () => {
+  const menu = b.nextElementSibling;
+  menu.hidden = !menu.hidden;
+  b.setAttribute('aria-expanded', !menu.hidden);
+}));
+document.querySelectorAll('.ch-cuenta-menu a').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrada editorial · opciones</title>
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<style>
+  .pag{max-width:1180px;margin:0 auto;padding:var(--esp-32) var(--esp-22);background:var(--bg)}
+  .op{margin-top:var(--esp-32)}
+  .op-nombre{margin:0 0 var(--esp-4);font-size:14px;font-weight:600;color:var(--ink)}
+  .op-nota{margin:0 0 var(--esp-12);max-width:760px;font-size:12.5px;line-height:1.45;color:var(--faint)}
+  .esc{position:relative;min-height:600px;overflow:hidden;border:1px solid var(--border2);border-radius:var(--r-bloque);background:var(--surface)}
+
+  /* Piezas comunes */
+  /* La mancheta es la firma de esta pantalla: el único tamaño fuera de la escala (propuesta) */
+  .mancheta{font-size:44px;font-weight:800;letter-spacing:-.035em;line-height:1;color:var(--side)}
+  .mancheta span{color:var(--hub-verde)}
+  .lema{margin:var(--esp-8) 0 0;font-size:15.5px;color:var(--muted)}
+  .edicion{display:flex;flex-wrap:wrap;gap:var(--esp-4) var(--esp-12);margin:0;font-size:12.5px;color:var(--faint)}
+  .filete{height:1px;margin:var(--esp-16) 0;background:var(--border2)}
+  .filete.doble{height:3px;border-block:1px solid var(--border2);background:none}
+  .form h2{margin:0;font-size:34px;font-weight:400;letter-spacing:-.02em;line-height:1.1}
+  .form p{margin:var(--esp-8) 0 var(--esp-20);font-size:14px;color:var(--muted)}
+  .form .ch-campo{height:52px;padding:0 22px;font-size:15.5px}
+  .form button.ch-boton{width:100%;margin-top:var(--esp-12);color:var(--on-sel)}
+  .creditos{font-size:12.5px;line-height:1.6;color:var(--faint)}
+  .creditos b{font-weight:600;color:var(--muted)}
+  .indice li{display:grid;grid-template-columns:28px 1fr auto;gap:var(--esp-8);padding:var(--esp-8) 0;border-top:1px solid var(--border);font-size:14px}
+  .indice li:last-child{border-bottom:1px solid var(--border)}
+  .indice .n{font-variant-numeric:tabular-nums;color:var(--faint)}
+  .indice .m{font-size:12.5px;color:var(--faint)}
+  ol{list-style:none;margin:0;padding:0}
+
+  /* 1 · Portada: a la izquierda la mancheta y el índice del número; a la derecha, entrar */
+  .portada{display:grid;grid-template-columns:1.15fr .85fr;min-height:600px}
+  .portada .izq{padding:var(--esp-32) 40px;border-right:1px solid var(--border2)}
+  .portada .der{display:flex;flex-direction:column;justify-content:center;padding:var(--esp-32) 40px;background:var(--surface2)}
+  .portada .en-este{margin:var(--esp-26) 0 var(--esp-8);font-size:13.5px;font-weight:600}
+
+  /* 2 · Colofón: una sola columna, como la página de créditos */
+  .colofon{display:grid;place-items:center;padding:40px var(--esp-22)}
+  .colofon .col{width:100%;max-width:420px}
+  .colofon .creditos{margin-top:var(--esp-26)}
+
+  /* 3 · Ilustración editorial: los personajes con la mancheta encima, el formulario abajo */
+  .ilus{display:grid;grid-template-columns:1fr 1fr;min-height:600px}
+  .ilus .arte{position:relative;background:var(--login-fondo) url("../public/login-fondo.jpg") 18% center/auto 100% no-repeat}
+  .ilus .der{display:flex;flex-direction:column;justify-content:center;padding:var(--esp-32) 48px}
+
+  /* 4 · Página de revista: tres columnas con filetes; el formulario es una columna más */
+  .revista{padding:var(--esp-32) 40px}
+  .revista .cab{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--esp-16)}
+  .revista .cab .edicion{justify-content:flex-end;max-width:320px}
+  .revista .cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:var(--esp-20)}
+  .revista .cols > div{padding:0 var(--esp-22)}
+  .revista .cols > div + div{border-left:1px solid var(--border2)}
+  .revista .cols > div:first-child{padding-left:0}
+  .revista .cols > div:last-child{padding-right:0}
+  .revista .cols h3{margin:0 0 var(--esp-8);font-size:13.5px;font-weight:600}
+  .revista .cols p{margin:0 0 var(--esp-12);font-size:14px;line-height:1.6;color:var(--muted)}
+</style>
+</head>
+<body class="ch">
+<main class="pag">
+  <h1 class="ch-titulo">Entrada · estilo editorial</h1>
+  <p class="ch-bajada">Cuatro direcciones · los datos reales salen de los documentos legales; lo que falta va entre corchetes.</p>
+  <div id="opciones"></div>
+</main>
+<script>
+const edicion = `<p class="edicion"><span>Vol. [V] · Núm. [N]</span><span>[Trimestre] [año]</span><span>ISSN [ISSN]</span><span>Publicación trimestral</span></p>`;
+const mancheta = `<div class="mancheta">Clinical <span>hub</span></div><p class="lema">Medicina basada en la evidencia y experiencia</p>`;
+const form = (titulo = 'Entrar') => `<form class="form" onsubmit="return false">
+  <h2>${titulo}</h2>
+  <p>Escribe el correo con el que compraste tu suscripción.</p>
+  <label class="ch-rotulo" for="c-${Math.random().toString(36).slice(2,7)}">Correo</label>
+  <input class="ch-campo" type="email">
+  <button class="ch-boton" type="submit">Enviarme el enlace</button></form>`;
+const creditos = `<p class="creditos"><b>Dirección editorial</b> Dra. Paula Parra · <b>Dirección clínica</b> Dr. Hámilton Forero<br>Sello editorial Sustancia P S.A.S. · Barranquilla, Colombia</p>`;
+const indice = `<ol class="indice">${[1,2,3,4,5].map(n => `<li><span class="n">${n}</span><span>[Título de la guía]</span><span class="m">${n === 4 ? 'Ampliada' : 'Incorporada'}</span></li>`).join('')}</ol>`;
+
+const opciones = [
+  ['1 · Portada', 'La entrada es la portada del número vigente: mancheta, línea de edición, filete doble y el índice de lo que trae este número. Entrar va en la columna derecha. La numeración del índice es real: el orden de las guías en el número.',
+   `<div class="portada"><div class="izq">${mancheta}<div class="filete doble"></div>${edicion}
+      <p class="en-este">En este número</p>${indice}<div class="filete"></div>${creditos}</div>
+    <div class="der">${form()}</div></div>`],
+  ['2 · Colofón', 'Una sola columna sobria, como la página de créditos de una revista: mancheta, línea de edición, el formulario y abajo la dirección editorial y el sello. La más tranquila.',
+   `<div class="colofon"><div class="col">${mancheta}<div class="filete doble"></div>${edicion}<div class="filete"></div>${form()}<div class="filete"></div>${creditos}</div></div>`],
+  ['3 · Ilustración editorial', 'Conserva los personajes de la marca (como el admin), pero el lado del formulario se vuelve editorial: mancheta, línea de edición y créditos, sin tarjeta flotando.',
+   `<div class="ilus"><div class="arte"></div>
+    <div class="der">${mancheta}<div class="filete doble"></div>${edicion}<div class="filete"></div>${form()}<div class="filete"></div>${creditos}</div></div>`],
+  ['4 · Página de revista', 'La entrada se arma en columnas con filetes, como una página interior: qué es Clinical Hub (tomado del aviso clínico), la dirección editorial y el formulario como tercera columna.',
+   `<div class="revista"><div class="cab"><div>${mancheta}</div>${edicion}</div><div class="filete doble"></div>
+    <div class="cols">
+      <div><h3>La publicación</h3><p>Publicación clínica seriada dirigida a profesionales de la salud en ejercicio y a estudiantes del área bajo supervisión docente.</p><p>Síntesis de literatura médica y guías de práctica clínica, organizadas para su consulta rápida en el ejercicio asistencial.</p></div>
+      <div><h3>Dirección</h3>${creditos}<div class="filete"></div><h3>En este número</h3>${indice}</div>
+      <div>${form()}</div>
+    </div></div>`],
+];
+document.getElementById('opciones').innerHTML = opciones.map(([n, nota, html]) =>
+  `<section class="op"><p class="op-nombre">${n}</p><p class="op-nota">${nota}</p><div class="esc">${html}</div></section>`).join('');
+document.querySelectorAll('.form').forEach(f => { const id = f.querySelector('label').htmlFor; f.querySelector('input').id = id; });
+</script>
+</body>
+</html>

@@ -3,54 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Menú · opciones</title>
+<title>Selección · opciones</title>
 <link rel="stylesheet" href="../estilos/clinical-hub.css">
 <link rel="stylesheet" href="panel.css">
 <style>
-  .ch-opciones-pagina{max-width:1240px;margin:0 auto;padding:var(--esp-32) var(--esp-22)}
-  .ch-opciones{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--esp-26);margin-top:var(--esp-26)}
+  /* Curva suave usada solo para comparar en esta hoja */
+  :root{--ease-suave:cubic-bezier(.22,.61,.36,1)}
+  .ch-opciones-pagina{max-width:1240px;margin:0 auto;padding:var(--esp-32) var(--esp-22);background:var(--surface)}
+  .ch-opciones{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--esp-32);margin-top:var(--esp-26)}
   .ch-opcion-nombre{margin:0 0 var(--esp-8);font-size:14px;font-weight:600;color:var(--ink)}
-  .ch-opcion-nota{margin:0 0 var(--esp-12);max-width:264px;font-size:12.5px;line-height:1.4;color:var(--faint)}
+  .ch-opcion-nota{margin:0 0 var(--esp-12);max-width:280px;font-size:12.5px;line-height:1.4;color:var(--faint)}
 
-  /* Base común: el menú real, quieto, con botones que se pueden usar */
+  /* El menú real, quieto, con botones que se pueden usar */
   .ch-opcion .ch-menu{display:block;position:static;height:auto;margin:0;overflow:visible}
   .ch-opcion button.ch-menu-item{width:100%;border:0;background:none;text-align:left;font:inherit;font-size:14px;font-weight:500;color:var(--side-faint);cursor:pointer}
   .ch-opcion button.ch-menu-item.sub{font-size:13.5px;font-weight:400}
   .ch-opcion button.ch-menu-item:hover{color:var(--side-ink);background:var(--side-hover)}
+  .ch-opcion button.ch-menu-item{transition:color .3s,background .3s,box-shadow .3s,border-color .3s}
+
+  /* Todas parten del lima lleno de hoy */
   .ch-opcion button.ch-menu-item[aria-current="page"]{color:var(--brand-ink);background:var(--brand)}
-  /* El nombre no cambia de grosor al elegirlo: así no se ensancha ni empuja la flecha */
-  .ch-opcion .ch-menu-item[aria-current="page"]{font-weight:inherit}
-  .ch-opcion button.ch-menu-item > span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
-  .ch-opcion .ch-menu-item .ch-menu-flecha{flex:none;margin-left:var(--esp-6)}
 
-  /* 1 · Bloque ajustado: el bloque tiene un margen interno y la píldora
-     queda adentro, con el mismo redondeo; nada se monta sobre el borde */
-  .op-ajustado .ch-menu-grupo.abierto{padding:var(--esp-4);border-radius:calc(var(--r-item) + var(--esp-4))}
-  .op-ajustado .ch-menu-grupo.abierto .ch-menu-grupo.abierto{margin-right:0;padding:0;border-radius:var(--r-item)}
-  .op-ajustado .ch-menu-grupo.abierto > .ch-menu-item:not(.sub){padding-left:calc(var(--esp-16) - var(--esp-4))}
-  .op-ajustado .ch-menu-grupo.abierto > .ch-menu-rama .ch-menu-item.sub{padding-left:calc(var(--esp-16) + 20px + var(--esp-12) - var(--esp-4))}
-  .op-ajustado .ch-menu-grupo.abierto > .ch-menu-rama .ch-menu-item.sub::before{left:calc(var(--esp-16) + 7px - var(--esp-4))}
-  .op-ajustado .ch-menu-rama .ch-menu-rama .ch-menu-item.sub{padding-left:calc(var(--esp-16) + 20px + var(--esp-12) + var(--esp-16) - var(--esp-4))}
-  .op-ajustado .ch-menu-rama .ch-menu-rama .ch-menu-item.sub::before{left:calc(var(--esp-16) + 20px + var(--esp-12) + 2px - var(--esp-4))}
+  /* 2 · Ajustada al texto: la píldora solo abraza el nombre, no todo el ancho */
+  .op-ajustada button.ch-menu-item{width:auto;max-width:100%}
 
-  /* 2 · Lima solo en lo elegido de adentro: el grupo abierto se marca con el
-     bloque y su nombre en blanco; la píldora lima queda para lo de adentro */
-  .op-sin-lima .ch-menu-grupo.abierto > .ch-menu-item[aria-current="page"]:not(.sub){background:none;color:var(--side-ink);font-weight:600}
-  .op-sin-lima .ch-menu-grupo.abierto > .ch-menu-item:not(.sub){color:var(--side-ink)}
+  /* 3 · Rectángulo suave: en vez de píldora, el redondeo de las filas de menú del manual */
+  .op-rect button.ch-menu-item{border-radius:var(--r-item)}
 
-  /* 3 · Solo puntos, sin bloque: la rama abierta no lleva fondo */
-  .op-puntos .ch-menu-grupo.abierto{background:none}
-  .op-puntos .ch-menu-rama .ch-menu-grupo{margin-right:0}
+  /* 4 · Anillo interior: el lima con una línea verde oscura por dentro, como un sello */
+  .op-anillo button.ch-menu-item[aria-current="page"]{box-shadow:inset 0 0 0 1.5px var(--brand-ink)}
 
-  /* 4 · Menú más ancho: el bloque ajustado de la 1, con 24 px más de ancho */
-  .op-ancho .ch-menu{width:calc(var(--ancho-menu) + 24px)}
-  .op-ancho .ch-opcion-nota{max-width:288px}
+  /* 5 · Foco: lo elegido en lima y lo demás un poco más apagado mientras no pasas el mouse */
+  .op-foco .ch-menu:not(:hover) button.ch-menu-item:not([aria-current]){opacity:.6}
+  .op-foco button.ch-menu-item{transition:color .3s,background .3s,opacity .3s}
+
+  /* 6 · Se desliza: la píldora viaja de la sección anterior a la nueva */
+  .op-desliza .ch-menu-lista{position:relative}
+  .op-desliza .ch-menu-lista > li{position:relative;z-index:1}
+  .op-desliza button.ch-menu-item[aria-current="page"]{background:none}
+  .op-desliza .ch-desliza{
+    position:absolute; left:0; top:var(--y,0); width:var(--w,0); height:var(--h,0);
+    border-radius:var(--r-pill); background:var(--brand); pointer-events:none;
+  }
+  .op-desliza .ch-desliza.lista{transition:top .35s var(--ease-suave),width .35s var(--ease-suave),height .35s var(--ease-suave)}
 </style>
 </head>
 <body class="ch">
 <main class="ch-opciones-pagina">
-  <h1 class="ch-titulo">Menú · opciones del grupo abierto</h1>
-  <p class="ch-bajada">Arrancan en «Guías de práctica clínica» · haz clic para abrir, cerrar y llegar a «Galería».</p>
+  <h1 class="ch-titulo">Menú · variaciones del lima</h1>
+  <p class="ch-bajada">Haz clic en las secciones · abre «Guías de práctica clínica» para ver también las de adentro.</p>
   <div class="ch-opciones" id="opciones"></div>
 </main>
 
@@ -66,11 +67,12 @@
 
 <script>
 const opciones = [
-  ['op-actual', 'Hoy', 'Como está en el panel, ya sin la negrita que empujaba la flecha.'],
-  ['op-ajustado', '1 · Bloque ajustado', 'El bloque tiene un margen interno y la píldora lima queda adentro, con el mismo redondeo.'],
-  ['op-ajustado op-sin-lima', '2 · Lima solo adentro', 'El grupo abierto se marca con el bloque y su nombre en blanco; el lima queda para lo que eliges adentro.'],
-  ['op-puntos', '3 · Solo puntos', 'Sin bloque: la rama abierta se reconoce por la sangría y los puntos.'],
-  ['op-ajustado op-ancho', '4 · Bloque ajustado y más ancho', 'La 1, con el menú 24 px más ancho para que todo respire.'],
+  ['op-hoy', '1 · Hoy', 'Lima lleno de borde a borde.'],
+  ['op-ajustada', '2 · Ajustada al texto', 'La píldora solo abraza el nombre y deja aire a la derecha.'],
+  ['op-rect', '3 · Rectángulo suave', 'El mismo lima con el redondeo de las filas de menú del manual, en vez de píldora.'],
+  ['op-anillo', '4 · Anillo interior', 'El lima con una línea fina verde oscura por dentro, como un sello.'],
+  ['op-foco', '5 · Foco', 'Lo elegido en lima y lo demás un poco más apagado; al pasar el mouse todo vuelve.'],
+  ['op-desliza', '6 · Se desliza', 'La píldora viaja de la sección anterior a la nueva, incluso hacia adentro de Guías.'],
 ];
 const flecha = '<svg class="ch-menu-flecha" aria-hidden="true"><use href="#i-flecha"/></svg>';
 const arbol = [
@@ -78,7 +80,7 @@ const arbol = [
   {id:'nuevo', nombre:'Nuevo', icono:'i-nuevo'},
   {id:'guias', nombre:'Guías de práctica clínica', icono:'i-guias', hijos:[
     {id:'resumenes', nombre:'Resúmenes individuales'},
-    {id:'contrastadas', nombre:'Guías contrastadas', hijos:[{id:'galeria', nombre:'Galería'}]},
+    {id:'contrastadas', nombre:'Guías contrastadas'},
     {id:'herramientas', nombre:'Herramientas interactivas'},
     {id:'videos', nombre:'Videos de procedimientos'},
   ]},
@@ -88,7 +90,7 @@ const arbol = [
 ];
 const items = (lista, nivel) => lista.map(s => `
   <li${s.hijos ? ' class="ch-menu-grupo"' : ''}>
-    <button type="button" class="ch-menu-item${nivel ? ' sub' : ''}" data-id="${s.id}"${s.hijos ? ' aria-expanded="false"' : ''}>${s.icono ? `<svg aria-hidden="true"><use href="#${s.icono}"/></svg>` : ''}<span>${s.nombre}</span>${s.hijos ? flecha : ''}</button>
+    <button type="button" class="ch-menu-item${nivel ? ' sub' : ''}" data-id="${s.id}"${s.hijos ? ' aria-expanded="false"' : ''}>${s.icono ? `<svg aria-hidden="true"><use href="#${s.icono}"/></svg>` : ''}<span class="ch-menu-nombre">${s.nombre}</span>${s.hijos ? flecha : ''}</button>
     ${s.hijos ? `<ul class="ch-menu-rama">${items(s.hijos, nivel + 1)}</ul>` : ''}
   </li>`).join('');
 
@@ -125,7 +127,27 @@ document.querySelectorAll('.ch-opcion .ch-menu').forEach(nav => {
     else if (grupo && b.hasAttribute('aria-current')) { cerrados.delete(b.dataset.id); abrir(); }
     else elegir(b.dataset.id);
   });
-  elegir('guias');
+  elegir('resumenes');
+});
+
+// Opción 6: una sola píldora que se mide sobre lo elegido y viaja hasta ahí.
+document.querySelectorAll('.op-desliza .ch-menu').forEach(nav => {
+  const lista = nav.querySelector('.ch-menu-lista');
+  const pildora = document.createElement('span');
+  pildora.className = 'ch-desliza';
+  pildora.setAttribute('aria-hidden', 'true');
+  lista.prepend(pildora);
+  const medir = () => {
+    const b = nav.querySelector('[aria-current]');
+    if (!b) return;
+    const caja = lista.getBoundingClientRect(), r = b.getBoundingClientRect();
+    pildora.style.setProperty('--y', (r.top - caja.top) + 'px');
+    pildora.style.setProperty('--w', r.width + 'px');
+    pildora.style.setProperty('--h', r.height + 'px');
+  };
+  // Se vuelve a medir mientras la rama se abre o se cierra
+  nav.addEventListener('click', () => { const fin = performance.now() + 400; (function paso(){ medir(); if (performance.now() < fin) requestAnimationFrame(paso); })(); });
+  document.fonts.ready.then(() => { medir(); requestAnimationFrame(() => pildora.classList.add('lista')); });
 });
 </script>
 </body>

@@ -7,27 +7,66 @@
 
 .ch-panel{
   margin:0; min-height:100vh; background:var(--surface);
-  /* Curva sin rebote para el menú (despliegue y flecha): sale rápido y frena suave. */
-  --ease-suave:cubic-bezier(.22,.61,.36,1);
   --alto-cabecera:96px;
-  --ancho-menu:264px;
+  --ancho-menu:280px;
   --aire-menu:var(--esp-20);   /* blanco entre la cabecera y la hoja verde */
   --sangria-pagina:calc(var(--esp-32) + var(--esp-20));
 }
 .ch-sprite{position:absolute;width:0;height:0}
 
+/* Foco del teclado: el anillo lima del manual no se ve sobre blanco (1,46:1);
+   en las zonas blancas va en el verde oscuro. Sobre el menú verde sigue lima. */
+.ch-cabecera :focus-visible,.ch-contenido :focus-visible,.ch-chat :focus-visible{outline-color:var(--sel)}
+
+
+
 /* ---------- Cabecera blanca de lado a lado ---------- */
-/* Sus columnas calzan con las de abajo: la marca sobre el menú y el
-   buscador alineado con el título de la página. */
+/* La marca calza sobre el menú. En celular, a la derecha va el botón del menú. */
 .ch-cabecera{
   position:sticky; top:0; z-index:2;
   height:var(--alto-cabecera); padding-right:var(--esp-22);
   display:grid; grid-template-columns:var(--ancho-menu) minmax(0,1fr) auto; align-items:center;
   background:var(--surface);
 }
-.ch-marca{justify-self:start;display:flex;align-items:center;gap:var(--esp-12);margin-left:var(--esp-22);color:var(--ink);text-decoration:none}
+.ch-marca{justify-self:start;display:flex;align-items:center;margin-left:var(--esp-22);color:var(--ink);text-decoration:none}
 .ch-marca .ch-logotipo{color:var(--side)}
-.ch-cabecera .ch-buscador{max-width:420px;margin-left:var(--sangria-pagina)}
+.ch-cuenta{position:relative}
+/* Área de toque mínima de 44 px (el botón redondo del manual mide 42) */
+.ch-panel .ch-boton-redondo{width:44px;height:44px}
+.ch-panel .ch-boton-redondo:hover svg{transform:none}   /* el giro del manual es para «+»; aquí no */
+
+/* Computador: la cuenta al pie del menú verde, con el nombre y la especialidad.
+   Una sola pieza: al abrirla, el bloque toma un fondo más claro y crece hacia
+   arriba con la curva de la marca, como se abre Guías. */
+.ch-cuenta-pie{
+  display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:0fr auto;
+  margin-top:auto; padding-top:var(--esp-12); border-top:1px solid var(--side-hover);
+  transition:grid-template-rows .5s var(--ease);
+}
+.ch-cuenta-pie.abierta{grid-template-rows:1fr auto}
+.ch-cuenta-despliegue{min-height:0;overflow:hidden;visibility:hidden;border-radius:var(--r-bloque) var(--r-bloque) 0 0;transition:visibility .5s,background .3s}
+.ch-cuenta-pie.abierta .ch-cuenta-despliegue{visibility:visible;background:var(--side-hover)}
+.ch-cuenta-opciones{display:flex;flex-direction:column;gap:var(--esp-4);padding:var(--esp-12) var(--esp-6) var(--esp-6)}
+.ch-cuenta-opcion{
+  display:flex; flex-direction:column; justify-content:center; width:100%; min-height:44px;
+  padding:var(--esp-6) var(--esp-12); border:0; border-radius:var(--r-item); background:none;
+  font-size:14px; font-weight:500; line-height:1.3; text-align:left; color:var(--side-ink); text-decoration:none;
+  transition:color .3s,background .3s;
+}
+.ch-cuenta-opcion small{font-size:12.5px;font-weight:400}
+.ch-cuenta-opcion:hover{color:var(--side-ink);background:var(--side-hover)}
+button.ch-cuenta-opcion-salir{margin-top:var(--esp-4);border-top:1px solid var(--side-hover);border-radius:0 0 var(--r-item) var(--r-item);color:var(--side-ink)}
+button.ch-cuenta-fila{
+  display:flex; align-items:center; gap:var(--esp-12); width:100%; min-height:52px;
+  padding:var(--esp-6) var(--esp-12) var(--esp-6) var(--esp-16); border:0; border-radius:var(--r-item);
+  background:none; color:var(--side-faint); font-size:14px; font-weight:500; text-align:left;
+  transition:color .3s,background .3s,border-radius .3s;
+}
+button.ch-cuenta-fila:hover{background:var(--side-hover);color:var(--side-ink)}
+.ch-cuenta-pie.abierta button.ch-cuenta-fila{background:var(--side-hover);color:var(--side-ink);border-radius:0 0 var(--r-bloque) var(--r-bloque)}
+.ch-cuenta-fila svg{flex:none;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ch-cuenta-fila-texto{display:flex;flex-direction:column;min-width:0;line-height:1.3}
+.ch-cuenta-fila-texto small{font-size:12.5px;font-weight:400;color:inherit}
 
 /* ---------- Cuerpo: menú + contenido ---------- */
 .ch-cuerpo{display:flex}
@@ -38,35 +77,39 @@
   position:sticky; top:calc(var(--alto-cabecera) + var(--aire-menu)); z-index:1; flex:none;
   width:var(--ancho-menu); height:calc(100vh - var(--alto-cabecera) - var(--aire-menu));
   margin-top:var(--aire-menu);
-  padding:var(--esp-32) var(--esp-16); overflow-y:auto;
+  display:flex; flex-direction:column;
+  padding:var(--esp-32) var(--esp-16) var(--esp-16);
+  overflow-y:auto; scrollbar-width:none;   /* baja con rueda o trackpad; la barra no le quita ancho a los nombres */
   background:var(--side); color:var(--side-faint);
   border-top-right-radius:calc(var(--r) * 2);
 }
+.ch-menu::-webkit-scrollbar{display:none}
 .ch-menu-lista{display:flex;flex-direction:column;gap:var(--esp-4);margin:0;padding:0;list-style:none}
 .ch-menu-item{
   display:flex; align-items:center; gap:var(--esp-12);
-  min-height:44px; padding:0 var(--esp-16); border-radius:var(--r-pill);
+  min-height:44px; padding:0 var(--esp-12) 0 var(--esp-16);
+  border-radius:var(--r-item);   /* rectángulo suave: el lugar donde estás; la píldora queda para las acciones */
   font-size:14px; font-weight:500; color:var(--side-faint); text-decoration:none; white-space:nowrap;
   transition:color .3s,background .3s;
 }
 .ch-menu-item svg{flex:none;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .ch-menu-item:hover{color:var(--side-ink);background:var(--side-hover)}
-.ch-menu-item[aria-current="page"]{color:var(--brand-ink);font-weight:600;background:var(--brand)}
+/* Lo elegido no cambia de grosor: así el nombre no se ensancha ni empuja la flecha. */
+.ch-menu-item[aria-current="page"]{color:var(--brand-ink);background:var(--brand)}
 
-/* Grupos que se despliegan (Guías de práctica clínica, Guías contrastadas).
-   Bloque: el grupo abierto queda sobre un fondo un poco más claro.
-   La rama se abre deslizándose: la segunda fila del grupo pasa de 0 a su alto. */
+/* Grupos que se despliegan (hoy, Guías de práctica clínica).
+   La rama se abre deslizándose con la curva de la marca (--ease): pasa un poquito
+   y se acomoda. La segunda fila del grupo pasa de 0 a su alto. */
 .ch-menu-grupo{
-  display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:auto 0fr; border-radius:var(--r-item);
-  transition:grid-template-rows .35s var(--ease-suave),background .3s;
+  display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:auto 0fr;
+  transition:grid-template-rows .5s var(--ease);
 }
-.ch-menu-grupo.abierto{grid-template-rows:auto 1fr;background:var(--side-hover)}
-.ch-menu-rama{min-height:0;overflow:hidden;visibility:hidden;list-style:none;margin:0;padding:0;transition:visibility .35s}
+.ch-menu-grupo.abierto{grid-template-rows:auto 1fr}
+.ch-menu-rama{min-height:0;overflow:hidden;visibility:hidden;list-style:none;margin:0;padding:0;transition:visibility .5s}
 .ch-menu-grupo.abierto > .ch-menu-rama{visibility:visible;padding-bottom:var(--esp-6)}
-.ch-menu-rama .ch-menu-grupo{margin-right:var(--esp-6)}
 
-/* Puntos: cada sección de adentro lleva un punto bajo el ícono del grupo;
-   un nivel más adentro (Galería), un aro. */
+/* Puntos: cada sección de adentro lleva un punto bajo el ícono del grupo. */
+.ch-menu-rama .ch-menu-item:focus-visible{outline-offset:-3px}
 .ch-menu-item.sub{
   position:relative; padding-left:calc(var(--esp-16) + 20px + var(--esp-12));
   font-size:13.5px; font-weight:400;
@@ -75,16 +118,123 @@
   content:""; position:absolute; left:calc(var(--esp-16) + 7px); top:calc(50% - 3px);
   width:6px; height:6px; border-radius:50%; background:currentColor;
 }
-.ch-menu-rama .ch-menu-rama .ch-menu-item.sub{padding-left:calc(var(--esp-16) + 20px + var(--esp-12) + var(--esp-16))}
-.ch-menu-rama .ch-menu-rama .ch-menu-item.sub::before{left:calc(var(--esp-16) + 20px + var(--esp-12) + 2px);background:none;border:1.5px solid currentColor}
-.ch-menu-item.sub[aria-current="page"]{font-weight:600}
-.ch-menu-item .ch-menu-flecha{width:16px;height:16px;margin-left:auto;transition:transform .35s var(--ease-suave)}
-.ch-menu-item.sub .ch-menu-flecha{width:14px;height:14px}
+.ch-menu-nombre{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.ch-menu-item .ch-menu-flecha{width:16px;height:16px;margin-left:calc(var(--esp-6) - var(--esp-12));transition:transform .5s var(--ease)}
 .ch-menu-item[aria-expanded="true"] .ch-menu-flecha{transform:rotate(90deg)}
+
+/* Marca «New» en secciones con contenido reciente: la palabra en lima, sin fondo.
+   Si la sección está elegida (fondo lima), pasa al verde oscuro. */
+.ch-menu-nuevo{
+  flex:none; margin-left:calc(var(--esp-6) - var(--esp-12));
+  color:var(--brand); font-size:11.5px; font-weight:600;
+}
+.ch-menu-item[aria-current="page"] .ch-menu-nuevo{color:var(--brand-ink)}
+
+/* ---------- Ediciones: línea de tiempo horizontal ----------
+   Abre en el número de hoy, a la derecha; se desliza hacia atrás. La línea
+   une los nodos (los del algoritmo del favicon); el número elegido, en lima. */
+.ch-linea{
+  position:relative; display:flex; gap:var(--esp-8); margin:var(--esp-16) 0 var(--esp-12);
+  overflow-x:auto; scroll-snap-type:x proximity; scrollbar-width:none; padding:var(--esp-4) 0 var(--esp-8);
+}
+.ch-linea::-webkit-scrollbar{display:none}
+button.ch-linea-parada{
+  position:relative; flex:none; width:128px; display:flex; flex-direction:column; align-items:center; gap:2px;
+  padding:0 var(--esp-4) var(--esp-6); border:0; border-radius:var(--r-item); background:none; scroll-snap-align:end;
+  font-size:13.5px; font-weight:500; color:var(--muted); text-align:center;
+}
+/* el tramo de línea de cada parada se une con el de la siguiente */
+.ch-linea-parada::before{content:"";position:absolute;top:10px;left:calc(-1 * var(--esp-8));right:0;height:2px;background:var(--border2)}
+.ch-linea-parada:first-child::before{left:50%}
+.ch-linea-parada:last-child::before{right:50%}
+.ch-linea-nodo{position:relative;width:22px;height:22px;margin-bottom:var(--esp-6);border-radius:50%;background:var(--surface);box-shadow:inset 0 0 0 2px var(--side);transition:background .3s}
+.ch-linea-parada small{font-size:12.5px;font-weight:400;color:var(--faint)}
+.ch-linea-parada[aria-pressed="true"]{color:var(--ink);font-weight:600}
+.ch-linea-parada[aria-pressed="true"] .ch-linea-nodo{background:var(--brand)}
+.ch-linea-parada:hover .ch-linea-nodo{background:var(--brand-bg)}
+.ch-linea-parada[aria-pressed="true"]:hover .ch-linea-nodo{background:var(--brand)}
+.ch-linea-detalle{padding-top:var(--esp-12);border-top:1px solid var(--border)}
+.ch-linea-titulo{display:flex;align-items:center;gap:var(--esp-8);margin:0;font-size:15.5px;font-weight:700}
+.ch-linea-detalle .ch-lista{margin-top:var(--esp-12)}
+
+/* ---------- Documentos legales: lectura cómoda, el texto tal cual ---------- */
+.ch-legal{max-width:68ch;font-size:15.5px;line-height:1.65;color:var(--ink)}
+.ch-legal h2{margin:var(--esp-32) 0 var(--esp-8);font-size:18px;font-weight:700;line-height:1.3}
+.ch-legal h3{margin:var(--esp-20) 0 var(--esp-6);font-size:15.5px;font-weight:700}
+.ch-legal p{margin:0 0 var(--esp-12)}
+.ch-legal ul{margin:0 0 var(--esp-12);padding-left:var(--esp-20)}
+.ch-legal strong{font-weight:600}
+.ch-legal code{font-size:14px}
+.ch-legal blockquote{margin:0 0 var(--esp-26);padding:var(--esp-16) var(--esp-20);border-radius:var(--r-bloque);background:var(--surface2);color:var(--muted)}
+.ch-legal blockquote p:last-child{margin:0}
+.ch-legal table{width:100%;margin:0 0 var(--esp-16);border-collapse:collapse;font-size:14px}
+.ch-legal th{padding:var(--esp-8) var(--esp-12) var(--esp-8) 0;border-bottom:1px solid var(--border2);font-size:12.5px;font-weight:600;text-align:left;color:var(--faint)}
+.ch-legal td{padding:var(--esp-8) var(--esp-12) var(--esp-8) 0;border-bottom:1px solid var(--border)}
+
+/* El botón principal del manual pierde su color de texto frente a la regla base
+   «.ch button{color:inherit}»; «button.» se lo devuelve. */
+button.ch-boton{color:var(--on-sel)}
+button.ch-boton.secundario{color:var(--ink)}
+
+/* ---------- Entrar: la tarjeta del admin sobre el verde oscuro del menú ----------
+   Fondo --side completo (el mismo del menú lateral) y la tarjeta blanca en el
+   centro, igual en celular y en computador. */
+.ch-entrar{
+  position:fixed; inset:0; z-index:8; overflow-y:auto;
+  display:grid; place-items:center; align-content:center; gap:var(--esp-16);
+  min-height:100dvh; padding:var(--esp-26); background:var(--side);
+}
+.ch-entrar[hidden]{display:none}
+.sin-sesion{overflow:hidden}
+.ch-entrar-caja{
+  width:100%; max-width:460px; display:flex; flex-direction:column;
+  padding:44px 46px; border-radius:var(--r-ventana); background:var(--surface); box-shadow:var(--sombra);
+}
+.ch-entrar-caja > .ch-logotipo{display:block;margin-bottom:36px;color:var(--side)}
+.ch-entrar-firma{margin:var(--esp-26) 0 0;text-align:center;font-size:12.5px;font-weight:500;color:var(--faint)}   /* dentro de la tarjeta, al pie */
+.ch-entrar-firma sup{margin-left:1px;font-size:.7em;line-height:0}
+
+/* El título con la barrita verde a la izquierda, como en el admin */
+.ch-entrar .ch-titulo{position:relative;margin:0;padding-left:18px;font-size:23px;font-weight:800;letter-spacing:-.035em}
+.ch-entrar .ch-titulo::before{content:"";position:absolute;left:0;top:3px;bottom:3px;width:6px;border-radius:var(--r-pill);background:var(--login-boton)}
+.ch-entrar .ch-bajada{margin:var(--esp-8) 0 var(--esp-20)}
+.ch-entrar .ch-campo{height:52px;padding:0 24px;margin-bottom:var(--esp-4);border:1.5px solid transparent;background:var(--login-campo);font-size:15.5px}
+.ch-entrar .ch-campo:focus{background:var(--surface);border-color:var(--login-boton);box-shadow:0 0 0 4px color-mix(in srgb, var(--login-boton) 24%, transparent)}
+.ch-entrar .ch-campo.codigo{font-size:24px;padding:0 10px 0 24px}
+.ch-entrar .ch-boton{height:54px;margin-top:var(--esp-12);background:var(--login-boton);color:var(--ink);font-size:16px;box-shadow:var(--sombra-suave);text-decoration:none}
+.ch-entrar .ch-boton.secundario{background:var(--surface);border:1px solid var(--border2);box-shadow:none}
+.ch-entrar-otros{display:flex;justify-content:space-between;gap:var(--esp-12);margin-top:var(--esp-16)}
+.ch-entrar-otros .ch-enlace{min-height:44px}
+.ch-entrar-soporte{display:flex;flex-direction:column;gap:var(--esp-8)}
+.ch-entrar-soporte .ch-boton{margin-top:0}
+.ch-entrar-error{margin:var(--esp-8) 0 0;font-size:14px;color:var(--warn)}
+.ch-entrar-o{display:flex;align-items:center;gap:var(--esp-12);margin:var(--esp-16) 0 0;font-size:12.5px;color:var(--faint)}
+.ch-entrar-o::before,.ch-entrar-o::after{content:"";flex:1;height:1px;background:var(--border)}
+.ch-entrar .ch-entrar-passkey .ch-boton{display:flex;align-items:center;justify-content:center;gap:var(--esp-8)}
+.ch-entrar-passkey svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+@media (max-width:720px){
+  .ch-entrar{padding:var(--esp-16)}
+  .ch-entrar-caja{padding:30px 24px}
+}
+.ch-aceptar-campo{margin-bottom:var(--esp-16)}
+
+/* ---------- Aceptación al entrar ---------- */
+.ch-aceptar{position:fixed;inset:0;z-index:7;display:grid;place-items:center;padding:var(--esp-22);overflow-y:auto;background:color-mix(in srgb, var(--ink) 45%, transparent)}
+.ch-aceptar[hidden]{display:none}
+.por-aceptar{overflow:hidden}
+.ch-aceptar-ventana{max-width:460px}
+.ch-aceptar-docs{display:flex;flex-direction:column;gap:var(--esp-4);margin:0 0 var(--esp-16);padding:var(--esp-6) 0;list-style:none;border-block:1px solid var(--border)}
+.ch-aceptar-docs li{display:flex;justify-content:space-between;align-items:center;gap:var(--esp-12);min-height:44px}
+.ch-aceptar-docs a{font-size:14px;font-weight:600;color:var(--sel);text-underline-offset:3px}
+.ch-aceptar-docs span{font-size:12.5px;color:var(--faint);text-align:right}
+.ch-aceptar-casilla{display:flex;align-items:flex-start;gap:var(--esp-12);margin-bottom:var(--esp-12);font-size:14px;line-height:1.5;color:var(--ink);cursor:pointer}
+.ch-aceptar-casilla input{flex:none;width:20px;height:20px;margin:1px 0 0;accent-color:var(--sel)}
+.ch-aceptar .ch-boton{margin-top:var(--esp-8)}
 
 /* ---------- Área de contenido ---------- */
 .ch-contenido{flex:1;min-width:0}
-.ch-pagina{max-width:1080px;padding:var(--esp-32) var(--esp-22) var(--esp-32) var(--sangria-pagina)}
+.ch-pagina{max-width:1080px;padding:var(--esp-32) var(--esp-22) calc(var(--esp-32) * 3) var(--sangria-pagina)}   /* abajo, aire para el botón flotante */
 .ch-pagina-cabeza{margin-bottom:var(--esp-26)}
 
 /* ---------- Lista tipo índice ---------- */
@@ -103,28 +253,113 @@
 .ch-lista-meta{grid-column:1;font-size:12.5px;color:var(--faint);line-height:1.4}
 .ch-lista-fila .ch-etq{grid-column:2;grid-row:1 / span 2}
 
-/* ---------- Celular ---------- */
-.ch-pestanas-celular{display:none}
+/* ---------- Consulta rápida (búsqueda con IA en el contenido) ---------- */
+.ch-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
-@media (max-width:720px){
-  .ch-cabecera{
-    position:static; height:auto; padding:var(--esp-12) var(--esp-22);
-    grid-template-columns:1fr auto; gap:var(--esp-12);
-  }
-  .ch-marca{margin-left:0}
-  .ch-cabecera .ch-buscador{grid-column:1 / -1;grid-row:2;max-width:none;margin:0}
-  .ch-menu{display:none}
-  .ch-pestanas-celular{
-    position:sticky; top:0; z-index:1; display:block;
-    padding:var(--esp-12) var(--esp-22); background:var(--surface);
-  }
-  .ch-pestanas-celular .ch-pestanas{display:flex}
-  .ch-pestanas-celular .ch-subpestanas{margin-top:var(--esp-8);box-shadow:none}
-  .ch-pestanas-celular .ch-subpestanas[hidden]{display:none}
-  .ch-pestanas-celular .ch-pestana{text-decoration:none}
-  .ch-pestanas-celular .ch-pestana[aria-current="page"]{background:var(--brand);color:var(--brand-ink)}
-  .ch-pagina{padding:var(--esp-12) var(--esp-22) var(--esp-22)}
-  .ch-lista-fila{grid-template-columns:1fr}
-  .ch-lista-fila .ch-etq{grid-column:1;grid-row:auto;justify-self:start}
+/* Botón flotante (computador): en el verde del menú y con su color de texto */
+/* «button.» le gana a la regla base «.ch button{color:inherit}» del manual */
+button.ch-chat-boton{
+  position:fixed; right:var(--esp-22); bottom:var(--esp-22); z-index:3;
+  display:inline-flex; align-items:center; gap:var(--esp-8);
+  padding:13px 20px; border:0; border-radius:var(--r-pill);
+  background:var(--side); color:var(--side-faint); font-size:14px; font-weight:700;
+  box-shadow:var(--sombra-boton); transition:transform .35s var(--ease),box-shadow .25s,color .3s;
+}
+.ch-chat-boton svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+button.ch-chat-boton:hover{transform:translateY(-2px);color:var(--side-ink)}
+.ch-chat-boton:active{transform:translateY(1px) scale(.97)}
+.chat-abierto .ch-chat-boton{display:none}
+
+/* Panel al costado (computador): aparece con el salto de la marca desde el botón */
+.ch-chat{
+  position:fixed; right:var(--esp-22); bottom:var(--esp-22); top:calc(var(--alto-cabecera) + var(--aire-menu)); z-index:3;
+  width:400px; max-width:calc(100vw - 2 * var(--esp-22));
+  display:none; flex-direction:column;
+  background:var(--surface); border:1px solid var(--border2); border-radius:var(--r-ventana); box-shadow:var(--sombra);
+  transform-origin:bottom right; animation:ch-pop .4s var(--ease);
+}
+.chat-abierto .ch-chat{display:flex}
+.ch-chat-cabeza{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--esp-12);padding:var(--esp-20) var(--esp-20) var(--esp-16);border-bottom:1px solid var(--border)}
+.ch-chat-mensajes{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:var(--esp-12);padding:var(--esp-16) var(--esp-20)}
+.ch-chat-vacio{margin:auto 0;font-size:14px;color:var(--faint)}
+.ch-chat-yo{align-self:flex-end;max-width:85%;margin:0;padding:var(--esp-8) var(--esp-12);border-radius:var(--r-bloque);background:var(--surface2);font-size:14px;line-height:1.5}
+.ch-chat-respuesta{align-self:flex-start;max-width:92%;font-size:14px;line-height:1.6}
+.ch-chat-respuesta p{margin:0 0 var(--esp-8)}
+.ch-chat-respuesta .ch-etq{text-decoration:none}
+.ch-chat-pregunta{display:flex;align-items:center;gap:var(--esp-8);padding:var(--esp-12) var(--esp-16) var(--esp-16);border-top:1px solid var(--border)}
+button.ch-chat-enviar{background:var(--sel);color:var(--on-sel);border-color:transparent}
+button.ch-chat-enviar:hover{background:var(--brand);color:var(--brand-ink)}
+.ch-chat-enviar:hover svg,.ch-chat-cerrar:hover svg{transform:none}
+
+/* Botón de menú y X: solo en celular */
+.ch-abrir-menu,.ch-cerrar-menu,.ch-menu-velo{display:none}
+
+/* ---------- Pantallas táctiles: sin efectos de pasar el mouse pegados ---------- */
+@media (hover:none){
+  .ch-lista-fila:hover,.ch-menu-item:hover,.ch-cuenta-opcion:hover,button.ch-cuenta-fila:hover{background:none}
+  .ch-lista-fila:active,.ch-menu-item:active,.ch-cuenta-opcion:active,button.ch-cuenta-fila:active{background:var(--side-hover)}
+  .ch-lista-fila:active{background:var(--surface2)}
+  .ch-menu-item[aria-current="page"]:hover,.ch-menu-item[aria-current="page"]:active{background:var(--brand)}
+  .ch-panel *{-webkit-tap-highlight-color:transparent}
 }
 
+/* ---------- Celular: todo lo del computador ---------- */
+@media (max-width:720px){
+  .ch-cabecera{
+    height:auto; padding:var(--esp-12) var(--esp-16) var(--esp-12) var(--esp-22);
+    grid-template-columns:1fr auto; gap:var(--esp-12); border-bottom:1px solid var(--border);
+  }
+  .ch-marca{margin-left:0}
+  .ch-abrir-menu{display:inline-grid;grid-column:2}
+
+  /* La hoja verde sube desde abajo, al alcance del pulgar, encima del contenido */
+  .ch-menu{
+    position:fixed; left:0; right:0; bottom:0; top:auto; z-index:4;
+    width:auto; height:auto; max-height:86dvh; margin:0;
+    padding:0 var(--esp-12) calc(var(--esp-16) + env(safe-area-inset-bottom));
+    border-radius:var(--r) var(--r) 0 0;
+    transform:translateY(100%); visibility:hidden;
+    transition:transform .45s var(--ease),visibility .45s;
+  }
+  .menu-abierto .ch-menu{transform:none;visibility:visible}
+  /* La agarradera de arriba es también el botón para cerrar */
+  .ch-panel .ch-menu .ch-cerrar-menu{
+    display:flex; align-items:center; justify-content:center; flex:none;
+    width:100%; height:36px; margin-bottom:var(--esp-4);
+    border:0; border-radius:0; background:none; box-shadow:none;
+  }
+  .ch-cerrar-menu svg{display:none}
+  .ch-cerrar-menu::before{content:"";width:40px;height:4px;border-radius:var(--r-pill);background:var(--side-faint);opacity:.5}
+  .ch-menu-velo{position:fixed;inset:0;z-index:3;background:color-mix(in srgb, var(--ink) 45%, transparent)}
+  .ch-menu-velo:not([hidden]){display:block}
+  .menu-abierto{overflow:hidden}
+  .menu-abierto .ch-chat-boton{visibility:hidden}
+
+  /* Cabecera más baja: el nombre en un tamaño de celular, para dejarle alto al contenido */
+  .ch-cabecera .ch-logotipo{font-size:24px}
+  .ch-cabecera .ch-logotipo small{margin-top:2px;font-size:11.5px}
+
+  /* Título de página en 28 px (escala del manual): los nombres largos caben en una línea */
+  .ch-pagina{padding:var(--esp-20) var(--esp-22) calc(var(--esp-32) * 3)}
+  .ch-pagina-cabeza{margin-bottom:var(--esp-20)}
+  .ch-titulo{font-size:28px}
+
+  /* Filas más compactas: la etiqueta del tipo va en la misma línea que la especialidad y la fecha */
+  .ch-lista-fila{display:flex;flex-wrap:wrap;align-items:center;gap:var(--esp-4) var(--esp-8)}
+  .ch-lista-titulo{flex-basis:100%}
+  .ch-lista-fila .ch-etq{order:1}
+  .ch-lista-meta{order:2;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* El botón flotante respeta la barra de inicio del iPhone */
+  button.ch-chat-boton{right:var(--esp-16);bottom:calc(var(--esp-16) + env(safe-area-inset-bottom))}
+
+  /* En iPhone, un campo con letra menor a 16 px acerca la pantalla al tocarlo */
+  .ch-chat-pregunta .ch-campo,.ch-entrar .ch-campo:not(.codigo),.ch-aceptar-campo{font-size:16px}
+
+  /* Consulta rápida: el mismo botón flotante; abierta, a pantalla completa */
+  .ch-chat{inset:0;width:auto;max-width:none;border:0;border-radius:0;z-index:5}
+  .ch-chat-cabeza{padding:var(--esp-16) var(--esp-16) var(--esp-12) var(--esp-22)}
+  .ch-chat-mensajes{padding:var(--esp-16) var(--esp-22)}
+  .ch-chat-pregunta{padding:var(--esp-12) var(--esp-22) calc(var(--esp-12) + env(safe-area-inset-bottom))}
+  .chat-abierto{overflow:hidden}
+}

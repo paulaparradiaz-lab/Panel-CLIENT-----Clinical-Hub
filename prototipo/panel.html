@@ -12,6 +12,8 @@
 
 <svg class="ch-sprite" aria-hidden="true">
   <symbol id="i-estrella" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <!-- Ediciones: números apilados -->
+  <symbol id="i-ediciones" viewBox="0 0 24 24"><rect x="7" y="3" width="13" height="15" rx="2"/><path d="M4 7v12a2 2 0 0 0 2 2h10M11 8h5M11 12h5"/></symbol>
   <symbol id="i-nuevo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
   <symbol id="i-autoevaluacion" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11l2 2 4-4M9 17h6"/></symbol>
   <symbol id="i-ia" viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="11" rx="3"/><path d="M12 7V4M9.5 12h.01M14.5 12h.01M10 15h4M3 11v3M21 11v3"/></symbol>
@@ -19,34 +21,46 @@
   <symbol id="i-videos" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4-2.5z"/></symbol>
   <symbol id="i-news" viewBox="0 0 24 24"><path d="M16 6h3a1 1 0 0 1 1 1v11a2 2 0 0 1-4 0V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a3 3 0 0 0 3 3h11"/><path d="M8 8h4M8 12h4M8 16h4"/></symbol>
   <symbol id="i-flecha" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <!-- Consulta rápida: libro con lupa, buscar dentro de las guías -->
+  <symbol id="i-consulta" viewBox="0 0 24 24"><path d="M4 18V5a2 2 0 0 1 2-2h12v7"/><path d="M4 18a2 2 0 0 0 2 2h5"/><path d="M8 7h6"/><circle cx="16.5" cy="16.5" r="3"/><path d="m21 21-2.3-2.3"/></symbol>
+  <symbol id="i-cerrar" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-enviar" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <!-- Huella: para entrar con passkey -->
+  <symbol id="i-huella" viewBox="0 0 24 24"><path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4"/><path d="M14 13.12c0 2.38 0 6.38-1 8.88"/><path d="M17.29 21.02c.12-.6.43-2.3.5-3.02"/><path d="M2 12a10 10 0 0 1 18-6"/><path d="M2 16h.01"/><path d="M21.8 16c.2-2 .131-5.354 0-6"/><path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2"/><path d="M8.65 22c.21-.66.45-1.32.57-2"/><path d="M9 6.8a6 6 0 0 1 9 5.2v2"/></symbol>
   <symbol id="i-cuenta" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></symbol>
-  <symbol id="i-buscar" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
 </svg>
 
 <!-- Cabecera blanca de lado a lado -->
 <header class="ch-cabecera">
-  <a class="ch-marca" href="#nuevo">
+  <a class="ch-marca" href="#favoritos">
     <span class="ch-logotipo">Clinical <span>hub</span><small>powered by Sustancia Pro</small></span>
   </a>
-  <label class="ch-buscador">
-    <svg aria-hidden="true"><use href="#i-buscar"/></svg>
-    <input type="search" id="buscar" aria-label="Buscar en Clinical Hub" placeholder="Buscar">
-  </label>
-  <a class="ch-boton-redondo" href="#cuenta" aria-label="Mi cuenta"><svg aria-hidden="true"><use href="#i-cuenta"/></svg></a>
+  <!-- Celular: abre la misma hoja verde del computador -->
+  <button type="button" class="ch-boton-redondo ch-abrir-menu" id="abrir-menu" aria-label="Abrir el menú" aria-expanded="false" aria-controls="menu-lateral"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
 </header>
 
-<!-- Celular: las secciones en pestañas -->
-<div class="ch-pestanas-celular">
-  <nav class="ch-pestanas" id="pestanas" aria-label="Secciones"></nav>
-  <nav class="ch-pestanas ch-subpestanas" id="subpestanas" aria-label="Dentro de la sección" hidden></nav>
-</div>
 
 <div class="ch-cuerpo">
   <!-- Computador: menú lateral -->
-  <aside class="ch-menu">
+  <!-- Celular: velo detrás del menú abierto; un toque lo cierra -->
+  <div class="ch-menu-velo" id="velo-menu" hidden></div>
+  <aside class="ch-menu" id="menu-lateral">
+    <button type="button" class="ch-boton-redondo ch-cerrar-menu" id="cerrar-menu" aria-label="Cerrar el menú"><svg aria-hidden="true"><use href="#i-cerrar"/></svg></button>
     <nav aria-label="Secciones">
       <ul class="ch-menu-lista" id="menu"></ul>
     </nav>
+    <!-- Computador: la cuenta al pie del menú, con el nombre y el plan -->
+    <!-- Una sola pieza: la fila crece hacia arriba y muestra las opciones adentro -->
+    <div class="ch-cuenta ch-cuenta-pie">
+      <div class="ch-cuenta-despliegue" id="cuenta-opciones">
+        <div class="ch-cuenta-opciones"></div>
+      </div>
+      <button type="button" class="ch-cuenta-fila ch-cuenta-boton" aria-expanded="false" aria-controls="cuenta-opciones">
+        <svg aria-hidden="true"><use href="#i-cuenta"/></svg>
+        <span class="ch-cuenta-fila-texto">[Nombre del médico]<small>[Especialidad]</small></span>
+      </button>
+    </div>
   </aside>
 
   <main class="ch-contenido">
@@ -60,6 +74,104 @@
   </main>
 </div>
 
+<!-- Entrar: solo quien compró (o fue invitado). El panel nunca crea cuentas.
+     Supabase envía el enlace mágico y el código; ver docs/usuarios.md. -->
+<section class="ch-entrar" id="entrar" hidden aria-labelledby="entrar-titulo">
+  <div class="ch-entrar-caja">
+    <span class="ch-logotipo">Clinical <span>hub</span><small>Medicina basada en la evidencia y experiencia</small></span>
+
+    <form id="entrar-correo">
+      <h1 class="ch-titulo" id="entrar-titulo">Bienvenido</h1>
+      <p class="ch-bajada">Escribe el correo con el que compraste tu suscripción.</p>
+      <label class="ch-rotulo" for="correo">Correo</label>
+      <input class="ch-campo" id="correo" type="email" autocomplete="email" inputmode="email" required>
+      <p class="ch-entrar-error" id="error-correo" role="alert" hidden></p>
+      <button class="ch-boton ancho" type="submit">Enviarme el enlace</button>
+      <div class="ch-entrar-passkey" id="caja-passkey" hidden>
+        <p class="ch-entrar-o" aria-hidden="true">o</p>
+        <button type="button" class="ch-boton secundario ancho" id="entrar-passkey"><svg aria-hidden="true"><use href="#i-huella"/></svg>Usar huella o Face ID</button>
+      </div>
+    </form>
+
+    <form id="entrar-codigo" hidden>
+      <h1 class="ch-titulo">Revisa tu correo</h1>
+      <p class="ch-bajada">Te enviamos un enlace y un código a <strong id="correo-enviado"></strong>. Abre el enlace en este dispositivo o escribe el código.</p>
+      <label class="ch-rotulo" for="codigo">Código de 6 dígitos</label>
+      <input class="ch-campo codigo" id="codigo" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" required>
+      <p class="ch-entrar-error" id="error-codigo" role="alert" hidden></p>
+      <button class="ch-boton ancho" type="submit">Entrar</button>
+      <div class="ch-entrar-otros">
+        <button type="button" class="ch-enlace" id="reenviar">Reenviar el correo</button>
+        <button type="button" class="ch-enlace" id="otro-correo">Usar otro correo</button>
+      </div>
+    </form>
+
+    <div id="entrar-sin-compra" hidden>
+      <h1 class="ch-titulo">No encontramos una compra con este correo</h1>
+      <p class="ch-bajada">Si compraste con otro correo o no recuerdas cuál usaste, escríbenos y lo verificamos.</p>
+      <div class="ch-entrar-soporte">
+        <a class="ch-boton ancho" id="soporte-whatsapp" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+        <a class="ch-boton secundario ancho" id="soporte-correo">Escríbenos al correo</a>
+      </div>
+      <div class="ch-entrar-otros"><button type="button" class="ch-enlace" id="volver-correo">Intentar con otro correo</button></div>
+    </div>
+    <p class="ch-entrar-firma">Powered by Sustancia Pro<sup>™</sup></p>
+  </div>
+</section>
+
+<!-- Al entrar: aceptar los documentos vigentes y declarar que es profesional de la
+     salud (términos, numeral 9). Queda registrada la firma con fecha y versión. -->
+<form class="ch-aceptar" id="aceptar" hidden>
+  <div class="ch-ventana ch-aceptar-ventana" role="dialog" aria-modal="true" aria-labelledby="aceptar-titulo">
+    <h2 id="aceptar-titulo">Antes de empezar</h2>
+    <p>Cuéntanos tu especialidad y acepta estos documentos para usar Clinical Hub. Puedes leerlos completos.</p>
+    <label class="ch-rotulo" for="especialidad">Tu especialidad</label>
+    <input class="ch-campo ch-aceptar-campo" id="especialidad" autocomplete="off" required>
+    <ul class="ch-aceptar-docs" id="aceptar-lista"></ul>
+    <label class="ch-aceptar-casilla"><input type="checkbox" required><span id="declaracion-texto">Soy profesional de la salud con título habilitante y tarjeta profesional vigente, o estudiante del área bajo supervisión docente.</span></label>
+    <label class="ch-aceptar-casilla"><input type="checkbox" required><span>He leído y acepto los términos y condiciones, la política de privacidad y el aviso clínico y editorial.</span></label>
+    <button type="submit" class="ch-boton ancho" id="aceptar-boton" disabled>Aceptar y entrar</button>
+  </div>
+</form>
+
+<!-- Después de entrar con el correo: ofrecer la passkey para la próxima vez -->
+<div class="ch-aceptar" id="ofrecer-passkey" hidden>
+  <div class="ch-ventana ch-aceptar-ventana" role="dialog" aria-modal="true" aria-labelledby="passkey-titulo">
+    <h2 id="passkey-titulo">Entra más rápido la próxima vez</h2>
+    <p>Activa tu huella o Face ID en este dispositivo y entra con un toque, sin esperar el correo.</p>
+    <p class="ch-entrar-error" id="error-passkey" role="alert" hidden></p>
+    <div class="ch-ventana-botones">
+      <button type="button" class="ch-boton secundario" id="passkey-no">Ahora no</button>
+      <button type="button" class="ch-boton" id="passkey-si">Activar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Consulta rápida: búsqueda con IA dentro del contenido. En computador se abre con el botón flotante, en un
+     panel al costado; en celular es lo único que hay, a pantalla completa.
+     Las conversaciones no se guardan: al cerrar, se borran. -->
+<button type="button" class="ch-chat-boton" id="abrir-chat" aria-expanded="false" aria-controls="chat">
+  <svg aria-hidden="true"><use href="#i-consulta"/></svg>Consulta rápida
+</button>
+<section class="ch-chat" id="chat" aria-labelledby="chat-titulo">
+  <div class="ch-chat-cabeza">
+    <div>
+      <h2 class="ch-titulo-seccion" id="chat-titulo">Consulta rápida</h2>
+      <p class="ch-subtitulo-seccion">Respuestas hechas con IA a partir del contenido de Clinical Hub, con su fuente. Las conversaciones no se guardan.</p>
+    </div>
+    <button type="button" class="ch-boton-redondo ch-chat-cerrar" id="cerrar-chat" aria-label="Cerrar la consulta rápida"><svg aria-hidden="true"><use href="#i-cerrar"/></svg></button>
+  </div>
+  <div class="ch-chat-mensajes" id="mensajes" aria-live="polite">
+    <p class="ch-chat-vacio">Pregunta por una recomendación y te respondemos con el dato.</p>
+  </div>
+  <form class="ch-chat-pregunta" id="form-chat">
+    <label class="ch-sr" for="pregunta">Tu pregunta</label>
+    <input class="ch-campo" id="pregunta" autocomplete="off" placeholder="Escribe tu pregunta">
+    <button type="submit" class="ch-boton-redondo ch-chat-enviar" aria-label="Enviar"><svg aria-hidden="true"><use href="#i-enviar"/></svg></button>
+  </form>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 // El menú, en el orden que pidió Paula. «hijos» son las secciones que cuelgan de un grupo.
 const menu = [
@@ -67,15 +179,14 @@ const menu = [
   {id:'nuevo', nombre:'Nuevo', icono:'i-nuevo', bajada:'Lo último que se publicó, de todas las secciones.'},
   {id:'guias', nombre:'Guías de práctica clínica', icono:'i-guias', hijos:[
     {id:'resumenes', nombre:'Resúmenes individuales', tipo:'Resumen individual'},
-    {id:'contrastadas', nombre:'Guías contrastadas', tipo:'Guía contrastada', hijos:[
-      {id:'galeria', nombre:'Galería', tipo:'Galería'},
-    ]},
+    // La galería de figuras vive dentro de Guías contrastadas, no en el menú.
+    {id:'contrastadas', nombre:'Guías contrastadas', tipo:'Guía contrastada', incluye:['Galería']},
     {id:'herramientas', nombre:'Herramientas interactivas', tipo:'Herramienta interactiva'},
     {id:'videos', nombre:'Videos de procedimientos', tipo:'Video de procedimiento'},
   ]},
-  {id:'news', nombre:'Clinical News', icono:'i-news', tipo:'Clinical News'},
-  {id:'autoevaluacion', nombre:'Autoevaluación', icono:'i-autoevaluacion', tipo:'Autoevaluación'},
-  {id:'ia', nombre:'Entrenamiento en IA', icono:'i-ia', tipo:'Entrenamiento en IA'},
+  {id:'news', nombre:'Clinical News', nuevo:true, icono:'i-news', tipo:'Clinical News'},
+  {id:'autoevaluacion', nombre:'Autoevaluación', nuevo:true, icono:'i-autoevaluacion', tipo:'Autoevaluación'},
+  {id:'ia', nombre:'Entrenamiento en IA', nuevo:true, icono:'i-ia', tipo:'Entrenamiento en IA'},
 ];
 
 // Cada sección muestra su tipo y el de todo lo que cuelga de ella.
@@ -83,10 +194,20 @@ const secciones = [];
 (function aplanar(lista){
   lista.forEach(s => {
     aplanar(s.hijos || []);
-    const tipos = [s.tipo, ...(s.hijos || []).flatMap(h => secciones.find(x => x.id === h.id).tipos)].filter(Boolean);
+    const tipos = [s.tipo, ...(s.incluye || []), ...(s.hijos || []).flatMap(h => secciones.find(x => x.id === h.id).tipos)].filter(Boolean);
     secciones.push({...s, tipos, bajada: s.bajada || '[Qué encuentras en esta sección]'});
   });
 })(menu);
+// Fuera del menú: «Información editorial» (en la cuenta, después de Suscripción) y los documentos legales.
+// Los documentos se muestran desde docs/legal/ tal cual; su versión es la fecha de
+// «Última actualización».
+const documentos = [
+  {id:'terminos', nombre:'Términos y condiciones', archivo:'terminos-y-condiciones.md', version:'2026-08-13', fecha:'13 de agosto de 2026'},
+  {id:'privacidad', nombre:'Política de privacidad', archivo:'politica-de-privacidad.md', version:'2026-08-13', fecha:'13 de agosto de 2026'},
+  {id:'aviso', nombre:'Aviso clínico y editorial', archivo:'aviso-clinico-y-editorial.md', version:'2026-08-13', fecha:'13 de agosto de 2026'},
+];
+secciones.push({id:'informacion', nombre:'Información editorial', tipos:[], bajada:'Las ediciones publicadas y los documentos que aceptaste.'});
+documentos.forEach(d => secciones.push({id:d.id, nombre:d.nombre, tipos:[], documento:d, bajada:'Última actualización: ' + d.fecha}));
 const seccion = id => secciones.find(x => x.id === id);
 
 // Marcadores: aún no hay contenido real publicado.
@@ -107,36 +228,19 @@ const $ = id => document.getElementById(id);
 // se abre cuando se está en él o en algo que cuelga de él.
 function items(lista, nivel){
   return lista.map(s => `
-    <li${s.hijos ? ' class="ch-menu-grupo"' : ''}><a class="ch-menu-item${nivel ? ' sub' : ''}" href="#${s.id}"${s.hijos ? ` aria-expanded="false" aria-controls="rama-${s.id}"` : ''}>${s.icono ? `<svg aria-hidden="true"><use href="#${s.icono}"/></svg>` : ''}${s.nombre}${s.hijos ? '<svg class="ch-menu-flecha" aria-hidden="true"><use href="#i-flecha"/></svg>' : ''}</a>
+    <li${s.hijos ? ' class="ch-menu-grupo"' : ''}><a class="ch-menu-item${nivel ? ' sub' : ''}" href="#${s.id}"${s.hijos ? ` aria-expanded="false" aria-controls="rama-${s.id}"` : ''}>${s.icono ? `<svg aria-hidden="true"><use href="#${s.icono}"/></svg>` : ''}<span class="ch-menu-nombre">${s.nombre}</span>${s.nuevo ? '<span class="ch-menu-nuevo">New</span>' : ''}${s.hijos ? '<svg class="ch-menu-flecha" aria-hidden="true"><use href="#i-flecha"/></svg>' : ''}</a>
     ${s.hijos ? `<ul class="ch-menu-rama" id="rama-${s.id}">${items(s.hijos, nivel + 1)}</ul>` : ''}</li>`).join('');
 }
 $('menu').innerHTML = items(menu, 0);
-// Celular: arriba las principales; debajo, lo que cuelga de la que está abierta.
-const descendientes = s => (s.hijos || []).flatMap(h => [h, ...descendientes(h)]);
-const principalDe = id => menu.find(p => p.id === id || descendientes(p).some(d => d.id === id));
-$('pestanas').innerHTML = menu.map(s => `<a class="ch-pestana" href="#${s.id}">${s.nombre}</a>`).join('');
 
 function mostrar(){
-  const s = seccion(location.hash.slice(1)) || seccion('nuevo');
-  const principal = principalDe(s.id);
-  const hijos = descendientes(principal);
-  $('subpestanas').hidden = !hijos.length;
-  $('subpestanas').innerHTML = hijos.map(h => `<a class="ch-pestana" href="#${h.id}">${h.nombre}</a>`).join('');
-  document.querySelectorAll('.ch-menu-item, #subpestanas .ch-pestana').forEach(a => {
+  const s = seccion(location.hash.slice(1)) || seccion('favoritos');
+  document.querySelectorAll('.ch-menu-item').forEach(a => {
     if (a.getAttribute('href') === '#' + s.id) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
   });
-  document.querySelectorAll('#pestanas .ch-pestana').forEach(a => {
-    if (a.getAttribute('href') === '#' + principal.id) a.setAttribute('aria-current', 'page');
-    else a.removeAttribute('aria-current');
-  });
-  const actual = document.querySelector('.ch-menu-item[aria-current]');
-  document.querySelectorAll('.ch-menu-grupo').forEach(g => {
-    const abierta = g.contains(actual);
-    g.classList.toggle('abierto', abierta);
-    g.querySelector(':scope > a').setAttribute('aria-expanded', abierta);
-  });
-  document.querySelectorAll('.ch-pestanas-celular .ch-pestana[aria-current]').forEach(a => a.scrollIntoView({block:'nearest', inline:'nearest'}));
+  cerrados.clear();
+  abrirRamas();
   $('titulo').textContent = s.nombre;
   $('bajada').textContent = s.bajada;
   if (s.id === 'favoritos') {
@@ -146,13 +250,75 @@ function mostrar(){
       bloque('Lo que más consultas', 'Según lo que más abres.', contenido.slice(3, 7), true);
     return;
   }
+  if (s.id === 'informacion') {
+    // El registro de ediciones y, debajo, los documentos (con la fecha en que los aceptó).
+    // Marcadores de ediciones: el registro real sale de lo que publica el admin.
+    const firma = leerAceptacion();
+    const docs = documentos.map(d => `
+      <li><a class="ch-lista-fila" href="#${d.id}">
+        <span class="ch-lista-titulo">${d.nombre}</span>
+        <span class="ch-lista-meta">Actualizado el ${d.fecha}${firma ? ' · Aceptado el ' + new Date(firma.fecha).toLocaleDateString('es-CO', {day:'numeric', month:'long', year:'numeric'}) : ''}</span>
+      </a></li>`).join('');
+    // Línea de tiempo horizontal: abre en el número de hoy (a la derecha) y se desliza
+    // hacia atrás. El número más viejo queda a la izquierda.
+    const numeros = Array.from({length:6}, (_, i) => ({
+      numero: i === 5 ? 'Núm. [N]' : `Núm. [N-${5 - i}]`,
+      cuando: '[Trimestre] [año]',
+      vigente: i === 5,
+      guias: [{tipo:'Incorporada', titulo:'[Título de la guía]'}, {tipo:'Incorporada', titulo:'[Título de la guía]'}, {tipo:'Ampliada', titulo:'[Título de la guía]'}],
+    }));
+    $('secciones').innerHTML = `
+      <div class="ch-bloque">
+        <h2 class="ch-titulo-seccion" id="bloque-ediciones">Ediciones</h2>
+        <p class="ch-subtitulo-seccion">Desliza hacia atrás para ver los números anteriores.</p>
+        <div class="ch-linea" role="group" aria-labelledby="bloque-ediciones">
+          ${numeros.map((x, i) => `<button type="button" class="ch-linea-parada" data-i="${i}" aria-pressed="${x.vigente}"><span class="ch-linea-nodo"></span><span>${x.numero}</span><small>${x.cuando}</small></button>`).join('')}
+        </div>
+        <div class="ch-linea-detalle" aria-live="polite"></div>
+      </div>
+      <div class="ch-bloque">
+        <h2 class="ch-titulo-seccion" id="bloque-documentos">Documentos</h2>
+        <p class="ch-subtitulo-seccion">Lo que aceptaste para usar Clinical Hub.</p>
+        <section class="ch-lista" aria-labelledby="bloque-documentos"><ul>${docs}</ul></section>
+      </div>`;
+    const linea = document.querySelector('.ch-linea');
+    const elegirNumero = i => {
+      const x = numeros[i];
+      linea.querySelectorAll('.ch-linea-parada').forEach(b => b.setAttribute('aria-pressed', b.dataset.i == i));
+      document.querySelector('.ch-linea-detalle').innerHTML = `
+        <p class="ch-linea-titulo">Vol. [V] · ${x.numero}${x.vigente ? ' <span class="ch-etq lima">Edición vigente</span>' : ''}</p>
+        <p class="ch-lista-meta">${x.cuando}</p>` + lista(x.guias, true, 'bloque-ediciones');
+    };
+    linea.addEventListener('click', e => { const b = e.target.closest('.ch-linea-parada'); if (b) elegirNumero(+b.dataset.i); });
+    // Flechas del teclado para moverse entre números
+    linea.addEventListener('keydown', e => {
+      if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+      const paradas = [...linea.querySelectorAll('.ch-linea-parada')];
+      const i = paradas.indexOf(document.activeElement) + (e.key === 'ArrowLeft' ? -1 : 1);
+      if (paradas[i]) { paradas[i].focus(); elegirNumero(i); }
+    });
+    elegirNumero(numeros.length - 1);
+    linea.scrollLeft = linea.scrollWidth;   // abre en el día de hoy
+    return;
+  }
+  if (s.documento) {
+    // El texto legal se muestra tal cual desde docs/legal/ (sin cambiar una coma).
+    $('secciones').innerHTML = '<article class="ch-legal" aria-busy="true"></article>';
+    fetch('../docs/legal/' + s.documento.archivo).then(r => r.text()).then(md => {
+      const art = document.querySelector('.ch-legal');
+      if (!art) return;
+      art.innerHTML = markdown(md);
+      art.removeAttribute('aria-busy');
+    });
+    return;
+  }
   const filas = s.tipos.length ? contenido.filter(c => s.tipos.includes(c.tipo)) : contenido;
   $('secciones').innerHTML = lista(filas, s.tipos.length !== 1, 'titulo');
 }
 
 function lista(filas, conTipo, rotulo){
   return `<section class="ch-lista" aria-labelledby="${rotulo}"><ul>${filas.map(c => `
-    <li><a class="ch-lista-fila" href="#">
+    <li><a class="ch-lista-fila" href="${location.hash || '#favoritos'}">
       <span class="ch-lista-titulo">${c.titulo}</span>
       <span class="ch-lista-meta">[Especialidad] · [Fecha de publicación]</span>
       ${conTipo ? `<span class="ch-etq">${c.tipo}</span>` : ''}
@@ -160,13 +326,290 @@ function lista(filas, conTipo, rotulo){
 }
 
 function bloque(titulo, sub, filas, conTipo){
-  const id = 'b-' + titulo.length;
+  const id = 'bloque-' + titulo.toLowerCase().replace(/[^a-z0-9]+/g, '-');
   return `<div class="ch-bloque">
     <h2 class="ch-titulo-seccion" id="${id}">${titulo}</h2>
     <p class="ch-subtitulo-seccion">${sub}</p>
     ${lista(filas, conTipo, id)}
   </div>`;
 }
+// Una rama está abierta si contiene la sección actual, salvo que la persona
+// la haya cerrado con un clic en su grupo. Al cambiar de sección se reinicia.
+const cerrados = new Set();
+function abrirRamas(){
+  const actual = document.querySelector('.ch-menu-item[aria-current]');
+  document.querySelectorAll('.ch-menu-grupo').forEach(g => {
+    const enlace = g.querySelector(':scope > a');
+    const abierta = g.contains(actual) && !cerrados.has(enlace.getAttribute('href'));
+    g.classList.toggle('abierto', abierta);
+    enlace.setAttribute('aria-expanded', abierta);
+  });
+}
+// Clic en un grupo abierto: lo cierra y se queda en la misma página.
+// Clic en un grupo cerrado: lo abre (y lleva a su sección, como un enlace).
+$('menu').addEventListener('click', e => {
+  const enlace = e.target.closest('.ch-menu-grupo > a');
+  if (!enlace) return;
+  const href = enlace.getAttribute('href');
+  if (enlace.getAttribute('aria-expanded') === 'true') {
+    e.preventDefault();
+    cerrados.add(href);
+    abrirRamas();
+  } else if (href === location.hash) {
+    e.preventDefault();
+    cerrados.delete(href);
+    abrirRamas();
+  }
+});
+
+// Menú de la cuenta. Se cierra con un clic afuera o con Esc.
+// Marcadores: aún no hay médicos ni suscripciones reales.
+// Las opciones de la cuenta, en el bloque del pie del menú (computador y celular).
+const opcionesCuenta = [
+  {texto:'Mis datos', href:'#datos'},
+  {texto:'Suscripción', detalle:'[Plan] · activa hasta [fecha]', href:'#suscripcion'},
+  {texto:'Información editorial', href:'#informacion'},
+  {texto:'Ayuda o contacto', href:'#ayuda'},
+  {texto:'Cerrar sesión', salir:true},
+];
+const dibujarOpciones = (clase, claseDetalle, claseSalir) => opcionesCuenta.map(o => o.salir
+  ? `<button type="button" class="${clase} ${claseSalir}">${o.texto}</button>`
+  : `<a class="${clase}" href="${o.href}">${o.texto}${o.detalle ? `<${claseDetalle}>${o.detalle}</${claseDetalle}>` : ''}</a>`).join('');
+document.querySelectorAll('.ch-cuenta-opciones').forEach(m => m.innerHTML = dibujarOpciones('ch-cuenta-opcion', 'small', 'ch-cuenta-opcion-salir'));
+// La pieza del pie del menú se despliega hacia arriba.
+const estaAbierta = caja => caja.querySelector('.ch-cuenta-boton').getAttribute('aria-expanded') === 'true';
+function cuenta(caja, abrir){
+  const boton = caja.querySelector('.ch-cuenta-boton');
+  boton.setAttribute('aria-expanded', abrir);
+  caja.classList.toggle('abierta', abrir);
+  if (abrir) setTimeout(() => caja.querySelector('a').focus({preventScroll:true}), 50);
+}
+const cerrarCuentas = () => document.querySelectorAll('.ch-cuenta').forEach(c => cuenta(c, false));
+document.querySelectorAll('.ch-cuenta').forEach(c => {
+  c.querySelector('.ch-cuenta-boton').addEventListener('click', () => cuenta(c, !estaAbierta(c)));
+  c.addEventListener('click', e => { if (e.target.closest('a, .ch-cuenta-opcion-salir')) cuenta(c, false); });
+});
+document.addEventListener('click', e => { if (!e.target.closest('.ch-cuenta')) cerrarCuentas(); });
+document.addEventListener('keydown', e => {
+  const abierta = [...document.querySelectorAll('.ch-cuenta')].find(estaAbierta);
+  if (e.key === 'Escape' && abierta) { cuenta(abierta, false); abierta.querySelector('.ch-cuenta-boton').focus(); }
+});
+
+// Consulta rápida: abrir y cerrar (computador). Al cerrar, la conversación se borra.
+const vacio = $('mensajes').innerHTML;
+function chat(abrir){
+  document.body.classList.toggle('chat-abierto', abrir);
+  $('abrir-chat').setAttribute('aria-expanded', abrir);
+  if (abrir) $('pregunta').focus();
+  else { $('mensajes').innerHTML = vacio; $('abrir-chat').focus(); }
+}
+$('abrir-chat').addEventListener('click', () => chat(true));
+$('cerrar-chat').addEventListener('click', () => chat(false));
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.body.classList.contains('chat-abierto')) chat(false); });
+
+// Marcador de respuesta: aún no hay asistente conectado. La respuesta real trae
+// el dato de la guía y su fuente; aquí no se inventa ningún contenido clínico.
+$('form-chat').addEventListener('submit', e => {
+  e.preventDefault();
+  const texto = $('pregunta').value.trim();
+  if (!texto) return;
+  $('mensajes').querySelector('.ch-chat-vacio')?.remove();
+  const pregunta = document.createElement('p');
+  pregunta.className = 'ch-chat-yo';
+  pregunta.textContent = texto;
+  const respuesta = document.createElement('div');
+  respuesta.className = 'ch-chat-respuesta';
+  respuesta.innerHTML = '<p>[Respuesta del asistente: la recomendación puntual]</p><a class="ch-etq lima" href="' + (location.hash || '#favoritos') + '">Fuente: [FUENTE]</a>';
+  $('mensajes').append(pregunta, respuesta);
+  $('pregunta').value = '';
+  respuesta.scrollIntoView({block:'end'});
+});
+
+// Celular: la hoja verde sube desde abajo. Se cierra con la agarradera, tocando
+// el velo, con Esc o al elegir una sección (abrir o cerrar Guías no la cierra).
+function menuMovil(abrir){
+  document.body.classList.toggle('menu-abierto', abrir);
+  $('velo-menu').hidden = !abrir;
+  $('abrir-menu').setAttribute('aria-expanded', abrir);
+  if (abrir) $('cerrar-menu').focus();
+  else if (document.activeElement && $('menu-lateral').contains(document.activeElement)) $('abrir-menu').focus();
+}
+$('abrir-menu').addEventListener('click', () => menuMovil(true));
+$('cerrar-menu').addEventListener('click', () => menuMovil(false));
+$('velo-menu').addEventListener('click', () => menuMovil(false));
+// Las opciones de la cuenta que llevan a una página también cierran la hoja
+document.querySelector('.ch-cuenta-opciones').addEventListener('click', e => { if (e.target.closest('a')) menuMovil(false); });
+$('menu').addEventListener('click', e => {
+  const enlace = e.target.closest('a.ch-menu-item');
+  if (enlace && !enlace.closest('.ch-menu-grupo > a') && !enlace.matches('.ch-menu-grupo > a')) menuMovil(false);
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.body.classList.contains('menu-abierto')) menuMovil(false); });
+
+// Lector mínimo de markdown para los documentos legales: encabezados, párrafos,
+// listas, tablas, citas y negrita. No cambia el texto.
+function markdown(md){
+  const esc = t => t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const linea = t => esc(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`(.+?)`/g,'<code>$1</code>');
+  // Se omiten las dos primeras líneas («Clinical Hub | Sustancia Pro» y la fecha), que ya van en el título
+  const bloques = md.replace(/^\*\*Clinical Hub \| Sustancia Pro\*\*\s*\n+Última actualización:[^\n]*\n/, '').split(/\n{2,}/);
+  return bloques.map(b => {
+    b = b.trim();
+    if (!b || b === '---') return '';
+    if (b.startsWith('> ')) return '<blockquote>' + markdown(b.split('\n').map(l => l.replace(/^> ?/, '')).join('\n')) + '</blockquote>';
+    if (/^#{2,3} /.test(b)) { const n = b.startsWith('###') ? 3 : 2; return `<h${n}>${linea(b.replace(/^#+ /, ''))}</h${n}>`; }
+    if (b.startsWith('|')) {
+      const filas = b.split('\n').filter(l => !/^\|[-| ]+\|$/.test(l)).map(l => l.slice(1, -1).split('|').map(c => linea(c.trim())));
+      return '<table><thead><tr>' + filas[0].map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>' +
+        filas.slice(1).map(f => '<tr>' + f.map(c => `<td>${c}</td>`).join('') + '</tr>').join('') + '</tbody></table>';
+    }
+    if (/^- /m.test(b) && b.split('\n').every(l => l.startsWith('- '))) return '<ul>' + b.split('\n').map(l => `<li>${linea(l.slice(2))}</li>`).join('') + '</ul>';
+    if (b.split('\n').some(l => l.startsWith('- '))) {
+      const [antes, ...items] = b.split('\n');
+      return `<p>${linea(antes)}</p><ul>` + items.map(l => `<li>${linea(l.replace(/^- /, ''))}</li>`).join('') + '</ul>';
+    }
+    return '<p>' + b.split('\n').map(linea).join('<br>') + '</p>';
+  }).join('');
+}
+
+// Aceptación al entrar: hasta que no acepte los documentos vigentes no usa el panel.
+// En el prototipo la firma se guarda en este navegador; en la versión real va a la tabla
+// «aceptaciones» de Supabase (usuario, documento, versión, fecha, navegador).
+const CLAVE_FIRMA = 'ch-aceptacion';
+function leerAceptacion(){
+  try { const f = JSON.parse(localStorage.getItem(CLAVE_FIRMA));
+    return f && documentos.every(d => f.versiones[d.id] === d.version) ? f : null; } catch { return null; }
+}
+function pedirAceptacion(){
+  const enDocumento = documentos.some(d => '#' + d.id === location.hash);
+  const pendiente = !document.body.classList.contains('sin-sesion') && !leerAceptacion() && !enDocumento;
+  $('aceptar').hidden = !pendiente;
+  document.body.classList.toggle('por-aceptar', pendiente);
+  if (pendiente) $('especialidad').focus({preventScroll:true});
+}
+$('aceptar-lista').innerHTML = documentos.map(d =>
+  `<li><a href="#${d.id}" target="_blank" rel="noopener">${d.nombre}</a><span>Actualizado el ${d.fecha}</span></li>`).join('');
+const casillas = [...$('aceptar').querySelectorAll('input[type=checkbox]')];
+const revisarAceptar = () => $('aceptar-boton').disabled = !(casillas.every(x => x.checked) && $('especialidad').value.trim());
+casillas.forEach(c => c.addEventListener('change', revisarAceptar));
+$('especialidad').addEventListener('input', revisarAceptar);
+$('aceptar').addEventListener('submit', e => {
+  e.preventDefault();
+  const firma = {
+    fecha: new Date().toISOString(),
+    versiones: Object.fromEntries(documentos.map(d => [d.id, d.version])),
+    declaracion: $('declaracion-texto').textContent.trim(),
+    especialidad: $('especialidad').value.trim(),
+    navegador: navigator.userAgent,
+  };
+  try { localStorage.setItem(CLAVE_FIRMA, JSON.stringify(firma)); } catch {}
+  console.info('Aceptación registrada', firma);
+  pintarCuenta();
+  pedirAceptacion();
+  mostrar();
+  ofrecerPasskey();
+});
+window.addEventListener('hashchange', pedirAceptacion);
+
+// ---------- Sesión con Supabase ----------
+// Proyecto «Clinical hub - Usuarios». La llave publicable es pública por diseño (va en
+// cualquier navegador); lo que protege los datos es la seguridad de la base (RLS).
+const sb = supabase.createClient('https://fzgezaxmdjtuygztvhvw.supabase.co', 'sb_publishable_i5_tn_hQTr-gufVK-CuYfA_olEgoO68',
+  {auth:{flowType:'pkce', detectSessionInUrl:true, persistSession:true,
+          experimental:{passkey:true}}});   // passkeys: experimentales en Supabase, como en el admin
+// Solo para revisar el diseño en este computador: 127.0.0.1/…/panel.html?sin-login
+const sinLogin = location.hostname === '127.0.0.1' && new URLSearchParams(location.search).has('sin-login');
+let correoActual = '', usuario = null;
+
+function pintarCuenta(){
+  const nombre = document.querySelector('.ch-cuenta-fila-texto');
+  const esp = leerAceptacion()?.especialidad || '[Especialidad]';
+  nombre.innerHTML = `${usuario?.email || '[Nombre del médico]'}<small>${esp}</small>`;
+}
+function verPaso(paso){
+  ['entrar-correo', 'entrar-codigo', 'entrar-sin-compra'].forEach(id => $(id).hidden = id !== paso);
+  ['error-correo', 'error-codigo'].forEach(id => $(id).hidden = true);
+  const foco = {'entrar-correo':'correo', 'entrar-codigo':'codigo'}[paso];
+  if (foco) $(foco).focus({preventScroll:true});
+}
+function aplicarSesion(sesion){
+  usuario = sesion?.user || null;
+  const dentro = !!usuario || sinLogin;
+  $('entrar').hidden = dentro;
+  document.body.classList.toggle('sin-sesion', !dentro);
+  if (!dentro) verPaso('entrar-correo');
+  pintarCuenta();
+  pedirAceptacion();
+}
+const error = (id, texto) => { $(id).textContent = texto; $(id).hidden = false; };
+
+async function enviarEnlace(){
+  const {error: e} = await sb.auth.signInWithOtp({email: correoActual,
+    options: {shouldCreateUser: false, emailRedirectTo: location.origin + location.pathname}});
+  if (!e) { $('correo-enviado').textContent = correoActual; verPaso('entrar-codigo'); return; }
+  if (/signup|not allowed|not found/i.test(e.message)) {
+    // No hay cuenta con ese correo: no se crea, se ofrece soporte
+    const mensaje = `Hola, equipo de Clinical Hub. Intenté ingresar con el correo ${correoActual} y no encontré mi compra. Es posible que la haya realizado con otro correo o que no recuerde cuál usé. ¿Me ayudan a verificarla, por favor?`;
+    $('soporte-whatsapp').href = 'https://wa.me/573004067138?text=' + encodeURIComponent(mensaje);
+    $('soporte-correo').href = 'mailto:sustanciapro@gmail.com?subject=' + encodeURIComponent('Clinical Hub · No encuentro mi compra') + '&body=' + encodeURIComponent(mensaje);
+    verPaso('entrar-sin-compra');
+  } else if (/rate|seconds|security/i.test(e.message)) {
+    error('error-correo', 'Ya te enviamos un correo hace poco. Espera un minuto e intenta de nuevo.');
+  } else {
+    error('error-correo', 'No pudimos enviar el correo. Revisa tu conexión e intenta de nuevo.');
+  }
+}
+$('entrar-correo').addEventListener('submit', e => { e.preventDefault(); correoActual = $('correo').value.trim().toLowerCase(); enviarEnlace(); });
+$('reenviar').addEventListener('click', enviarEnlace);
+$('otro-correo').addEventListener('click', () => verPaso('entrar-correo'));
+$('volver-correo').addEventListener('click', () => verPaso('entrar-correo'));
+$('entrar-codigo').addEventListener('submit', async e => {
+  e.preventDefault();
+  const {error: err} = await sb.auth.verifyOtp({email: correoActual, token: $('codigo').value.trim(), type: 'email'});
+  if (err) error('error-codigo', 'El código no es válido o ya venció. Pide uno nuevo con «Reenviar el correo».');
+});
+document.querySelector('.ch-cuenta-opcion-salir').addEventListener('click', () => sb.auth.signOut());
+
+// ---------- Passkeys (huella o Face ID) ----------
+// Solo funcionan en una dirección segura (https o localhost) y con el navegador
+// compatible; si no, el botón no aparece.
+const conPasskeys = window.isSecureContext && !!window.PublicKeyCredential;
+$('caja-passkey').hidden = !conPasskeys;
+const errorPasskey = m => {
+  m = (m || '').toLowerCase();
+  if (m.includes('credential_not_found') || m.includes('credential not found')) return 'Este dispositivo no tiene una passkey de Clinical Hub. Entra con tu correo y actívala adentro.';
+  if (m.includes('passkey_disabled')) return 'Las passkeys no están activadas en Supabase.';
+  if (m.includes('challenge_expired')) return 'Pasó demasiado tiempo. Inténtalo de nuevo.';
+  if (m.includes('notallowed') || m.includes('abort') || m.includes('cancel')) return 'Se canceló la huella o Face ID. Inténtalo de nuevo.';
+  return 'No se pudo usar la huella o Face ID. Entra con tu correo.';
+};
+$('entrar-passkey').addEventListener('click', async () => {
+  const {error: e} = await sb.auth.signInWithPasskey();
+  if (e) error('error-correo', errorPasskey(e.message || e.name));
+});
+// Después de entrar con el correo, se ofrece una vez por dispositivo
+const CLAVE_OFRECIDA = 'ch-passkey-ofrecida';
+async function ofrecerPasskey(){
+  if (!conPasskeys || !usuario || !$('aceptar').hidden) return;
+  try { if (localStorage.getItem(CLAVE_OFRECIDA)) return; } catch {}
+  const {data} = await sb.auth.passkey.list();
+  if (data && data.length) return;
+  $('ofrecer-passkey').hidden = false;
+}
+const cerrarOferta = () => { $('ofrecer-passkey').hidden = true; try { localStorage.setItem(CLAVE_OFRECIDA, '1'); } catch {} };
+$('passkey-no').addEventListener('click', cerrarOferta);
+$('passkey-si').addEventListener('click', async () => {
+  const {error: e} = await sb.auth.registerPasskey();
+  if (e) { $('error-passkey').textContent = errorPasskey(e.message || e.name); $('error-passkey').hidden = false; return; }
+  cerrarOferta();
+});
+
+sb.auth.onAuthStateChange((evento, sesion) => { aplicarSesion(sesion); if (evento === 'SIGNED_IN') setTimeout(ofrecerPasskey, 300); });
+sb.auth.getSession().then(({data}) => {
+  // Si se entró con el enlace del correo, se limpia el código de la dirección
+  if (new URLSearchParams(location.search).has('code')) history.replaceState(null, '', location.pathname + location.hash);
+  aplicarSesion(data.session);
+});
+
 window.addEventListener('hashchange', mostrar);
 mostrar();
 </script>

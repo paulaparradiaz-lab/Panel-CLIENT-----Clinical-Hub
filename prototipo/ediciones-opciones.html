@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ediciones · opciones</title>
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<style>
+  .pag{max-width:1180px;margin:0 auto;padding:var(--esp-32) var(--esp-22);background:var(--surface)}
+  .opciones{display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:var(--esp-32) var(--esp-26);margin-top:var(--esp-26)}
+  .op-nombre{margin:0 0 var(--esp-4);font-size:14px;font-weight:600;color:var(--ink)}
+  .op-nota{margin:0 0 var(--esp-16);min-height:36px;font-size:12.5px;line-height:1.4;color:var(--faint)}
+  .caja{padding:var(--esp-20) var(--esp-22);border:1px solid var(--border);border-radius:var(--r-bloque)}
+  .numero{font-size:15.5px;font-weight:700;color:var(--ink)}
+  .cuando{font-size:12.5px;color:var(--faint)}
+  .guia{font-size:14px;color:var(--ink)}
+  .marca{font-size:11.5px;font-weight:600;color:var(--faint)}
+  .vigente{display:inline-block;margin-left:var(--esp-6);padding:1px var(--esp-8);border-radius:var(--r-pill);background:var(--brand-bg);border:1px solid var(--brand-line);font-size:11.5px;font-weight:600;color:var(--brand-ink)}
+  ul{list-style:none;margin:0;padding:0}
+
+  /* Nodos que repiten el algoritmo del favicon: lleno = incorporada, anillo = ampliada */
+  .nodo{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--side)}
+  .nodo.anillo{background:var(--surface);box-shadow:inset 0 0 0 2px var(--side)}
+  .nodo.actual{background:var(--brand);box-shadow:0 0 0 2px var(--side)}
+
+  /* 1 · Línea vertical por número */
+  .lv{position:relative;padding-left:var(--esp-26)}
+  .lv::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:var(--border2)}
+  .lv > li{position:relative;padding-bottom:var(--esp-20)}
+  .lv > li:last-child{padding-bottom:0}
+  .lv > li > .nodo{left:calc(-1 * var(--esp-26));top:5px}
+  .lv .guias{margin-top:var(--esp-8);display:flex;flex-direction:column;gap:var(--esp-6)}
+  .lv .guias li{display:flex;justify-content:space-between;gap:var(--esp-12)}
+
+  /* 2 · Fechas a la izquierda */
+  .lf > li{display:grid;grid-template-columns:96px 14px 1fr;column-gap:var(--esp-12)}
+  .lf .fecha{padding-top:2px;text-align:right}
+  .lf .eje{position:relative}
+  .lf .eje::before{content:"";position:absolute;left:5px;top:0;bottom:0;width:2px;background:var(--border2)}
+  .lf > li:first-child .eje::before{top:8px}
+  .lf > li:last-child .eje::before{bottom:auto;height:8px}
+  .lf .eje .nodo{left:0;top:3px}
+  .lf .cuerpo{padding-bottom:var(--esp-20)}
+  .lf .guias{margin-top:var(--esp-6);display:flex;flex-direction:column;gap:var(--esp-4)}
+
+  /* 3 · Cada guía es un punto de la línea; el número es un rótulo sobre ella */
+  .lg{position:relative;padding-left:var(--esp-26)}
+  .lg::before{content:"";position:absolute;left:5px;top:4px;bottom:6px;width:2px;background:var(--border2)}
+  .lg li{position:relative;padding:var(--esp-6) 0}
+  .lg li .nodo{left:calc(-1 * var(--esp-26));top:calc(var(--esp-6) + 5px)}
+  .lg li.rotulo{padding:var(--esp-12) 0 var(--esp-4)}
+  .lg li.rotulo:first-child{padding-top:0}
+  .lg li.rotulo::before{content:"";position:absolute;left:calc(-1 * var(--esp-26) - 2px);top:calc(50% + 2px);width:16px;height:2px;background:var(--side)}
+  .lg li.rotulo:first-child::before{top:calc(50% - 2px)}
+  .lg .fila{display:flex;justify-content:space-between;gap:var(--esp-12)}
+  .leyenda{display:flex;gap:var(--esp-16);margin-top:var(--esp-16);padding-top:var(--esp-12);border-top:1px solid var(--border);font-size:12.5px;color:var(--faint)}
+  .leyenda span{display:inline-flex;align-items:center;gap:var(--esp-6)}
+  .leyenda .nodo{position:static}
+
+  /* 4 · Línea horizontal: los números como paradas; abajo, el elegido */
+  .lh{position:relative;display:flex;justify-content:space-between;margin:var(--esp-8) 0 var(--esp-20);padding:0 var(--esp-4)}
+  .lh::before{content:"";position:absolute;left:10px;right:10px;top:9px;height:2px;background:var(--border2)}
+  .lh button{position:relative;display:flex;flex-direction:column;align-items:center;gap:var(--esp-6);min-width:44px;padding:0;border:0;background:none;font:inherit;cursor:pointer}
+  .lh button .nodo{position:static;width:20px;height:20px;background:var(--surface);box-shadow:inset 0 0 0 2px var(--side)}
+  .lh button[aria-pressed="true"] .nodo{background:var(--brand);box-shadow:0 0 0 2px var(--side)}
+  .lh button span{font-size:12.5px;color:var(--faint)}
+  .lh button[aria-pressed="true"] span{font-weight:600;color:var(--ink)}
+  .lh-detalle .guias{margin-top:var(--esp-8);display:flex;flex-direction:column;gap:var(--esp-6)}
+  .lh-detalle .guias li{display:flex;justify-content:space-between;gap:var(--esp-12);padding:var(--esp-6) 0;border-top:1px solid var(--border)}
+</style>
+</head>
+<body class="ch">
+<main class="pag">
+  <h1 class="ch-titulo">Ediciones · como una línea de tiempo</h1>
+  <p class="ch-bajada">Cuatro formas de mostrar la publicación continua · del número más reciente hacia atrás.</p>
+  <div class="opciones" id="opciones"></div>
+</main>
+<script>
+// Marcadores: el registro real sale de lo que publica el admin.
+const numeros = [
+  {n:'Vol. [V] · Núm. [N]', cuando:'[Trimestre] [año]', fecha:'[Trim.] [año]', actual:true, guias:[['[Título de la guía]','Incorporada'],['[Título de la guía]','Incorporada'],['[Título de la guía]','Ampliada']]},
+  {n:'Vol. [V] · Núm. [N-1]', cuando:'[Trimestre] [año]', fecha:'[Trim.] [año]', guias:[['[Título de la guía]','Incorporada'],['[Título de la guía]','Ampliada']]},
+  {n:'Vol. [V] · Núm. [N-2]', cuando:'[Trimestre] [año]', fecha:'[Trim.] [año]', guias:[['[Título de la guía]','Incorporada'],['[Título de la guía]','Incorporada']]},
+];
+const vig = x => x.actual ? '<span class="vigente">Edición vigente</span>' : '';
+const nodoGuia = tipo => `<span class="nodo${tipo === 'Ampliada' ? ' anillo' : ''}"></span>`;
+
+const op1 = `<ul class="lv">${numeros.map(x => `<li><span class="nodo${x.actual ? ' actual' : ''}"></span>
+  <span class="numero">${x.n}</span>${vig(x)}<div class="cuando">${x.cuando}</div>
+  <ul class="guias">${x.guias.map(([t, m]) => `<li><span class="guia">${t}</span><span class="marca">${m}</span></li>`).join('')}</ul></li>`).join('')}</ul>`;
+
+const op2 = `<ul class="lf">${numeros.map(x => `<li><span class="fecha cuando">${x.fecha}</span><span class="eje"><span class="nodo${x.actual ? ' actual' : ''}"></span></span>
+  <div class="cuerpo"><span class="numero">${x.n}</span>${vig(x)}
+  <ul class="guias">${x.guias.map(([t, m]) => `<li class="guia">${t} <span class="marca">· ${m}</span></li>`).join('')}</ul></div></li>`).join('')}</ul>`;
+
+const op3 = `<ul class="lg">${numeros.map(x => `<li class="rotulo"><span class="numero">${x.n}</span>${vig(x)} <span class="cuando">· ${x.cuando}</span></li>` +
+  x.guias.map(([t, m]) => `<li>${nodoGuia(m)}<div class="fila"><span class="guia">${t}</span><span class="marca">${m}</span></div></li>`).join('')).join('')}</ul>
+  <div class="leyenda"><span><span class="nodo"></span>Incorporada</span><span><span class="nodo anillo"></span>Ampliada</span></div>`;
+
+const op4 = `<div class="lh" role="group" aria-label="Números">${[...numeros].reverse().map((x, i, arr) => `<button type="button" data-i="${numeros.length - 1 - i}" aria-pressed="${x.actual}"><span class="nodo"></span><span>${x.n.replace('Vol. [V] · ', '')}</span></button>`).join('')}</div>
+  <div class="lh-detalle" aria-live="polite"></div>`;
+
+const opciones = [
+  ['1 · Línea vertical por número', 'Una línea continua baja por la izquierda; cada número es un punto y sus guías cuelgan de él. El número vigente, en lima.', op1],
+  ['2 · Fechas a la izquierda', 'La fecha de cada número a la izquierda, la línea en el medio y las guías a la derecha. Se lee como un calendario.', op2],
+  ['3 · Cada guía es un punto', 'La línea marca cada guía: punto lleno si se incorporó, anillo si se amplió. El número es un rótulo que cruza la línea.', op3],
+  ['4 · Línea horizontal', 'Los números son paradas en una línea, de izquierda a derecha; al tocar una, abajo aparecen sus guías.', op4],
+];
+document.getElementById('opciones').innerHTML = opciones.map(([nombre, nota, html]) =>
+  `<section><p class="op-nombre">${nombre}</p><p class="op-nota">${nota}</p><div class="caja">${html}</div></section>`).join('');
+
+// 4 · al tocar una parada se muestran sus guías
+const detalle = i => {
+  const x = numeros[i];
+  document.querySelector('.lh-detalle').innerHTML = `<span class="numero">${x.n}</span>${vig(x)}<div class="cuando">${x.cuando}</div>
+    <ul class="guias">${x.guias.map(([t, m]) => `<li><span class="guia">${t}</span><span class="marca">${m}</span></li>`).join('')}</ul>`;
+};
+document.querySelector('.lh').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  document.querySelectorAll('.lh button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  detalle(+b.dataset.i);
+});
+detalle(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fondo del login · opciones</title>
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<link rel="stylesheet" href="panel.css">
+<style>
+  .pag{max-width:1240px;margin:0 auto;padding:var(--esp-32) var(--esp-22);background:var(--surface)}
+  .opciones{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:var(--esp-26);margin-top:var(--esp-26)}
+  .op-nombre{margin:0 0 var(--esp-4);font-size:14px;font-weight:600;color:var(--ink)}
+  .op-nota{margin:0 0 var(--esp-12);min-height:54px;font-size:12.5px;line-height:1.45;color:var(--faint)}
+  .op-nota code{font-size:12px}
+  /* La pantalla de entrada real, quieta dentro de la hoja */
+  .op .ch-entrar{position:relative;inset:auto;z-index:auto;min-height:560px;padding:var(--esp-16);border-radius:var(--r-bloque);overflow:hidden}
+  .op .ch-entrar-caja{padding:30px 24px}
+  .f-gris{background:var(--bg)}
+  .f-blanco{background:var(--surface)}
+  .f-blanco .ch-entrar-caja{border:1px solid var(--border2);box-shadow:none}
+  .f-verdoso{background:var(--surface2)}
+  /* Dos colores: una franja arriba y el neutro abajo; la tarjeta queda montada entre los dos */
+  .f-duo-oscuro{background:var(--bg)}
+  .f-duo-lima{background:var(--surface)}
+  .f-duo-oscuro::before,.f-duo-lima::before{content:"";position:absolute;inset:0 0 62% 0}
+  .f-duo-oscuro::before{background:var(--side)}
+  .f-duo-lima::before{background:var(--brand)}
+  .f-duo-oscuro .ch-entrar-caja,.f-duo-lima .ch-entrar-caja{position:relative}
+  .f-duo-lima .ch-entrar-caja{border:1px solid var(--border)}
+</style>
+</head>
+<body class="ch ch-panel">
+<main class="pag">
+  <h1 class="ch-titulo">Fondo del login · neutros y combinaciones</h1>
+  <p class="ch-bajada">La misma tarjeta de entrada sobre los neutros del manual y sobre dos combinaciones de dos colores.</p>
+  <div class="opciones" id="opciones"></div>
+</main>
+<script>
+const caja = `<div class="ch-entrar-caja">
+  <span class="ch-logotipo">Clinical <span>hub</span><small>Medicina basada en la evidencia y experiencia</small></span>
+  <form onsubmit="return false"><h2 class="ch-titulo">Bienvenido</h2>
+  <p class="ch-bajada">Escribe el correo con el que compraste tu suscripción.</p>
+  <label class="ch-rotulo">Correo<input class="ch-campo" type="email"></label>
+  <button class="ch-boton ancho" type="submit">Enviarme el enlace</button></form>
+  <p class="ch-entrar-firma">Powered by Sustancia Pro<sup>™</sup></p></div>`;
+const opciones = [
+  ['f-gris', '1 · Gris cálido', '<code>--bg</code> #f3f3f1. El fondo general del manual: la tarjeta blanca se separa con su sombra suave. Sobrio y profesional.'],
+  ['f-blanco', '2 · Blanco', '<code>--surface</code> #ffffff. Todo blanco; la tarjeta se marca solo con un borde fino. Lo más limpio y editorial.'],
+  ['f-verdoso', '3 · Blanco verdoso', '<code>--surface2</code> #f6f7f4. Un blanco con un toque verde apenas perceptible.'],
+  ['f-duo-oscuro', '4 · Franja verde oscura + gris', 'Arriba el verde del menú (<code>--side</code>), abajo el gris cálido; la tarjeta queda entre los dos. Conecta con el panel sin llenar todo de verde.'],
+  ['f-duo-lima', '5 · Franja lima + blanco', 'Arriba el lima (<code>--brand</code>), abajo blanco. El color aparece, pero solo como franja.'],
+];
+document.getElementById('opciones').innerHTML = opciones.map(([clase, nombre, nota]) =>
+  `<section class="op"><p class="op-nombre">${nombre}</p><p class="op-nota">${nota}</p><div class="ch-entrar ${clase}">${caja}</div></section>`).join('');
+</script>
+</body>
+</html>

@@ -18,10 +18,17 @@ este panel (se crea en la fase de cuentas, con permiso de Paula). Pagos con Hotm
 Ghost se deja de usar. Solo cruzan con el admin: el contenido **publicado**
 (admin → médicos) y **métricas agregadas** de solo lectura (médicos → admin).
 
+**Usuarios:** los crea **n8n** a partir del webhook de Hotmart; el panel nunca crea
+cuentas (entrada con enlace mágico + código). Todo se arma según `docs/usuarios.md`.
+
 ## Menú lateral (en este orden)
 
-Nuevo · Herramientas interactivas · Algoritmos y figuras (traducidas y verificadas) ·
-Resúmenes de guías · Videos · Clinical News.
+Mis favoritos · Nuevo · Guías de práctica clínica (se despliega: Resúmenes
+individuales · Guías contrastadas, que incluye la galería de figuras · Herramientas
+interactivas · Videos de procedimientos) · Clinical News · Autoevaluación ·
+Entrenamiento en IA. Al pie: la cuenta; al desplegarla, «Información editorial» va entre Suscripción y
+Ayuda o contacto (Ediciones y los documentos de `docs/legal/`, que se muestran tal cual). Prototipo:
+`prototipo/panel.html`.
 
 ## Reglas de interfaz: se aplican SIEMPRE, sin que Paula lo pida
 
