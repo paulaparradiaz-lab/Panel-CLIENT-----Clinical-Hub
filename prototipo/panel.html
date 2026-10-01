@@ -232,7 +232,7 @@ const contenido = [
   {tipo:'Galería',                titulo:'[Título de la figura]'},
   {tipo:'Autoevaluación',         titulo:'[Título de la autoevaluación]'},
   {tipo:'Entrenamiento en IA',    titulo:'[Título del entrenamiento]'},
-];
+].filter(c => !secciones.some(x => x.proximamente && x.tipo === c.tipo));   // lo bloqueado no aparece en ninguna lista
 
 const $ = id => document.getElementById(id);
 

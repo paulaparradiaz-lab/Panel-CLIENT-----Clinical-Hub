@@ -331,3 +331,45 @@ begin
   on conflict (usuario) do update set ultimo_evento = 'INVITADO', vence = null, actualizado = now();
 end; $$;
 revoke all on function public.invitar(text, text) from public, anon, authenticated;
+
+-- ------------------------------------------------------------
+-- 10. Cambiar el correo de una cuenta (lo pide el médico por WhatsApp)
+--     El correo une la cuenta con Hotmart. El equipo lo cambia primero en Hotmart y
+--     luego aquí, en la MISMA cuenta: así el médico conserva su nombre, especialidad,
+--     firmas y favoritos. Nunca crear una cuenta nueva para el correo nuevo.
+--     Lo corre el equipo en el editor SQL (o n8n con la clave secreta):
+--     select public.cambiar_correo('correo@actual.com', 'correo@nuevo.com');
+-- ------------------------------------------------------------
+-- Si el correo de la cuenta cambia (por esta función o desde Supabase), el perfil se
+-- actualiza y se aplican los avisos de Hotmart que lleguen con el correo nuevo.
+create or replace function public.correo_cambiado()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+  update public.perfiles set correo = lower(new.email), actualizado = now() where id = new.id;
+  perform public.hotmart_aplicar(new.email);
+  return new;
+end; $$;
+drop trigger if exists correo_cambiado on auth.users;
+create trigger correo_cambiado after update of email on auth.users
+  for each row when (old.email is distinct from new.email)
+  execute function public.correo_cambiado();
+revoke all on function public.correo_cambiado() from public, anon, authenticated;
+
+create or replace function public.cambiar_correo(p_actual text, p_nuevo text)
+returns void language plpgsql security definer set search_path = '' as $$
+declare uid uuid;
+begin
+  if p_nuevo is null or p_nuevo !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' then
+    raise exception 'El correo nuevo no es válido: %', p_nuevo;
+  end if;
+  select u.id into uid from auth.users u where lower(u.email) = lower(p_actual);
+  if uid is null then raise exception 'No hay una cuenta con el correo %', p_actual; end if;
+  if exists (select 1 from auth.users u where lower(u.email) = lower(p_nuevo)) then
+    raise exception 'Ya existe una cuenta con el correo %', p_nuevo;
+  end if;
+  update auth.users set email = lower(p_nuevo), updated_at = now() where id = uid;
+  update auth.identities
+     set identity_data = identity_data || jsonb_build_object('email', lower(p_nuevo)), updated_at = now()
+   where user_id = uid and provider = 'email';
+end; $$;
+revoke all on function public.cambiar_correo(text, text) from public, anon, authenticated;

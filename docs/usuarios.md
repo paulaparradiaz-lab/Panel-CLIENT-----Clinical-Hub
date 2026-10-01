@@ -115,6 +115,20 @@ de n8n. Nunca va en el panel, en el código ni en un chat.
 
 Si un documento legal cambia de versión, el panel vuelve a pedir que se acepte.
 
+## Cambiar el correo de un médico
+
+El correo une la cuenta con Hotmart. El médico no lo puede cambiar en el panel; lo pide por
+WhatsApp (Mis datos lo dice). Entonces el equipo:
+
+1. Cambia el correo en Hotmart.
+2. Cambia el correo de la **misma** cuenta en Supabase (editor SQL):
+   `select public.cambiar_correo('correo@actual.com', 'correo@nuevo.com');`
+   Así conserva su nombre, especialidad, firmas y favoritos. Nunca se crea una cuenta nueva
+   para el correo nuevo: sería una cuenta vacía.
+3. Si después llega un aviso de Hotmart con el correo nuevo, n8n intentará crear la cuenta y
+   Supabase responderá que ya existe: n8n debe ignorar ese error y seguir con el paso de
+   guardar el aviso.
+
 ## Quién puede probar
 
 - **Invitados:** Paula agrega un correo con origen `invitado` (desde Supabase o, más
