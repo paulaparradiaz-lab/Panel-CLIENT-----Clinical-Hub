@@ -27,8 +27,8 @@ Mis favoritos · Nuevo · Guías de práctica clínica (se despliega: Resúmenes
 individuales · Guías contrastadas, que incluye la galería de figuras · Herramientas
 interactivas · Videos de procedimientos) · Autoevaluación · Clinical News ·
 Entrenamiento en IA. Por ahora, Clinical News y Entrenamiento en IA van al final, bloqueadas,
-con «Próximamente»; Resúmenes individuales también queda bloqueado dentro de Guías. Al pie: la cuenta; al desplegarla, «Información editorial» va entre Suscripción y
-Ayuda o contacto (Ediciones y los documentos de `docs/legal/`, que se muestran tal cual). Prototipo:
+con «Próximamente»; Resúmenes individuales también queda bloqueado dentro de Guías. Al pie: la cuenta; al desplegarla, «Términos y políticas» va entre Suscripción y
+Ayuda o contacto (los documentos de `docs/legal/`, que se muestran tal cual). Prototipo:
 `prototipo/panel.html`.
 
 ## Reglas de interfaz: se aplican SIEMPRE, sin que Paula lo pida

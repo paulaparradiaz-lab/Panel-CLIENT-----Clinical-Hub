@@ -50,6 +50,7 @@ create table if not exists public.hotmart_eventos (
   ciudad              text generated always as (datos #>> '{data,buyer,address,city}') stored,
   plan                text generated always as (datos #>> '{data,subscription,plan,name}') stored,
   transaccion         text generated always as (datos #>> '{data,purchase,transaction}') stored,
+  cupon               text generated always as (nullif(datos #>> '{data,purchase,offer,coupon_code}', '')) stored,
   proximo_cobro       timestamptz generated always as
                         (to_timestamp((coalesce(datos #>> '{data,purchase,date_next_charge}',
                                                 datos #>> '{data,date_next_charge}')::bigint) / 1000.0)) stored,
@@ -114,8 +115,9 @@ create table if not exists public.suscripciones (
   usuario        uuid primary key references auth.users (id) on delete cascade,
   suscriptor     text,
   plan           text,
-  ultimo_evento  text not null,    -- PURCHASE_APPROVED, SUBSCRIPTION_CANCELLATION… o INVITADO
+  ultimo_evento  text not null,    -- PURCHASE_APPROVED, SUBSCRIPTION_CANCELLATION… o CORTESIA / COFUNDADOR
   vence          timestamptz,      -- próximo cobro: hasta cuándo está pagado
+  cupon          text,             -- el cupón del último pago, si lo trajo
   actualizado    timestamptz not null default now()
 );
 alter table public.suscripciones enable row level security;
@@ -136,16 +138,16 @@ returns text language sql stable set search_path = '' as $$
     when 'PURCHASE_REFUNDED'         then 'reembolsada'
     when 'PURCHASE_CHARGEBACK'       then 'reembolsada'
     when 'PURCHASE_CANCELED'         then 'cancelada'
-    when 'INVITADO'                  then 'invitado'
+    when 'CORTESIA'                  then 'cortesia'     -- acceso sin compra (probadores, invitados)
+    when 'COFUNDADOR'                then 'cofundador'   -- Paula y Hamilton
     else lower(evento) end
 $$;
 
--- Con acceso: activa, cancelada pero aún pagada, invitado y atrasada (mientras
--- Hotmart reintenta el cobro). Decisión pendiente de Paula: si «atrasada» debe
--- quitar el acceso.
+-- Con acceso: activa, cancelada pero aún pagada, atrasada (mientras Hotmart reintenta
+-- el cobro; el panel le recuerda el pago), cortesía y cofundador.
 create or replace function public.con_acceso(estado text)
 returns boolean language sql immutable set search_path = '' as $$
-  select estado in ('activa', 'cancelada_con_acceso', 'invitado', 'atrasada')
+  select estado in ('activa', 'cancelada_con_acceso', 'atrasada', 'cortesia', 'cofundador')
 $$;
 
 -- ------------------------------------------------------------
@@ -234,6 +236,7 @@ declare
   uid uuid;
   ult record;
   dat record;
+  pago record;
 begin
   if p_correo is null then return; end if;
   select u.id into uid from auth.users u where lower(u.email) = lower(p_correo);
@@ -266,11 +269,18 @@ begin
    order by e.fecha desc limit 1;
   if ult.evento is null then return; end if;
 
-  insert into public.suscripciones as s (usuario, suscriptor, plan, ultimo_evento, vence)
-  values (uid, ult.suscriptor, dat.plan, ult.evento, dat.vence)
+  -- El cupón del último pago (si el último pago no trajo cupón, no hay cupón; sección 11)
+  select e.cupon into pago
+    from public.hotmart_eventos e
+   where e.correo = lower(p_correo) and e.transaccion is not null
+     and e.evento in ('PURCHASE_APPROVED', 'PURCHASE_COMPLETE')
+   order by e.fecha desc limit 1;
+
+  insert into public.suscripciones as s (usuario, suscriptor, plan, ultimo_evento, vence, cupon)
+  values (uid, ult.suscriptor, dat.plan, ult.evento, dat.vence, pago.cupon)
   on conflict (usuario) do update set
     suscriptor = excluded.suscriptor, plan = coalesce(excluded.plan, s.plan),
-    ultimo_evento = excluded.ultimo_evento, vence = excluded.vence, actualizado = now();
+    ultimo_evento = excluded.ultimo_evento, vence = excluded.vence, cupon = excluded.cupon, actualizado = now();
 end; $$;
 revoke all on function public.hotmart_aplicar(text) from public, anon, authenticated;
 
@@ -305,7 +315,8 @@ create or replace view public.v_mi_cuenta with (security_invoker = true) as
 select p.id, p.correo, p.nombre, p.especialidad, p.pais, p.origen,
        s.plan, s.vence,
        public.estado_suscripcion(s.ultimo_evento, s.vence) as estado,
-       coalesce(public.con_acceso(public.estado_suscripcion(s.ultimo_evento, s.vence)), false) as acceso
+       coalesce(public.con_acceso(public.estado_suscripcion(s.ultimo_evento, s.vence)), false) as acceso,
+       s.cupon
   from public.perfiles p
   left join public.suscripciones s on s.usuario = p.id
  where p.id = (select auth.uid());
@@ -313,24 +324,28 @@ revoke all on public.v_mi_cuenta from anon;
 grant select on public.v_mi_cuenta to authenticated;
 
 -- ------------------------------------------------------------
--- 9. Invitar a un probador (sin compra). Lo corre Paula o Claude con permiso:
---    select public.invitar('correo@ejemplo.com', 'Nombre');
+-- 9. Dar acceso sin compra. Lo corre Paula o Claude con permiso:
+--    select public.invitar('correo@ejemplo.com', 'Nombre');                 -- Cortesía
+--    select public.invitar('correo@ejemplo.com', 'Nombre', 'cofundador');   -- Co-founder
 --    La cuenta debe existir (Authentication › Users › Add user).
 -- ------------------------------------------------------------
-create or replace function public.invitar(p_correo text, p_nombre text default null)
+create or replace function public.invitar(p_correo text, p_nombre text default null, p_tipo text default 'cortesia')
 returns void language plpgsql security definer set search_path = '' as $$
 declare uid uuid;
 begin
+  if p_tipo not in ('cortesia', 'cofundador') then
+    raise exception 'El tipo debe ser cortesia o cofundador, no %', p_tipo;
+  end if;
   select u.id into uid from auth.users u where lower(u.email) = lower(p_correo);
   if uid is null then raise exception 'No hay una cuenta con el correo %', p_correo; end if;
   insert into public.perfiles as p (id, correo, nombre, origen)
   values (uid, lower(p_correo), p_nombre, 'invitado')
-  on conflict (id) do update set origen = 'invitado', nombre = coalesce(excluded.nombre, p.nombre), actualizado = now();
+  on conflict (id) do update set origen = 'invitado', nombre = coalesce(p.nombre, excluded.nombre), actualizado = now();
   insert into public.suscripciones (usuario, ultimo_evento)
-  values (uid, 'INVITADO')
-  on conflict (usuario) do update set ultimo_evento = 'INVITADO', vence = null, actualizado = now();
+  values (uid, upper(p_tipo))
+  on conflict (usuario) do update set ultimo_evento = upper(p_tipo), vence = null, actualizado = now();
 end; $$;
-revoke all on function public.invitar(text, text) from public, anon, authenticated;
+revoke all on function public.invitar(text, text, text) from public, anon, authenticated;
 
 -- ------------------------------------------------------------
 -- 10. Cambiar el correo de una cuenta (lo pide el médico por WhatsApp)
@@ -373,3 +388,7 @@ begin
    where user_id = uid and provider = 'email';
 end; $$;
 revoke all on function public.cambiar_correo(text, text) from public, anon, authenticated;
+
+-- Cupón: el que trajo el último pago (Hotmart: data.purchase.offer.coupon_code, el mismo
+-- campo que lee el admin). Está en hotmart_eventos y suscripciones; hotmart_aplicar() lo copia
+-- y v_mi_cuenta lo muestra. Si el último pago no trajo cupón, queda vacío.

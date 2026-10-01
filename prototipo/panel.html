@@ -205,10 +205,10 @@ const secciones = [];
     aplanar(s.hijos || []);
     // Lo bloqueado («Próximamente») no aporta contenido a su grupo.
     const tipos = [s.tipo, ...(s.incluye || []), ...(s.hijos || []).filter(h => !h.proximamente).flatMap(h => secciones.find(x => x.id === h.id).tipos)].filter(Boolean);
-    secciones.push({...s, tipos, bajada: s.bajada || '[Qué encuentras en esta sección]'});
+    secciones.push({...s, tipos, bajada: s.bajada || ''});   // la bajada real la da Paula sección por sección
   });
 })(menu);
-// Fuera del menú: «Información editorial» (en la cuenta, después de Suscripción) y los documentos legales.
+// Fuera del menú: «Términos y políticas» (en la cuenta, después de Suscripción) con los documentos legales.
 // Los documentos se muestran desde docs/legal/ tal cual; su versión es la fecha de
 // «Última actualización».
 const documentos = [
@@ -218,21 +218,13 @@ const documentos = [
 ];
 secciones.push({id:'datos', nombre:'Mis datos', tipos:[], bajada:'Tu nombre y tu especialidad, como se ven en Clinical Hub.'});
 secciones.push({id:'suscripcion', nombre:'Suscripción', tipos:[], bajada:'Tu plan y el estado de tus pagos.'});
-secciones.push({id:'informacion', nombre:'Información editorial', tipos:[], bajada:'Las ediciones publicadas y los documentos que aceptaste.'});
+secciones.push({id:'informacion', nombre:'Términos y políticas', tipos:[], bajada:'Los documentos que aceptaste para usar Clinical Hub.'});
 documentos.forEach(d => secciones.push({id:d.id, nombre:d.nombre, tipos:[], documento:d, bajada:'Última actualización: ' + d.fecha}));
 const seccion = id => secciones.find(x => x.id === id);
 
-// Marcadores: aún no hay contenido real publicado.
-const contenido = [
-  {tipo:'Resumen individual',     titulo:'[Título del resumen]'},
-  {tipo:'Guía contrastada',       titulo:'[Título de la guía contrastada]'},
-  {tipo:'Video de procedimiento', titulo:'[Título del video]'},
-  {tipo:'Herramienta interactiva', titulo:'[Nombre de la herramienta]'},
-  {tipo:'Clinical News',          titulo:'[Título de la noticia]'},
-  {tipo:'Galería',                titulo:'[Título de la figura]'},
-  {tipo:'Autoevaluación',         titulo:'[Título de la autoevaluación]'},
-  {tipo:'Entrenamiento en IA',    titulo:'[Título del entrenamiento]'},
-].filter(c => !secciones.some(x => x.proximamente && x.tipo === c.tipo));   // lo bloqueado no aparece en ninguna lista
+// El contenido llega publicado desde el admin. Mientras tanto no hay nada que listar:
+// cada vista se arma con Paula, una por una.
+const contenido = [];
 
 const $ = id => document.getElementById(id);
 
@@ -247,10 +239,13 @@ function items(lista, nivel){
 $('menu').innerHTML = items(menu, 0);
 
 // La cuenta del médico sale de la base (v_mi_cuenta): plan, estado y fecha.
-// Para revisar el pago atrasado en este computador: 127.0.0.1/…/panel.html?sin-login&pago-atrasado
+// Para ver otro estado en este computador, sin tocar la base:
+//   127.0.0.1/…/panel.html?simular=activa   (o atrasada, cancelada_con_acceso, cortesia…)
 let cuentaBase = null;
-const estadoCuenta = () => location.hostname === '127.0.0.1' && new URLSearchParams(location.search).has('pago-atrasado')
-  ? 'atrasada' : cuentaBase?.estado || null;
+const simulado = () => location.hostname === '127.0.0.1'
+  ? new URLSearchParams(location.search).get('simular') || (new URLSearchParams(location.search).has('pago-atrasado') ? 'atrasada' : null)
+  : null;
+const estadoCuenta = () => simulado() || cuentaBase?.estado || null;
 
 // Aviso de pago atrasado: cerrado vale por esta visita.
 const CLAVE_AVISO_PAGO = 'ch-aviso-pago-cerrado';
@@ -266,7 +261,8 @@ const ESTADOS = {
   activa:               {nombre:'Activa', etq:'ok', fecha:'Próximo cobro'},
   atrasada:             {nombre:'Pago pendiente', etq:'pendiente'},
   cancelada_con_acceso: {nombre:'Cancelada', fecha:'Acceso hasta'},
-  invitado:             {nombre:'Invitado', etq:'lima'},
+  cortesia:             {nombre:'Cortesía', etq:'lima'},
+  cofundador:           {nombre:'Co-founder', etq:'lima'},
   cancelada:            {nombre:'Cancelada'},
   inactiva:             {nombre:'Inactiva'},
   reembolsada:          {nombre:'Reembolsada'},
@@ -333,11 +329,16 @@ $('secciones').addEventListener('keydown', ev => {
 function fichaSuscripcion(){
   const estado = estadoCuenta();
   const e = ESTADOS[estado] || {nombre:'[Estado]'};
-  const plan = estado === 'invitado' ? null : cuentaBase?.plan || '[Plan]';
-  const fecha = cuentaBase?.vence ? new Date(cuentaBase.vence).toLocaleDateString('es-CO', {day:'numeric', month:'long', year:'numeric'}) : '[fecha]';
+  const plan = ['cortesia', 'cofundador'].includes(estado) ? null : cuentaBase?.plan || '[Plan]';   // sin compra, sin plan
+  // En la simulación, la fecha es dentro de un mes (como un plan mensual).
+  const vence = cuentaBase?.vence || (simulado() ? new Date(Date.now() + 30 * 864e5) : null);
+  const fecha = vence ? new Date(vence).toLocaleDateString('es-CO', {day:'numeric', month:'long', year:'numeric'}) : '[fecha]';
   const fila = (dt, dd) => `<div><dt>${dt}</dt><dd>${dd}</dd></div>`;
+  // El cupón del último pago, si lo trajo (Hotmart: offer.coupon_code). En la simulación, su lugar.
+  const cupon = cuentaBase?.cupon || (simulado() && plan ? '[Cupón]' : null);
   return `<dl class="ch-ficha">
       ${plan ? fila('Plan', plan) : ''}
+      ${cupon ? fila('Cupón', escapar(cupon)) : ''}
       ${fila('Estado', `<span class="ch-etq${e.etq ? ' ' + e.etq : ''}">${e.nombre}</span>`)}
       ${e.fecha ? fila(e.fecha, fecha) : ''}
     </dl>
@@ -364,11 +365,9 @@ function mostrar(){
   abrirRamas();
   $('titulo').textContent = s.nombre;
   $('bajada').textContent = s.bajada;
+  $('bajada').hidden = !s.bajada;
   if (s.id === 'favoritos') {
-    // Marcadores: aún no hay médicos ni datos de uso.
-    $('secciones').innerHTML =
-      bloque('Guardados', 'Lo que marcaste como favorito.', contenido.slice(0, 3), true) +
-      bloque('Lo que más consultas', 'Según lo que más abres.', contenido.slice(3, 7), true);
+    $('secciones').innerHTML = '';   // se arma con la vista de Mis favoritos
     return;
   }
   if (s.id !== 'datos') editandoDato = null;
@@ -381,54 +380,19 @@ function mostrar(){
     return;
   }
   if (s.id === 'informacion') {
-    // El registro de ediciones y, debajo, los documentos (con la fecha en que los aceptó).
-    // Marcadores de ediciones: el registro real sale de lo que publica el admin.
+    // Los documentos, con la fecha en que los aceptó.
     const firma = leerAceptacion();
     const docs = documentos.map(d => `
       <li><a class="ch-lista-fila" href="#${d.id}">
         <span class="ch-lista-titulo">${d.nombre}</span>
         <span class="ch-lista-meta">Actualizado el ${d.fecha}${firma ? ' · Aceptado el ' + new Date(firma.fecha).toLocaleDateString('es-CO', {day:'numeric', month:'long', year:'numeric'}) : ''}</span>
       </a></li>`).join('');
-    // Línea de tiempo horizontal: abre en el número de hoy (a la derecha) y se desliza
-    // hacia atrás. El número más viejo queda a la izquierda.
-    const numeros = Array.from({length:6}, (_, i) => ({
-      numero: i === 5 ? 'Núm. [N]' : `Núm. [N-${5 - i}]`,
-      cuando: '[Trimestre] [año]',
-      vigente: i === 5,
-      guias: [{tipo:'Incorporada', titulo:'[Título de la guía]'}, {tipo:'Incorporada', titulo:'[Título de la guía]'}, {tipo:'Ampliada', titulo:'[Título de la guía]'}],
-    }));
+    // Ediciones: se arma cuando el admin publique el registro real de números.
     $('secciones').innerHTML = `
       <div class="ch-bloque">
-        <h2 class="ch-titulo-seccion" id="bloque-ediciones">Ediciones</h2>
-        <p class="ch-subtitulo-seccion">Desliza hacia atrás para ver los números anteriores.</p>
-        <div class="ch-linea" role="group" aria-labelledby="bloque-ediciones">
-          ${numeros.map((x, i) => `<button type="button" class="ch-linea-parada" data-i="${i}" aria-pressed="${x.vigente}"><span class="ch-linea-nodo"></span><span>${x.numero}</span><small>${x.cuando}</small></button>`).join('')}
-        </div>
-        <div class="ch-linea-detalle" aria-live="polite"></div>
-      </div>
-      <div class="ch-bloque">
         <h2 class="ch-titulo-seccion" id="bloque-documentos">Documentos</h2>
-        <p class="ch-subtitulo-seccion">Lo que aceptaste para usar Clinical Hub.</p>
         <section class="ch-lista" aria-labelledby="bloque-documentos"><ul>${docs}</ul></section>
       </div>`;
-    const linea = document.querySelector('.ch-linea');
-    const elegirNumero = i => {
-      const x = numeros[i];
-      linea.querySelectorAll('.ch-linea-parada').forEach(b => b.setAttribute('aria-pressed', b.dataset.i == i));
-      document.querySelector('.ch-linea-detalle').innerHTML = `
-        <p class="ch-linea-titulo">Vol. [V] · ${x.numero}${x.vigente ? ' <span class="ch-etq lima">Edición vigente</span>' : ''}</p>
-        <p class="ch-lista-meta">${x.cuando}</p>` + lista(x.guias, true, 'bloque-ediciones');
-    };
-    linea.addEventListener('click', e => { const b = e.target.closest('.ch-linea-parada'); if (b) elegirNumero(+b.dataset.i); });
-    // Flechas del teclado para moverse entre números
-    linea.addEventListener('keydown', e => {
-      if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
-      const paradas = [...linea.querySelectorAll('.ch-linea-parada')];
-      const i = paradas.indexOf(document.activeElement) + (e.key === 'ArrowLeft' ? -1 : 1);
-      if (paradas[i]) { paradas[i].focus(); elegirNumero(i); }
-    });
-    elegirNumero(numeros.length - 1);
-    linea.scrollLeft = linea.scrollWidth;   // abre en el día de hoy
     return;
   }
   if (s.documento) {
@@ -443,7 +407,7 @@ function mostrar(){
     return;
   }
   const filas = s.tipos.length ? contenido.filter(c => s.tipos.includes(c.tipo)) : contenido;
-  $('secciones').innerHTML = lista(filas, s.tipos.length !== 1, 'titulo');
+  $('secciones').innerHTML = filas.length ? lista(filas, s.tipos.length !== 1, 'titulo') : '';
 }
 
 function lista(filas, conTipo, rotulo){
@@ -497,13 +461,19 @@ $('menu').addEventListener('click', e => {
 // Las opciones de la cuenta, en el bloque del pie del menú (computador y celular).
 const opcionesCuenta = [
   {texto:'Mis datos', href:'#datos'},
-  {texto:'Suscripción', detalle:'[Plan] · activa hasta [fecha]', href:'#suscripcion'},
-  {texto:'Información editorial', href:'#informacion'},
-  {texto:'Ayuda o contacto', href:'#ayuda'},
+  {texto:'Suscripción', href:'#suscripcion'},
+  {texto:'Términos y políticas', href:'#informacion'},
+  {texto:'Ayuda o contacto', whatsapp:true},   // abre WhatsApp de soporte con el mensaje listo
   {texto:'Cerrar sesión', salir:true},
 ];
+// Ayuda: WhatsApp de soporte con un mensaje precargado (con el correo de ingreso, si ya entró).
+const whatsappAyuda = () => 'https://wa.me/573004067138?text=' + encodeURIComponent(usuario?.email
+  ? `Hola, equipo de Clinical Hub. Necesito ayuda con mi cuenta; mi correo de ingreso es ${usuario.email}.`
+  : 'Hola, equipo de Clinical Hub. Necesito ayuda con mi cuenta.');
 const dibujarOpciones = (clase, claseDetalle, claseSalir) => opcionesCuenta.map(o => o.salir
   ? `<button type="button" class="${clase} ${claseSalir}">${o.texto}</button>`
+  : o.whatsapp
+  ? `<a class="${clase}" data-ayuda href="https://wa.me/573004067138" target="_blank" rel="noopener">${o.texto}</a>`
   : `<a class="${clase}" href="${o.href}">${o.texto}${o.detalle ? `<${claseDetalle}>${o.detalle}</${claseDetalle}>` : ''}</a>`).join('');
 document.querySelectorAll('.ch-cuenta-opciones').forEach(m => m.innerHTML = dibujarOpciones('ch-cuenta-opcion', 'small', 'ch-cuenta-opcion-salir'));
 // La pieza del pie del menú se despliega hacia arriba.
@@ -686,6 +656,7 @@ function pintarCuenta(){
   nombre.textContent = quien;
   nombre.insertAdjacentHTML('beforeend', `<small></small>`);
   nombre.querySelector('small').textContent = cuentaBase?.especialidad || firma?.especialidad || '[Especialidad]';
+  document.querySelectorAll('[data-ayuda]').forEach(a => a.href = whatsappAyuda());
 }
 function verPaso(paso){
   ['entrar-correo', 'entrar-codigo', 'entrar-sin-compra'].forEach(id => $(id).hidden = id !== paso);
@@ -698,7 +669,7 @@ async function leerCuenta(){
   firmasBase = null;
   if (usuario) {
     const [cuenta, firmas] = await Promise.all([
-      sb.from('v_mi_cuenta').select('nombre, correo, especialidad, plan, estado, vence').maybeSingle(),
+      sb.from('v_mi_cuenta').select('nombre, correo, especialidad, plan, estado, vence, cupon').maybeSingle(),
       sb.from('aceptaciones').select('documento, version, fecha'),
     ]);
     cuentaBase = cuenta.data || null;

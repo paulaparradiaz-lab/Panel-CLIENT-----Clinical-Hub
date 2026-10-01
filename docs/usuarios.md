@@ -131,7 +131,8 @@ WhatsApp (Mis datos lo dice). Entonces el equipo:
 
 ## Quién puede probar
 
-- **Invitados:** Paula agrega un correo con origen `invitado` (desde Supabase o, más
+- **Sin compra:** Paula crea la cuenta y le da acceso con `invitar()`: estado **Cortesía**
+  para probadores e invitados, **Co-founder** para Paula y Hamilton (desde Supabase o, más
   adelante, desde el panel del admin). n8n le manda la misma bienvenida.
 - **Compras de prueba:** el modo de prueba de Hotmart, para verificar el flujo completo
   sin cobrar.
@@ -150,7 +151,7 @@ WhatsApp (Mis datos lo dice). Entonces el equipo:
    Asunto del correo: «Clinical Hub · No encuentro mi compra».
 4. **Antes de empezar** (al entrar, y cada vez que cambie un documento): declaración y
    aceptación de los tres documentos. Ya está en el prototipo.
-6. **Información editorial** (en la cuenta, entre Suscripción y Ayuda o contacto): Ediciones y los tres
+6. **Términos y políticas** (en la cuenta, entre Suscripción y Ayuda o contacto): los tres
    documentos, con la fecha en que los aceptó. Cada documento se lee completo, tal cual.
 5. **Tu suscripción venció:** enlace para renovar en Hotmart.
 
