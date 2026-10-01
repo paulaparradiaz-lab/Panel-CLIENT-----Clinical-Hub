@@ -5,6 +5,8 @@ Este documento es la premisa del sistema de usuarios. Todo lo que se construya
 primero aquí.
 
 Proyecto de Supabase: **Clinical hub - Usuarios** (`fzgezaxmdjtuygztvhvw`, us-east-1).
+Prototipo publicado para probar (GitHub Pages, https):
+`https://paulaparradiaz-lab.github.io/Panel-CLIENT-----Clinical-Hub/prototipo/panel.html`.
 El proyecto **Clinical hub - Backoffice** es del panel de administradores y no se toca.
 
 ## El flujo
@@ -29,7 +31,7 @@ El proyecto **Clinical hub - Backoffice** es del panel de administradores y no s
    vez»: activar la passkey en ese dispositivo (como en el panel del admin).
         ↓
 4. Al entrar, antes de todo: ventana «Antes de empezar» (bloquea el panel)
-   ├─ especialidad (se pide aquí, una sola vez)
+   ├─ especialidad (se pide aquí, una sola vez; el nombre NO se pide: viene de Hotmart)
    ├─ enlaces para leer los tres documentos completos
    ├─ casilla: declara que es profesional de la salud (términos, numeral 9)
    ├─ casilla: acepta términos y condiciones, política de privacidad y aviso clínico y editorial
@@ -75,7 +77,10 @@ de n8n. Nunca va en el panel, en el código ni en un chat.
 
 **Paso 1 · Crear el usuario** (API de administración de Supabase Auth)
 
-- `POST /auth/v1/admin/users` con `{ "email": "<correo de la compra>", "email_confirm": true }`.
+- `POST /auth/v1/admin/users` con
+  `{ "email": "<correo de la compra>", "email_confirm": true, "user_metadata": { "nombre": "<nombre del comprador en Hotmart>" } }`.
+  El nombre es el que aparece al pie del menú. No se le pide al médico: sale siempre de
+  la compra en Hotmart.
 - Si el correo ya existe, se busca su id y se sigue al paso 2 (una persona que renueva o
   compra otra vez no se duplica).
 

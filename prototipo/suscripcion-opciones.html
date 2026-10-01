@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suscripción · opciones</title>
+<link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<link rel="stylesheet" href="panel.css">
+<style>
+  .pag{max-width:1240px;margin:0 auto;padding:var(--esp-32) var(--esp-22);background:var(--bg);min-height:100vh}
+  .estados{display:flex;flex-wrap:wrap;gap:var(--esp-8);margin-top:var(--esp-16)}
+  .estados .ch-chip{min-height:44px}
+  .opciones{display:grid;grid-template-columns:repeat(auto-fill,minmax(480px,1fr));gap:var(--esp-26);margin-top:var(--esp-26)}
+  @media (max-width:560px){.opciones{grid-template-columns:minmax(0,1fr)}}
+  .op-nombre{margin:0 0 var(--esp-4);font-size:14px;font-weight:600;color:var(--ink)}
+  .op-nota{margin:0 0 var(--esp-12);min-height:36px;font-size:12.5px;line-height:1.45;color:var(--faint)}
+  /* La hoja blanca del contenido, como dentro del panel */
+  .hoja{padding:var(--esp-32) var(--esp-26);border:1px solid var(--border2);border-radius:var(--r-bloque);background:var(--surface)}
+
+  /* Piezas comunes */
+  .etq-pendiente{background:var(--nota-amarilla);border-color:var(--border2);color:var(--ink)}
+  .frase{margin:0;font-size:15.5px;line-height:1.55;color:var(--ink)}
+  .frase-chica{margin:var(--esp-4) 0 0;font-size:14px;line-height:1.5;color:var(--muted)}
+  .acciones{margin-top:var(--esp-16)}
+  a.ch-boton{color:var(--on-sel);text-decoration:none}
+
+  /* 1 · Ficha: filas de dato y valor */
+  .ficha{margin:0;border-top:1px solid var(--border)}
+  .ficha > div{display:grid;grid-template-columns:150px minmax(0,1fr);align-items:center;gap:var(--esp-16);min-height:52px;padding:var(--esp-8) 0;border-bottom:1px solid var(--border)}
+  .ficha dt{font-size:13px;color:var(--faint)}
+  .ficha dd{margin:0;font-size:15.5px;color:var(--ink)}
+  .ficha-nota{margin-top:var(--esp-16);padding:var(--esp-16);border-radius:var(--r-sm);background:var(--nota-amarilla)}
+  .ficha-nota .frase{font-size:14px}
+
+  /* 2 · Estado arriba */
+  .estado-grande{margin:0;font-size:22px;font-weight:400;letter-spacing:-.02em;line-height:1.2;color:var(--ink)}
+  .estado-bloque{padding-bottom:var(--esp-20);border-bottom:1px solid var(--border)}
+  .datos-chicos{display:flex;flex-wrap:wrap;gap:var(--esp-6) var(--esp-26);margin:var(--esp-16) 0 0;font-size:13px;color:var(--faint)}
+  .datos-chicos b{display:block;margin-top:2px;font-size:14px;font-weight:500;color:var(--ink)}
+
+  /* 4 · Tarjeta del plan */
+  .tarjeta{padding:var(--esp-20) var(--esp-22);border:1px solid var(--border2);border-radius:var(--r-bloque)}
+  .tarjeta-cabeza{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--esp-12)}
+  .tarjeta .ch-titulo-seccion{font-weight:600}
+  .tarjeta-pie{margin-top:var(--esp-16);padding-top:var(--esp-16);border-top:1px solid var(--border)}
+</style>
+</head>
+<body class="ch ch-panel">
+<main class="pag">
+  <h1 class="ch-titulo">Suscripción · opciones</h1>
+  <p class="ch-bajada">Cuatro formas de la misma página. Cambia el estado para ver cada caso.</p>
+  <div class="estados" role="group" aria-label="Estado de la suscripción" id="estados"></div>
+  <div class="opciones" id="opciones"></div>
+</main>
+<script>
+// Marcadores: [Plan] es el nombre del plan en Hotmart; [fecha] sale de la base (vence).
+// «Ir a pagar» lleva a Hotmart: [ENLACE DE HOTMART].
+const estados = {
+  atrasada:  {nombre:'Pago pendiente', etq:'ch-etq etq-pendiente', plan:'[Plan]', fechaRotulo:null, fecha:null,
+              frase:'Tu último pago no se pudo procesar. Se intentará de nuevo; si quieres, actualiza tu medio de pago.', pagar:true},
+  activa:    {nombre:'Activa', etq:'ch-etq ok', plan:'[Plan]', fechaRotulo:'Próximo cobro', fecha:'[fecha]',
+              frase:'Tu suscripción está al día.'},
+  cancelada: {nombre:'Cancelada', etq:'ch-etq', plan:'[Plan]', fechaRotulo:'Acceso hasta', fecha:'[fecha]',
+              frase:'Cancelaste tu suscripción. Tienes acceso hasta el [fecha].'},
+  invitado:  {nombre:'Invitado', etq:'ch-etq lima', plan:null, fechaRotulo:null, fecha:null,
+              frase:'Tu acceso no depende de una suscripción.'},
+};
+const pagar = `<a class="ch-boton" href="#">Ir a pagar</a>`;
+const cabeza = `<div class="ch-pagina-cabeza"><h2 class="ch-titulo">Suscripción</h2><p class="ch-bajada">Tu plan y el estado de tus pagos.</p></div>`;
+
+const opciones = [
+  ['1 · Ficha', 'Los datos en filas, como una ficha: plan, estado y fecha. Si el pago está pendiente, debajo va la nota amarilla con el botón.',
+   e => `${cabeza}<dl class="ficha">
+     ${e.plan ? `<div><dt>Plan</dt><dd>${e.plan}</dd></div>` : ''}
+     <div><dt>Estado</dt><dd><span class="${e.etq}">${e.nombre}</span></dd></div>
+     ${e.fecha ? `<div><dt>${e.fechaRotulo}</dt><dd>${e.fecha}</dd></div>` : ''}</dl>
+     ${e.pagar ? `<div class="ficha-nota"><p class="frase">${e.frase}</p><div class="acciones">${pagar}</div></div>` : ''}`],
+  ['2 · Estado arriba', 'Lo primero que lee es en qué está su suscripción, en grande, con la frase y el botón. El plan y la fecha quedan abajo, en chico.',
+   e => `${cabeza}<div class="estado-bloque"><p class="estado-grande">${e.nombre}</p><p class="frase-chica">${e.frase}</p>
+     ${e.pagar ? `<div class="acciones">${pagar}</div>` : ''}</div>
+     <div class="datos-chicos">${e.plan ? `<span>Plan<b>${e.plan}</b></span>` : ''}${e.fecha ? `<span>${e.fechaRotulo}<b>${e.fecha}</b></span>` : ''}</div>`],
+  ['3 · Una frase', 'Sin tabla ni tarjeta: una frase que lo dice todo y, si hace falta, el botón. Lo más corto.',
+   e => `${cabeza}<p class="frase">${e.plan ? `Plan ${e.plan}. ` : ''}${e.pagar ? 'Tu último pago no se pudo procesar. Se intentará de nuevo; si quieres, actualiza tu medio de pago.'
+     : e.nombre === 'Activa' ? 'Tu suscripción está al día; el próximo cobro es el [fecha].' : e.frase}</p>
+     ${e.pagar ? `<div class="acciones">${pagar}</div>` : ''}`],
+  ['4 · Tarjeta del plan', 'Una sola tarjeta con borde: el plan con su estado a la derecha, la fecha y, abajo, el botón cuando hay pago pendiente.',
+   e => `${cabeza}<div class="tarjeta"><div class="tarjeta-cabeza"><div><p class="ch-titulo-seccion">${e.plan || 'Acceso de invitado'}</p>
+     ${e.fecha ? `<p class="ch-subtitulo-seccion">${e.fechaRotulo}: ${e.fecha}</p>` : ''}</div><span class="${e.etq}">${e.nombre}</span></div>
+     <p class="frase-chica">${e.frase}</p>
+     ${e.pagar ? `<div class="tarjeta-pie">${pagar}</div>` : ''}</div>`],
+];
+
+let actual = 'atrasada';
+const pintar = () => {
+  document.getElementById('estados').innerHTML = Object.entries(estados).map(([id, e]) =>
+    `<button type="button" class="ch-chip" data-estado="${id}" aria-pressed="${id === actual}">${e.nombre}</button>`).join('');
+  document.getElementById('opciones').innerHTML = opciones.map(([n, nota, html]) =>
+    `<section><p class="op-nombre">${n}</p><p class="op-nota">${nota}</p><div class="hoja">${html(estados[actual])}</div></section>`).join('');
+};
+document.getElementById('estados').addEventListener('click', ev => {
+  const b = ev.target.closest('[data-estado]'); if (!b) return;
+  actual = b.dataset.estado; pintar();
+  document.querySelector(`[data-estado="${actual}"]`).focus();
+});
+pintar();
+</script>
+</body>
+</html>

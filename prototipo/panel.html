@@ -65,6 +65,13 @@
 
   <main class="ch-contenido">
     <div class="ch-pagina">
+      <!-- Solo con el pago atrasado (sigue con acceso) y solo en Mis favoritos, que es donde se entra.
+           Se cierra con la X y no vuelve hasta la próxima vez que entre. -->
+      <div class="ch-aviso-pago" id="aviso-pago" role="status" hidden>
+        <p>Tu último pago no se pudo procesar.<span class="ch-aviso-pago-mas"> Se intentará de nuevo; si quieres, revisa tu medio de pago para que todo siga al día.</span>
+          <a href="#suscripcion">Revisar mi pago</a></p>
+        <button type="button" class="ch-aviso-pago-cerrar" id="cerrar-aviso-pago" aria-label="Cerrar el aviso de pago"><svg aria-hidden="true"><use href="#i-cerrar"/></svg></button>
+      </div>
       <div class="ch-pagina-cabeza">
         <h1 class="ch-titulo" id="titulo"></h1>
         <p class="ch-bajada" id="bajada"></p>
@@ -130,6 +137,7 @@
     <ul class="ch-aceptar-docs" id="aceptar-lista"></ul>
     <label class="ch-aceptar-casilla"><input type="checkbox" required><span id="declaracion-texto">Soy profesional de la salud con título habilitante y tarjeta profesional vigente, o estudiante del área bajo supervisión docente.</span></label>
     <label class="ch-aceptar-casilla"><input type="checkbox" required><span>He leído y acepto los términos y condiciones, la política de privacidad y el aviso clínico y editorial.</span></label>
+    <p class="ch-entrar-error" id="error-aceptar" role="alert" hidden></p>
     <button type="submit" class="ch-boton ancho" id="aceptar-boton" disabled>Aceptar y entrar</button>
   </div>
 </form>
@@ -178,15 +186,16 @@ const menu = [
   {id:'favoritos', nombre:'Mis favoritos', icono:'i-estrella', bajada:'Lo que guardaste y lo que más consultas.'},
   {id:'nuevo', nombre:'Nuevo', icono:'i-nuevo', bajada:'Lo último que se publicó, de todas las secciones.'},
   {id:'guias', nombre:'Guías de práctica clínica', icono:'i-guias', hijos:[
-    {id:'resumenes', nombre:'Resúmenes individuales', tipo:'Resumen individual'},
+    {id:'resumenes', nombre:'Resúmenes individuales', proximamente:true, tipo:'Resumen individual'},
     // La galería de figuras vive dentro de Guías contrastadas, no en el menú.
     {id:'contrastadas', nombre:'Guías contrastadas', tipo:'Guía contrastada', incluye:['Galería']},
     {id:'herramientas', nombre:'Herramientas interactivas', tipo:'Herramienta interactiva'},
     {id:'videos', nombre:'Videos de procedimientos', tipo:'Video de procedimiento'},
   ]},
-  {id:'news', nombre:'Clinical News', nuevo:true, icono:'i-news', tipo:'Clinical News'},
   {id:'autoevaluacion', nombre:'Autoevaluación', nuevo:true, icono:'i-autoevaluacion', tipo:'Autoevaluación'},
-  {id:'ia', nombre:'Entrenamiento en IA', nuevo:true, icono:'i-ia', tipo:'Entrenamiento en IA'},
+  // De momento, al final y bloqueadas: se ven en el menú, pero no se abren.
+  {id:'news', nombre:'Clinical News', proximamente:true, icono:'i-news', tipo:'Clinical News'},
+  {id:'ia', nombre:'Entrenamiento en IA', proximamente:true, icono:'i-ia', tipo:'Entrenamiento en IA'},
 ];
 
 // Cada sección muestra su tipo y el de todo lo que cuelga de ella.
@@ -194,7 +203,8 @@ const secciones = [];
 (function aplanar(lista){
   lista.forEach(s => {
     aplanar(s.hijos || []);
-    const tipos = [s.tipo, ...(s.incluye || []), ...(s.hijos || []).flatMap(h => secciones.find(x => x.id === h.id).tipos)].filter(Boolean);
+    // Lo bloqueado («Próximamente») no aporta contenido a su grupo.
+    const tipos = [s.tipo, ...(s.incluye || []), ...(s.hijos || []).filter(h => !h.proximamente).flatMap(h => secciones.find(x => x.id === h.id).tipos)].filter(Boolean);
     secciones.push({...s, tipos, bajada: s.bajada || '[Qué encuentras en esta sección]'});
   });
 })(menu);
@@ -206,6 +216,8 @@ const documentos = [
   {id:'privacidad', nombre:'Política de privacidad', archivo:'politica-de-privacidad.md', version:'2026-08-13', fecha:'13 de agosto de 2026'},
   {id:'aviso', nombre:'Aviso clínico y editorial', archivo:'aviso-clinico-y-editorial.md', version:'2026-08-13', fecha:'13 de agosto de 2026'},
 ];
+secciones.push({id:'datos', nombre:'Mis datos', tipos:[], bajada:'Tu nombre y tu especialidad, como se ven en Clinical Hub.'});
+secciones.push({id:'suscripcion', nombre:'Suscripción', tipos:[], bajada:'Tu plan y el estado de tus pagos.'});
 secciones.push({id:'informacion', nombre:'Información editorial', tipos:[], bajada:'Las ediciones publicadas y los documentos que aceptaste.'});
 documentos.forEach(d => secciones.push({id:d.id, nombre:d.nombre, tipos:[], documento:d, bajada:'Última actualización: ' + d.fecha}));
 const seccion = id => secciones.find(x => x.id === id);
@@ -227,14 +239,123 @@ const $ = id => document.getElementById(id);
 // Desde afuera solo se ven las secciones principales; la rama de un grupo
 // se abre cuando se está en él o en algo que cuelga de él.
 function items(lista, nivel){
-  return lista.map(s => `
+  return lista.map(s => s.proximamente ? `
+    <li><span class="ch-menu-item${nivel ? ' sub' : ''} ch-menu-bloqueado" aria-disabled="true">${s.icono ? `<svg aria-hidden="true"><use href="#${s.icono}"/></svg>` : ''}<span class="ch-menu-nombre">${s.nombre}</span><span class="ch-menu-pronto">Próximamente</span></span></li>` : `
     <li${s.hijos ? ' class="ch-menu-grupo"' : ''}><a class="ch-menu-item${nivel ? ' sub' : ''}" href="#${s.id}"${s.hijos ? ` aria-expanded="false" aria-controls="rama-${s.id}"` : ''}>${s.icono ? `<svg aria-hidden="true"><use href="#${s.icono}"/></svg>` : ''}<span class="ch-menu-nombre">${s.nombre}</span>${s.nuevo ? '<span class="ch-menu-nuevo">New</span>' : ''}${s.hijos ? '<svg class="ch-menu-flecha" aria-hidden="true"><use href="#i-flecha"/></svg>' : ''}</a>
     ${s.hijos ? `<ul class="ch-menu-rama" id="rama-${s.id}">${items(s.hijos, nivel + 1)}</ul>` : ''}</li>`).join('');
 }
 $('menu').innerHTML = items(menu, 0);
 
-function mostrar(){
+// La cuenta del médico sale de la base (v_mi_cuenta): plan, estado y fecha.
+// Para revisar el pago atrasado en este computador: 127.0.0.1/…/panel.html?sin-login&pago-atrasado
+let cuentaBase = null;
+const estadoCuenta = () => location.hostname === '127.0.0.1' && new URLSearchParams(location.search).has('pago-atrasado')
+  ? 'atrasada' : cuentaBase?.estado || null;
+
+// Aviso de pago atrasado: cerrado vale por esta visita.
+const CLAVE_AVISO_PAGO = 'ch-aviso-pago-cerrado';
+function pintarAvisoPago(){
   const s = seccion(location.hash.slice(1)) || seccion('favoritos');
+  let cerrado = false;
+  try { cerrado = sessionStorage.getItem(CLAVE_AVISO_PAGO) === '1'; } catch {}
+  $('aviso-pago').hidden = !(estadoCuenta() === 'atrasada' && s.id === 'favoritos' && !cerrado);
+}
+
+// Suscripción: ficha de plan, estado y fecha. Con el pago pendiente, la nota y el botón a Hotmart.
+const ESTADOS = {
+  activa:               {nombre:'Activa', etq:'ok', fecha:'Próximo cobro'},
+  atrasada:             {nombre:'Pago pendiente', etq:'pendiente'},
+  cancelada_con_acceso: {nombre:'Cancelada', fecha:'Acceso hasta'},
+  invitado:             {nombre:'Invitado', etq:'lima'},
+  cancelada:            {nombre:'Cancelada'},
+  inactiva:             {nombre:'Inactiva'},
+  reembolsada:          {nombre:'Reembolsada'},
+};
+// Mis datos: nombre y especialidad se cambian (solo en la plataforma). El correo de ingreso
+// une la cuenta con Hotmart: no se edita aquí, solo vía WhatsApp con el equipo.
+const escapar = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;'}[c]));
+let editandoDato = null, avisoDatos = null;
+const misDatos = () => ({
+  nombre: cuentaBase?.nombre || usuario?.user_metadata?.nombre || '[Nombre del médico]',
+  correo: cuentaBase?.correo || usuario?.email || '[correo]',
+  especialidad: cuentaBase?.especialidad || leerAceptacion()?.especialidad || '[Especialidad]',
+});
+function fichaDatos(){
+  const d = misDatos();
+  const whatsapp = 'https://wa.me/573004067138?text=' + encodeURIComponent(
+    `Hola, equipo de Clinical Hub. Quiero cambiar el correo de mi cuenta; el actual es ${d.correo}. ¿Me ayudan, por favor?`);
+  const editable = (campo, rotulo) => editandoDato === campo
+    ? `<div><dt><label for="dato-${campo}">${rotulo}</label></dt><dd><div class="ch-editar">
+        <input class="ch-campo" id="dato-${campo}" value="${escapar(d[campo])}" autocomplete="off" required>
+        <span class="ch-editar-botones"><button type="button" class="ch-boton chico" data-guardar-dato="${campo}">Guardar</button>
+        <button type="button" class="ch-boton secundario chico" data-cancelar-dato>Cancelar</button></span></div></dd></div>`
+    : `<div><dt>${rotulo}</dt><dd class="ch-ficha-accion"><span>${escapar(d[campo])}</span>
+        <button type="button" class="ch-accion" data-cambiar-dato="${campo}" aria-label="Cambiar ${rotulo.toLowerCase()}">Cambiar</button></dd></div>`;
+  const aviso = avisoDatos ? `<p class="ch-aviso ${avisoDatos.ok ? 'ok' : 'mal'} ch-datos-aviso" role="status">${avisoDatos.texto}</p>` : '';
+  avisoDatos = null;
+  return `<dl class="ch-ficha">
+      ${editable('nombre', 'Nombre')}
+      <div><dt>Correo de ingreso</dt><dd>${escapar(d.correo)}
+        <span class="ch-ficha-nota-chica">El cambio de correo solo se puede realizar vía <a href="${whatsapp}" target="_blank" rel="noopener">WhatsApp</a>.</span></dd></div>
+      ${editable('especialidad', 'Especialidad')}
+    </dl>${aviso}`;
+}
+async function guardarDato(campo){
+  const campoInput = $('dato-' + campo), valor = campoInput.value.trim();
+  if (!valor) { campoInput.focus(); return; }
+  if (usuario) {
+    const {error: e} = await sb.from('perfiles').update({[campo]: valor, actualizado: new Date().toISOString()}).eq('id', usuario.id);
+    if (e) { avisoDatos = {ok:false, texto:'No pudimos guardar el cambio. Intenta de nuevo.'}; mostrar(); $('dato-' + campo)?.focus(); return; }
+  }
+  cuentaBase = {...(cuentaBase || {}), [campo]: valor};
+  editandoDato = null;
+  avisoDatos = {ok:true, texto: campo === 'nombre' ? 'Guardamos tu nombre.' : 'Guardamos tu especialidad.'};
+  mostrar();
+  pintarCuenta();
+  document.querySelector(`[data-cambiar-dato="${campo}"]`)?.focus();
+}
+$('secciones').addEventListener('click', ev => {
+  const b = ev.target.closest('button'); if (!b) return;
+  if (b.dataset.cambiarDato) {
+    editandoDato = b.dataset.cambiarDato; mostrar();
+    const i = $('dato-' + editandoDato); i.focus(); i.select();
+  } else if (b.hasAttribute('data-cancelar-dato')) {
+    const campo = editandoDato; editandoDato = null; mostrar();
+    document.querySelector(`[data-cambiar-dato="${campo}"]`)?.focus();
+  } else if (b.dataset.guardarDato) guardarDato(b.dataset.guardarDato);
+});
+$('secciones').addEventListener('keydown', ev => {
+  if (!ev.target.id?.startsWith('dato-')) return;
+  if (ev.key === 'Enter') { ev.preventDefault(); guardarDato(editandoDato); }
+  if (ev.key === 'Escape') { ev.stopPropagation(); const campo = editandoDato; editandoDato = null; mostrar(); document.querySelector(`[data-cambiar-dato="${campo}"]`)?.focus(); }
+});
+
+function fichaSuscripcion(){
+  const estado = estadoCuenta();
+  const e = ESTADOS[estado] || {nombre:'[Estado]'};
+  const plan = estado === 'invitado' ? null : cuentaBase?.plan || '[Plan]';
+  const fecha = cuentaBase?.vence ? new Date(cuentaBase.vence).toLocaleDateString('es-CO', {day:'numeric', month:'long', year:'numeric'}) : '[fecha]';
+  const fila = (dt, dd) => `<div><dt>${dt}</dt><dd>${dd}</dd></div>`;
+  return `<dl class="ch-ficha">
+      ${plan ? fila('Plan', plan) : ''}
+      ${fila('Estado', `<span class="ch-etq${e.etq ? ' ' + e.etq : ''}">${e.nombre}</span>`)}
+      ${e.fecha ? fila(e.fecha, fecha) : ''}
+    </dl>
+    ${estado === 'atrasada' ? `<div class="ch-ficha-nota">
+      <p>Tu último pago no se pudo procesar. Se intentará de nuevo; si quieres, actualiza tu medio de pago.</p>
+      <a class="ch-boton" href="#">Ir a pagar</a><!-- href: [ENLACE DE HOTMART] -->
+    </div>` : ''}`;
+}
+$('cerrar-aviso-pago').addEventListener('click', () => {
+  try { sessionStorage.setItem(CLAVE_AVISO_PAGO, '1'); } catch {}
+  $('aviso-pago').hidden = true;
+});
+
+function mostrar(){
+  // Las secciones bloqueadas no se abren ni escribiendo su dirección.
+  const pedida = seccion(location.hash.slice(1));
+  const s = pedida && !pedida.proximamente ? pedida : seccion('favoritos');
+  pintarAvisoPago();
   document.querySelectorAll('.ch-menu-item').forEach(a => {
     if (a.getAttribute('href') === '#' + s.id) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
@@ -248,6 +369,15 @@ function mostrar(){
     $('secciones').innerHTML =
       bloque('Guardados', 'Lo que marcaste como favorito.', contenido.slice(0, 3), true) +
       bloque('Lo que más consultas', 'Según lo que más abres.', contenido.slice(3, 7), true);
+    return;
+  }
+  if (s.id !== 'datos') editandoDato = null;
+  if (s.id === 'datos') {
+    $('secciones').innerHTML = fichaDatos();
+    return;
+  }
+  if (s.id === 'suscripcion') {
+    $('secciones').innerHTML = fichaSuscripcion();
     return;
   }
   if (s.id === 'informacion') {
@@ -472,19 +602,31 @@ function markdown(md){
 }
 
 // Aceptación al entrar: hasta que no acepte los documentos vigentes no usa el panel.
-// En el prototipo la firma se guarda en este navegador; en la versión real va a la tabla
-// «aceptaciones» de Supabase (usuario, documento, versión, fecha, navegador).
+// La firma queda en la tabla «aceptaciones» de Supabase: una fila por documento, con su
+// versión, la fecha, el correo, la declaración y el navegador. Solo se pide si falta
+// alguna de las versiones vigentes. Sin sesión (revisión local con ?sin-login), en este navegador.
 const CLAVE_FIRMA = 'ch-aceptacion';
+let firmasBase = null;   // las filas de «aceptaciones» del médico; null mientras no se han leído
 function leerAceptacion(){
+  if (usuario) {
+    const vigentes = documentos.map(d => (firmasBase || []).find(f => f.documento === d.id && f.version === d.version));
+    if (!vigentes.every(Boolean)) return null;
+    return {fecha: vigentes.map(f => f.fecha).sort().pop(), especialidad: cuentaBase?.especialidad};
+  }
   try { const f = JSON.parse(localStorage.getItem(CLAVE_FIRMA));
     return f && documentos.every(d => f.versiones[d.id] === d.version) ? f : null; } catch { return null; }
 }
 function pedirAceptacion(){
   const enDocumento = documentos.some(d => '#' + d.id === location.hash);
-  const pendiente = !document.body.classList.contains('sin-sesion') && !leerAceptacion() && !enDocumento;
+  const leido = !usuario || firmasBase !== null;   // con sesión, se espera a leer la base
+  const pendiente = !document.body.classList.contains('sin-sesion') && leido && !leerAceptacion() && !enDocumento;
+  const recien = pendiente && $('aceptar').hidden;
   $('aceptar').hidden = !pendiente;
   document.body.classList.toggle('por-aceptar', pendiente);
-  if (pendiente) $('especialidad').focus({preventScroll:true});
+  if (recien) {
+    if (!$('especialidad').value && cuentaBase?.especialidad) { $('especialidad').value = cuentaBase.especialidad; revisarAceptar(); }
+    $('especialidad').focus({preventScroll:true});
+  }
 }
 $('aceptar-lista').innerHTML = documentos.map(d =>
   `<li><a href="#${d.id}" target="_blank" rel="noopener">${d.nombre}</a><span>Actualizado el ${d.fecha}</span></li>`).join('');
@@ -492,17 +634,32 @@ const casillas = [...$('aceptar').querySelectorAll('input[type=checkbox]')];
 const revisarAceptar = () => $('aceptar-boton').disabled = !(casillas.every(x => x.checked) && $('especialidad').value.trim());
 casillas.forEach(c => c.addEventListener('change', revisarAceptar));
 $('especialidad').addEventListener('input', revisarAceptar);
-$('aceptar').addEventListener('submit', e => {
+$('aceptar').addEventListener('submit', async e => {
   e.preventDefault();
-  const firma = {
-    fecha: new Date().toISOString(),
-    versiones: Object.fromEntries(documentos.map(d => [d.id, d.version])),
-    declaracion: $('declaracion-texto').textContent.trim(),
-    especialidad: $('especialidad').value.trim(),
-    navegador: navigator.userAgent,
-  };
-  try { localStorage.setItem(CLAVE_FIRMA, JSON.stringify(firma)); } catch {}
-  console.info('Aceptación registrada', firma);
+  const especialidad = $('especialidad').value.trim();
+  const declaracion = $('declaracion-texto').textContent.trim();
+  $('error-aceptar').hidden = true;
+  if (usuario) {
+    $('aceptar-boton').disabled = true;
+    const filas = documentos.map(d => ({documento: d.id, version: d.version, correo: usuario.email, declaracion, navegador: navigator.userAgent}));
+    const {error: e1} = await sb.from('aceptaciones').insert(filas);
+    const {error: e2} = e1 ? {} : await sb.from('perfiles').update({especialidad, actualizado: new Date().toISOString()}).eq('id', usuario.id);
+    if (e1 || e2) {
+      error('error-aceptar', 'No pudimos guardar tu aceptación. Revisa tu conexión e intenta de nuevo.');
+      revisarAceptar();
+      return;
+    }
+    const fecha = new Date().toISOString();
+    firmasBase = [...(firmasBase || []), ...filas.map(f => ({documento: f.documento, version: f.version, fecha}))];
+    cuentaBase = {...(cuentaBase || {}), especialidad};
+  } else {
+    const firma = {
+      fecha: new Date().toISOString(),
+      versiones: Object.fromEntries(documentos.map(d => [d.id, d.version])),
+      declaracion, especialidad, navegador: navigator.userAgent,
+    };
+    try { localStorage.setItem(CLAVE_FIRMA, JSON.stringify(firma)); } catch {}
+  }
   pintarCuenta();
   pedirAceptacion();
   mostrar();
@@ -522,8 +679,13 @@ let correoActual = '', usuario = null;
 
 function pintarCuenta(){
   const nombre = document.querySelector('.ch-cuenta-fila-texto');
-  const esp = leerAceptacion()?.especialidad || '[Especialidad]';
-  nombre.innerHTML = `${usuario?.email || '[Nombre del médico]'}<small>${esp}</small>`;
+  // El nombre llega de Hotmart: n8n lo guarda en la cuenta al crearla (user_metadata.nombre)
+  const firma = leerAceptacion(), datos = usuario?.user_metadata || {};
+  // Primero lo que guardó el médico en la base (perfiles); si no, lo que trajo la cuenta.
+  const quien = cuentaBase?.nombre || datos.nombre || datos.full_name || '[Nombre del médico]';
+  nombre.textContent = quien;
+  nombre.insertAdjacentHTML('beforeend', `<small></small>`);
+  nombre.querySelector('small').textContent = cuentaBase?.especialidad || firma?.especialidad || '[Especialidad]';
 }
 function verPaso(paso){
   ['entrar-correo', 'entrar-codigo', 'entrar-sin-compra'].forEach(id => $(id).hidden = id !== paso);
@@ -531,8 +693,24 @@ function verPaso(paso){
   const foco = {'entrar-correo':'correo', 'entrar-codigo':'codigo'}[paso];
   if (foco) $(foco).focus({preventScroll:true});
 }
+async function leerCuenta(){
+  cuentaBase = null;
+  firmasBase = null;
+  if (usuario) {
+    const [cuenta, firmas] = await Promise.all([
+      sb.from('v_mi_cuenta').select('nombre, correo, especialidad, plan, estado, vence').maybeSingle(),
+      sb.from('aceptaciones').select('documento, version, fecha'),
+    ]);
+    cuentaBase = cuenta.data || null;
+    firmasBase = firmas.data || [];
+  }
+  pintarCuenta();
+  pedirAceptacion();
+  mostrar();
+}
 function aplicarSesion(sesion){
   usuario = sesion?.user || null;
+  leerCuenta();
   const dentro = !!usuario || sinLogin;
   $('entrar').hidden = dentro;
   document.body.classList.toggle('sin-sesion', !dentro);

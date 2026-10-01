@@ -130,6 +130,14 @@ button.ch-cuenta-fila:hover{background:var(--side-hover);color:var(--side-ink)}
 }
 .ch-menu-item[aria-current="page"] .ch-menu-nuevo{color:var(--brand-ink)}
 
+/* Secciones que aún no abren: al final del menú, apagadas y con «Próximamente».
+   No son enlaces: no cambian al pasar el mouse ni al tocarlas. */
+.ch-menu-item.ch-menu-bloqueado{cursor:default}
+.ch-menu-item.ch-menu-bloqueado:hover,.ch-menu-item.ch-menu-bloqueado:active{color:var(--side-faint);background:none}
+.ch-menu-bloqueado svg,.ch-menu-bloqueado .ch-menu-nombre{opacity:.6}
+.ch-menu-bloqueado .ch-menu-nombre{white-space:normal;line-height:1.3;padding:var(--esp-4) 0}   /* el nombre baja de línea en vez de cortarse */
+.ch-menu-pronto{flex:none;margin-left:calc(var(--esp-6) - var(--esp-12));font-size:11.5px;font-weight:500;color:var(--side-faint)}
+
 /* ---------- Ediciones: línea de tiempo horizontal ----------
    Abre en el número de hoy, a la derecha; se desliza hacia atrás. La línea
    une los nodos (los del algoritmo del favicon); el número elegido, en lima. */
@@ -236,6 +244,46 @@ button.ch-boton.secundario{color:var(--ink)}
 .ch-contenido{flex:1;min-width:0}
 .ch-pagina{max-width:1080px;padding:var(--esp-32) var(--esp-22) calc(var(--esp-32) * 3) var(--sangria-pagina)}   /* abajo, aire para el botón flotante */
 .ch-pagina-cabeza{margin-bottom:var(--esp-26)}
+/* Aviso de pago atrasado: nota amarilla del manual (avisos de cuidado), con X para cerrarla */
+.ch-aviso-pago{position:relative;margin-bottom:var(--esp-20);padding:var(--esp-12) 52px var(--esp-12) var(--esp-16);border-radius:var(--r-sm);background:var(--nota-amarilla);font-size:14px;line-height:1.5;color:var(--ink)}
+.ch-aviso-pago p{margin:0}
+.ch-aviso-pago a{margin-left:var(--esp-4);font-weight:600;color:var(--ink);text-underline-offset:3px;white-space:nowrap}
+button.ch-aviso-pago-cerrar{
+  position:absolute; top:2px; right:2px; display:grid; place-items:center;
+  width:44px; height:44px; padding:0; border:0; border-radius:var(--r-sm);
+  background:none; color:var(--muted); cursor:pointer; transition:color .2s,background .2s;
+}
+button.ch-aviso-pago-cerrar:hover{color:var(--ink);background:var(--track)}
+.ch-aviso-pago-cerrar svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+@media (max-width:720px){.ch-aviso-pago-mas{display:none}}
+
+/* ---------- Suscripción: ficha de dato y valor ---------- */
+.ch-ficha{margin:0;border-top:1px solid var(--border)}
+.ch-ficha > div{display:grid;grid-template-columns:150px minmax(0,1fr);align-items:center;gap:var(--esp-16);min-height:52px;padding:var(--esp-8) 0;border-bottom:1px solid var(--border)}
+.ch-ficha dt{font-size:13px;color:var(--faint)}
+.ch-ficha dd{margin:0;font-size:15.5px;color:var(--ink)}
+.ch-etq.pendiente{background:var(--nota-amarilla);border-color:var(--border2);color:var(--ink)}
+/* Con el pago pendiente: la nota amarilla del manual con el botón */
+.ch-ficha-nota{margin-top:var(--esp-16);padding:var(--esp-16);border-radius:var(--r-sm);background:var(--nota-amarilla)}
+.ch-ficha-nota p{margin:0 0 var(--esp-16);font-size:14px;line-height:1.55;color:var(--ink)}
+a.ch-boton{color:var(--on-sel);text-decoration:none}
+/* Mis datos: la fila con «Cambiar», la edición en su fila y la nota bajo el correo */
+.ch-ficha dd.ch-ficha-accion{display:flex;justify-content:space-between;align-items:center;gap:var(--esp-12)}
+.ch-ficha dd.ch-ficha-accion > span{min-width:0;overflow-wrap:anywhere}
+button.ch-accion{
+  flex:none; display:inline-flex; align-items:center; min-height:44px; padding:0 var(--esp-4);
+  border:0; background:none; font-size:13px; font-weight:500; color:var(--sel);
+  text-decoration:underline; text-underline-offset:3px; cursor:pointer; transition:color .2s;
+}
+button.ch-accion:hover{color:var(--ink)}
+.ch-ficha-nota-chica{display:block;margin-top:2px;font-size:12.5px;line-height:1.45;color:var(--faint)}
+.ch-ficha-nota-chica a{font-weight:500;color:var(--ink);text-underline-offset:3px}
+.ch-editar{display:flex;flex-wrap:wrap;gap:var(--esp-8);padding:var(--esp-4) 0}
+.ch-editar .ch-campo{flex:1 1 220px;min-height:44px}
+.ch-editar-botones{display:flex;gap:var(--esp-8)}
+.ch-boton.chico{min-height:44px;padding:var(--esp-8) var(--esp-16);font-size:14px}
+.ch-datos-aviso{margin:var(--esp-12) 0 0;font-size:13px}
+@media (max-width:720px){.ch-ficha > div{grid-template-columns:minmax(0,1fr);gap:var(--esp-4)}}
 
 /* ---------- Lista tipo índice ---------- */
 .ch-lista{border-top:1px solid var(--border)}
