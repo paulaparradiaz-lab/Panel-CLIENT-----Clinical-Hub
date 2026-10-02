@@ -1,9 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { whatsapp } from '@/lib/datos';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { PasskeyListItem } from '@supabase/supabase-js';
+import { fechaLarga, whatsapp } from '@/lib/datos';
 import { useSesion, type Cuenta } from '@/lib/sesion';
 import { sb } from '@/lib/supabase';
+import { errorPasskey } from '../Entrar';
+import { CLAVE_OFRECIDA } from '../OfrecerPasskey';
 
 // Mis datos: nombre y especialidad se cambian (solo en la plataforma). El correo de ingreso
 // une la cuenta con Hotmart: no se edita aquí, solo vía WhatsApp con el equipo.
@@ -21,6 +24,29 @@ export function MisDatos() {
 
   const datos: Record<Campo, string> = { nombre, especialidad };
   const correo = cuenta?.correo || usuario?.email || '[correo]';
+
+  // Huella o Face ID (passkeys): las que tiene registradas y «Agregar» para una nueva en este dispositivo.
+  // Solo en una dirección segura (https o localhost) y con un navegador compatible.
+  const [passkeys, setPasskeys] = useState<PasskeyListItem[]>([]);
+  const [conPasskeys, setConPasskeys] = useState(false);
+  useEffect(() => setConPasskeys(window.isSecureContext && !!window.PublicKeyCredential), []);
+  const leerPasskeys = useCallback(async () => {
+    if (!usuario) { setPasskeys([]); return; }
+    const { data } = await sb.auth.passkey.list();
+    setPasskeys(data || []);
+  }, [usuario]);
+  useEffect(() => { leerPasskeys(); }, [leerPasskeys]);
+  async function agregarPasskey() {
+    setAviso(null);
+    const { error } = await sb.auth.registerPasskey();
+    if (error) { setAviso({ ok: false, texto: errorPasskey(error.message || error.name) }); return; }
+    try { localStorage.setItem(CLAVE_OFRECIDA, '1'); } catch {}   // ya no hace falta ofrecerla al entrar
+    await leerPasskeys();
+    setAviso({ ok: true, texto: 'Activamos la huella o Face ID en este dispositivo.' });
+  }
+  const estadoPasskeys = !conPasskeys ? 'Este navegador no la permite'
+    : passkeys.length === 0 ? 'No la has activado'
+    : passkeys.length === 1 ? 'Activa en 1 dispositivo' : `Activa en ${passkeys.length} dispositivos`;
 
   useEffect(() => { if (editando) { campo.current?.focus(); campo.current?.select(); } }, [editando]);
   useEffect(() => { if (!editando && foco) { botones.current[foco]?.focus(); setFoco(null); } }, [editando, foco]);
@@ -82,6 +108,19 @@ export function MisDatos() {
           </dd>
         </div>
         {fila('especialidad')}
+        <div>
+          <dt>Huella o Face ID</dt>
+          <dd className="ch-ficha-accion">
+            <span>{estadoPasskeys}
+              {passkeys.map(p => (
+                <span key={p.id} className="ch-ficha-nota-chica">{p.friendly_name || 'Passkey'} · activada el {fechaLarga(p.created_at)}</span>
+              ))}
+            </span>
+            {conPasskeys && usuario && (
+              <button type="button" className="ch-accion" aria-label="Agregar huella o Face ID" onClick={agregarPasskey}>Agregar</button>
+            )}
+          </dd>
+        </div>
       </dl>
       {aviso && <p className={`ch-aviso ${aviso.ok ? 'ok' : 'mal'} ch-datos-aviso`} role="status">{aviso.texto}</p>}
     </>

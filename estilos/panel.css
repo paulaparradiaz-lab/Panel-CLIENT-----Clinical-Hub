@@ -269,12 +269,14 @@ a.ch-boton{color:var(--on-sel);text-decoration:none}
 /* Mis datos: la fila con «Cambiar», la edición en su fila y la nota bajo el correo */
 .ch-ficha dd.ch-ficha-accion{display:flex;justify-content:space-between;align-items:center;gap:var(--esp-12)}
 .ch-ficha dd.ch-ficha-accion > span{min-width:0;overflow-wrap:anywhere}
-button.ch-accion{
+button.ch-accion,a.ch-accion{
   flex:none; display:inline-flex; align-items:center; min-height:44px; padding:0 var(--esp-4);
   border:0; background:none; font-size:13px; font-weight:500; color:var(--sel);
   text-decoration:underline; text-underline-offset:3px; cursor:pointer; transition:color .2s;
 }
-button.ch-accion:hover{color:var(--ink)}
+button.ch-accion:hover,a.ch-accion:hover{color:var(--ink)}
+/* Una acción discreta debajo de la ficha (Suscripción: «Cancelar suscripción») */
+.ch-ficha-pie{margin:var(--esp-12) 0 0}
 .ch-ficha-nota-chica{display:block;margin-top:2px;font-size:12.5px;line-height:1.45;color:var(--faint)}
 .ch-ficha-nota-chica a{font-weight:500;color:var(--ink);text-underline-offset:3px}
 .ch-editar{display:flex;flex-wrap:wrap;gap:var(--esp-8);padding:var(--esp-4) 0}

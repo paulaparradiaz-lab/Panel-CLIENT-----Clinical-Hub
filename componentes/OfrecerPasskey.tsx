@@ -7,7 +7,7 @@ import { errorPasskey } from './Entrar';
 
 // Después de entrar con el correo (y ya firmado): ofrecer la passkey para la próxima vez,
 // una sola vez por dispositivo.
-const CLAVE_OFRECIDA = 'ch-passkey-ofrecida';
+export const CLAVE_OFRECIDA = 'ch-passkey-ofrecida';
 
 export function OfrecerPasskey({ puede }: { puede: boolean }) {
   const { usuario } = useSesion();

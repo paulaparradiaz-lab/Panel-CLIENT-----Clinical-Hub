@@ -28,6 +28,12 @@ export function Suscripcion() {
           <a className="ch-boton" href="#">Ir a pagar</a>
         </div>
       )}
+      {(estado === 'activa' || estado === 'atrasada') && (
+        <p className="ch-ficha-pie">
+          {/* Aún sin conectar. href: [ENLACE DE HOTMART para cancelar] */}
+          <a className="ch-accion" href="#" onClick={e => e.preventDefault()}>Cancelar suscripción</a>
+        </p>
+      )}
     </>
   );
 }
