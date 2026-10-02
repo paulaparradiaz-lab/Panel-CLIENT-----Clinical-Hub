@@ -114,7 +114,7 @@ button.ch-cuenta-fila:hover{background:var(--side-hover);color:var(--side-ink)}
 /* La rama entra un poco a la derecha (--sangria-rama) para no confundirse con los títulos principales */
 .ch-menu-rama{--sangria-rama:var(--esp-12)}
 .ch-menu-item.sub{
-  position:relative; padding-left:calc(var(--esp-16) + 20px + var(--esp-12) + var(--sangria-rama));
+  position:relative; padding-left:calc(var(--esp-16) + 20px + var(--esp-12) + var(--esp-8));   /* el nombre entra 8 px; su punto, la sangría completa */
   font-size:13.5px; font-weight:400;
 }
 .ch-menu-item.sub::before{
@@ -132,6 +132,9 @@ button.ch-cuenta-fila:hover{background:var(--side-hover);color:var(--side-ink)}
   color:var(--brand); font-size:11.5px; font-weight:600;
 }
 .ch-menu-item[aria-current="page"] .ch-menu-nuevo{color:var(--brand-ink)}
+/* En la rama el espacio es menor: el «New» va más pegado al nombre y al borde para que el nombre no se corte */
+.ch-menu-item.sub{padding-right:var(--esp-6)}
+.ch-menu-item.sub .ch-menu-nuevo{margin-left:calc(var(--esp-4) - var(--esp-12))}
 
 /* Secciones que aún no abren: al final del menú, apagadas y con «Próximamente».
    No son enlaces: no cambian al pasar el mouse ni al tocarlas. */

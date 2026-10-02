@@ -18,7 +18,7 @@ export const MENU: Seccion[] = [
   { id: 'favoritos', nombre: 'Mis favoritos', ruta: '/', icono: 'estrella', bajada: 'Lo que guardaste y lo que más consultas.' },
   { id: 'nuevo', nombre: 'Nuevo', ruta: '/nuevo', icono: 'nuevo', bajada: 'Lo último que se publicó, de todas las secciones.' },
   { id: 'guias', nombre: 'Guías de práctica clínica', ruta: '/guias', icono: 'guias', hijos: [
-    { id: 'resumenes', nombre: 'Resúmenes individuales', ruta: '/guias/resumenes' },
+    { id: 'resumenes', nombre: 'Resúmenes individuales', ruta: '/guias/resumenes', nuevo: true },
     // La galería de figuras vive dentro de Guías contrastadas, no en el menú.
     { id: 'contrastadas', nombre: 'Guías contrastadas', ruta: '/guias/contrastadas' },
     { id: 'herramientas', nombre: 'Herramientas interactivas', ruta: '/guias/herramientas' },
