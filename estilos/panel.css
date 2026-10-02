@@ -111,12 +111,14 @@ button.ch-cuenta-fila:hover{background:var(--side-hover);color:var(--side-ink)}
 
 /* Puntos: cada sección de adentro lleva un punto bajo el ícono del grupo. */
 .ch-menu-rama .ch-menu-item:focus-visible{outline-offset:-3px}
+/* La rama entra un poco a la derecha (--sangria-rama) para no confundirse con los títulos principales */
+.ch-menu-rama{--sangria-rama:var(--esp-12)}
 .ch-menu-item.sub{
-  position:relative; padding-left:calc(var(--esp-16) + 20px + var(--esp-12));
+  position:relative; padding-left:calc(var(--esp-16) + 20px + var(--esp-12) + var(--sangria-rama));
   font-size:13.5px; font-weight:400;
 }
 .ch-menu-item.sub::before{
-  content:""; position:absolute; left:calc(var(--esp-16) + 7px); top:calc(50% - 3px);
+  content:""; position:absolute; left:calc(var(--esp-16) + 7px + var(--sangria-rama)); top:calc(50% - 3px);
   width:6px; height:6px; border-radius:50%; background:currentColor;
 }
 .ch-menu-nombre{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
