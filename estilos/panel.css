@@ -54,6 +54,9 @@
 }
 .ch-cuenta-opcion small{font-size:12.5px;font-weight:400}
 .ch-cuenta-opcion:hover{color:var(--side-ink);background:var(--side-hover)}
+/* Las opciones que abren ventana son botones: la regla base «.ch button{font:inherit;color:inherit}»
+   del manual les quitaba el tamaño, el grosor y el blanco. «button.» se los devuelve. */
+button.ch-cuenta-opcion{font-size:14px;font-weight:500;line-height:1.3;color:var(--side-ink)}
 button.ch-cuenta-opcion-salir{margin-top:var(--esp-4);border-top:1px solid var(--side-hover);border-radius:0 0 var(--r-item) var(--r-item);color:var(--side-ink)}
 button.ch-cuenta-fila{
   display:flex; align-items:center; gap:var(--esp-12); width:100%; min-height:52px;
