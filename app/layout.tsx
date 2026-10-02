@@ -6,7 +6,8 @@ import '@/estilos/panel.css';
 
 export const metadata: Metadata = {
   title: { default: 'Clinical Hub', template: '%s · Clinical Hub' },
-  icons: { icon: { url: '/favicon.svg', type: 'image/svg+xml' } },
+  // El favicon (CH en lima sobre círculo verde) y su versión en imagen para Safari y el iPhone
+  icons: { icon: { url: '/favicon.svg', type: 'image/svg+xml' }, apple: '/apple-touch-icon.png' },
 };
 export const viewport: Viewport = { width: 'device-width', initialScale: 1 };
 
