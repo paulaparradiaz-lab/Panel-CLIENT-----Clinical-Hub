@@ -18,10 +18,13 @@
   .tam{display:grid;justify-items:center;gap:var(--esp-6);font-size:11.5px;color:var(--faint)}
   .oscuro .tam{color:var(--side-faint)}
   .tam svg{display:block}
+  .comparar{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:var(--esp-16)}
+  .comparar .fondos{flex-direction:column}
   /* Colores del manual dentro de los SVG */
   .side{fill:var(--side)} .side-trazo{stroke:var(--side)}
   .lima{fill:var(--brand)} .lima-trazo{stroke:var(--brand)}
   .hub{fill:var(--hub-verde)} .blanco{fill:var(--surface)}
+  .verde-palido{fill:var(--brand-bg)}
   .letra{font-family:var(--font-sans);font-weight:800;letter-spacing:-.04em}
   .sin-relleno{fill:none}
 </style>
@@ -31,14 +34,56 @@
   <h1 class="ch-titulo">Favicon · opciones</h1>
   <p class="ch-bajada">Cada opción a 16, 32 y 64 px, sobre una pestaña clara y una oscura. El de 16 px es el tamaño real de la pestaña del navegador.</p>
   <section class="op">
-    <p class="op-nombre">Elegido · la 2 en círculo: el algoritmo lima sobre círculo verde oscuro</p>
-    <p class="op-nota">El archivo real (public/favicon.svg). Se ve igual en pestaña clara y oscura.</p>
+    <p class="op-nombre">CH en círculo: claro u oscuro</p>
+    <p class="op-nota">Claro · la 4 en círculo: C verde oscuro y H verde «hub» sobre el verde pálido del manual (--brand-bg). Oscuro · la 5 en círculo: C blanca y H lima sobre el verde oscuro.</p>
+    <div class="comparar" id="ch-circulos"></div>
+  </section>
+  <section class="op">
+    <p class="op-nombre">La C, sin que parezca Bluetooth</p>
+    <p class="op-nota">C · La de antes, para comparar. G · Los brazos bajan en ángulo recto, sin curvas. H · Un rombo de decisión grande en el cruce. I · Sin tallo derecho al centro: el nodo del medio cuelga del rombo y los de los lados salen de sus puntas.</p>
+    <div class="comparar" id="ajustes-c"></div>
+  </section>
+  <section class="op">
+    <p class="op-nombre">Diagrama de flujo, con las figuras de tu referencia</p>
+    <p class="op-nota">Píldora de inicio, rombo de decisión, dos procesos y círculo de final, en lima sobre el círculo verde. D · Fiel a la referencia, con la línea que vuelve al inicio. E · Lo mismo, con las figuras en contorno como en la imagen. F · Sin la vuelta: los dos procesos se juntan en el final.</p>
+    <div class="comparar" id="flujo"></div>
+  </section>
+  <section class="op">
+    <p class="op-nombre">Algoritmo de tres ramas</p>
+    <p class="op-nota">A · El rombo reparte: sus lados bajan a los extremos y su punta al centro. B · Del rombo baja un tallo a una barra que reparte en tres. C · Abanico: tres ramas curvas desde un rombo pequeño.</p>
+    <div class="comparar" id="tres-ramas"></div>
+  </section>
+  <section class="op">
+    <p class="op-nombre">Los dos en círculo</p>
+    <p class="op-nota">Primero la CH (C blanca, H lima) y después el algoritmo en lima, con el mismo círculo verde oscuro y hasta 128 px.</p>
+    <div class="comparar" id="comparar"></div>
+  </section>
+  <section class="op">
+    <p class="op-nombre">Elegido · CH en lima sobre círculo verde oscuro</p>
+    <p class="op-nota">El archivo real (public/favicon.svg), con las letras de DM Sans convertidas en trazos. Se ve igual en pestaña clara y oscura.</p>
     <div class="fondos"><div class="fondo claro" id="real-claro"></div><div class="fondo oscuro" id="real-oscuro"></div></div>
   </section>
   <div id="opciones"></div>
 </main>
 
 <svg width="0" height="0" aria-hidden="true">
+  <!-- La 4 en círculo claro -->
+  <symbol id="c-ch-claro" viewBox="0 0 48 48"><circle class="verde-palido" cx="24" cy="24" r="24"/><g transform="translate(6.642 32.575) scale(0.0245 -0.0245)"><path class="side" d="M384 -12Q279 -12 203.0 33.5Q127 79 86.0 160.5Q45 242 45 349Q45 456 86.0 538.0Q127 620 203.0 666.0Q279 712 384 712Q511 712 593.0 648.0Q675 584 695 468H541Q529 524 488.5 554.5Q448 585 382 585Q321 585 277.5 556.5Q234 528 211.0 475.0Q188 422 188 349Q188 276 211.0 223.5Q234 171 277.5 142.5Q321 114 382 114Q448 114 488.0 142.5Q528 171 541 222H695Q675 113 593.0 50.5Q511 -12 384 -12Z"/><path class="hub" transform="translate(700 0)" d="M509 0V700H649V0ZM68 0V700H208V0ZM190 301V414H532V301Z"/></g></symbol>
+  <!-- Ajustes de la C (que no parezca Bluetooth) -->
+  <symbol id="sg" viewBox="0 0 48 48"><circle class="side" cx="24" cy="24" r="24"/><g transform="translate(8.88 8.5) scale(.62)"><path class="sin-relleno lima-trazo" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" d="M24 13V22M24 22H11Q7 22 7 26V37M24 22H37Q41 22 41 26V37M24 22V37"/><circle class="lima" cx="24" cy="7.5" r="6.5"/><circle class="lima" cx="7" cy="43" r="5.5"/><circle class="lima" cx="24" cy="43" r="5.5"/><circle class="lima" cx="41" cy="43" r="5.5"/></g></symbol>
+  <symbol id="sh" viewBox="0 0 48 48"><circle class="side" cx="24" cy="24" r="24"/><g transform="translate(8.88 8.5) scale(.62)"><path class="sin-relleno lima-trazo" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" d="M24 13V16M17 24Q7 24 7 34V37M31 24Q41 24 41 34V37M24 32V37"/><circle class="lima" cx="24" cy="7.5" r="6.5"/><path class="lima" d="M24 15.5L32.5 24L24 32.5L15.5 24Z"/><circle class="lima" cx="7" cy="43" r="5.5"/><circle class="lima" cx="24" cy="43" r="5.5"/><circle class="lima" cx="41" cy="43" r="5.5"/></g></symbol>
+  <symbol id="si" viewBox="0 0 48 48"><circle class="side" cx="24" cy="24" r="24"/><g transform="translate(8.88 8.5) scale(.62)"><path class="sin-relleno lima-trazo" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" d="M24 13V16M15.5 24H11Q7 24 7 28V37M32.5 24H37Q41 24 41 28V37"/><circle class="lima" cx="24" cy="7.5" r="6.5"/><path class="lima" d="M24 15.5L32.5 24L24 32.5L15.5 24Z"/><circle class="lima" cx="7" cy="43" r="5.5"/><circle class="lima" cx="24" cy="40" r="5.5"/><circle class="lima" cx="41" cy="43" r="5.5"/></g></symbol>
+  <!-- Diagrama de flujo (referencia de Paula) -->
+  <symbol id="dd" viewBox="0 0 48 48"><circle class="side" cx="24" cy="24" r="24"/><g transform="translate(9.28 7.84) scale(.64)"><path class="sin-relleno lima-trazo" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M24 11V15M15 21H9V28M33 21H39V28M39 35.5V43H29M2.5 31.75H0.5V7H14"/><rect class="lima" x="14" y="3" width="20" height="8" rx="4"/><path class="lima" d="M24 15L33 21L24 27L15 21Z"/><rect class="lima" x="2.5" y="28" width="13" height="7.5" rx="1.5"/><rect class="lima" x="32.5" y="28" width="13" height="7.5" rx="1.5"/><circle class="lima" cx="24" cy="43" r="4.8"/></g></symbol>
+  <symbol id="de" viewBox="0 0 48 48"><circle class="side" cx="24" cy="24" r="24"/><g transform="translate(9.28 7.84) scale(.64)"><path class="sin-relleno lima-trazo" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M24 11V15M15 21H9V28M33 21H39V28M39 35.5V43H29.2M2.5 31.75H0.5V7H14"/><rect class="side lima-trazo" stroke-width="2.8" stroke-linejoin="round" x="14" y="3" width="20" height="8" rx="4"/><path class="side lima-trazo" stroke-width="2.8" stroke-linejoin="round" d="M24 15L33 21L24 27L15 21Z"/><rect class="side lima-trazo" stroke-width="2.8" stroke-linejoin="round" x="2.5" y="28" width="13" height="7.5" rx="1.5"/><rect class="side lima-trazo" stroke-width="2.8" stroke-linejoin="round" x="32.5" y="28" width="13" height="7.5" rx="1.5"/><circle class="side lima-trazo" stroke-width="2.8" stroke-linejoin="round" cx="24" cy="43" r="4.8"/></g></symbol>
+  <symbol id="df" viewBox="0 0 48 48"><circle class="side" cx="24" cy="24" r="24"/><g transform="translate(9.28 7.84) scale(.64)"><path class="sin-relleno lima-trazo" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M24 11V15M15 21H9V28M33 21H39V28M9 35.5V39Q9 43 13 43H19.2M39 35.5V39Q39 43 35 43H28.8"/><rect class="lima" x="14" y="3" width="20" height="8" rx="4"/><path class="lima" d="M24 15L33 21L24 27L15 21Z"/><rect class="lima" x="2.5" y="28" width="13" height="7.5" rx="1.5"/><rect class="lima" x="32.5" y="28" width="13" height="7.5" rx="1.5"/><circle class="lima" cx="24" cy="43" r="4.8"/></g></symbol>
+  <!-- Tres ramas abajo -->
+  <symbol id="ta" viewBox="0 0 48 48"><circle class="side" cx="24" cy="24" r="24"/><g transform="translate(8.88 8.5) scale(.62)"><path class="sin-relleno lima-trazo" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" d="M24 12V18M16 26H12.5Q9 26 9 29.5V38M32 26H35.5Q39 26 39 29.5V38M24 34V38"/><circle class="lima" cx="24" cy="7.5" r="6.5"/><path class="lima" d="M24 17.5L32.5 26L24 34.5L15.5 26Z"/><circle class="lima" cx="9" cy="44" r="5.5"/><circle class="lima" cx="24" cy="44" r="5.5"/><circle class="lima" cx="39" cy="44" r="5.5"/></g></symbol>
+  <symbol id="tb" viewBox="0 0 48 48"><circle class="side" cx="24" cy="24" r="24"/><g transform="translate(8.88 8.5) scale(.62)"><path class="sin-relleno lima-trazo" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" d="M24 12V16M24 28V32M9 39V33Q9 32 10 32H38Q39 32 39 33V39M24 32V39"/><circle class="lima" cx="24" cy="6.5" r="6"/><path class="lima" d="M24 15L31 22L24 29L17 22Z"/><circle class="lima" cx="9" cy="44" r="5.5"/><circle class="lima" cx="24" cy="44" r="5.5"/><circle class="lima" cx="39" cy="44" r="5.5"/></g></symbol>
+  <symbol id="tc" viewBox="0 0 48 48"><circle class="side" cx="24" cy="24" r="24"/><g transform="translate(8.88 8.5) scale(.62)"><path class="sin-relleno lima-trazo" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round" d="M24 13V21M24 21Q9 21 9 37M24 21Q39 21 39 37M24 21V37"/><circle class="lima" cx="24" cy="7.5" r="6.5"/><path class="lima" d="M24 16.5L28.5 21L24 25.5L19.5 21Z"/><circle class="lima" cx="9" cy="43" r="5.5"/><circle class="lima" cx="24" cy="43" r="5.5"/><circle class="lima" cx="39" cy="43" r="5.5"/></g></symbol>
+  <!-- Comparación: los dos en círculo -->
+  <symbol id="c-ch" viewBox="0 0 48 48"><circle class="side" cx="24" cy="24" r="24"/><g transform="translate(6.642 32.575) scale(0.0245 -0.0245)"><path class="blanco" d="M384 -12Q279 -12 203.0 33.5Q127 79 86.0 160.5Q45 242 45 349Q45 456 86.0 538.0Q127 620 203.0 666.0Q279 712 384 712Q511 712 593.0 648.0Q675 584 695 468H541Q529 524 488.5 554.5Q448 585 382 585Q321 585 277.5 556.5Q234 528 211.0 475.0Q188 422 188 349Q188 276 211.0 223.5Q234 171 277.5 142.5Q321 114 382 114Q448 114 488.0 142.5Q528 171 541 222H695Q675 113 593.0 50.5Q511 -12 384 -12Z"/><path class="lima" transform="translate(700 0)" d="M509 0V700H649V0ZM68 0V700H208V0ZM190 301V414H532V301Z"/></g></symbol>
+  <symbol id="c-alg" viewBox="0 0 48 48"><circle class="side" cx="24" cy="24" r="24"/><g transform="translate(8.64 7.84) scale(.64)"><path class="sin-relleno lima-trazo" d="M24 12V18M17 26H12.5Q9 26 9 29.5V37M31 26H35.5Q39 26 39 29.5V37" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/><circle class="lima" cx="24" cy="7.5" r="6.5"/><path class="lima" d="M24 17.5L32.5 26L24 34.5L15.5 26Z"/><circle class="lima" cx="9" cy="43.5" r="6"/><circle class="lima" cx="39" cy="43.5" r="6"/></g></symbol>
   <!-- Hoy: el algoritmo en dos colores -->
   <symbol id="f0" viewBox="0 0 48 50">
     <path class="sin-relleno side-trazo" d="M24 12V19M16.5 26.3H12.5Q8.5 26.3 8.5 30.3V35M31.5 26.3H35.5Q39.5 26.3 39.5 30.3V35" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -85,6 +130,17 @@ const opciones = [
   ['5 · CH sobre cuadro verde oscuro: C blanca y H lima', 'Con fondo, el lima sí se ve. Funciona en pestaña clara y oscura.', 'f5'],
 ];
 const tamanos = [16, 32, 64];
+const filaGrande = id => [16, 32, 64, 128].map(t => `<div class="tam"><svg width="${t}" height="${t}" aria-hidden="true"><use href="#${id}"/></svg>${t} px</div>`).join('');
+document.getElementById('ch-circulos').innerHTML = [['c-ch-claro', 'Círculo claro'], ['c-ch', 'Círculo oscuro']].map(([id, n]) =>
+  `<div><p class="op-nombre">${n}</p><div class="fondos"><div class="fondo claro">${filaGrande(id)}</div><div class="fondo oscuro">${filaGrande(id)}</div></div></div>`).join('');
+document.getElementById('ajustes-c').innerHTML = [['tc', 'C'], ['sg', 'G'], ['sh', 'H'], ['si', 'I']].map(([id, letra]) =>
+  `<div><p class="op-nombre">${letra}</p><div class="fondos"><div class="fondo claro">${filaGrande(id)}</div><div class="fondo oscuro">${filaGrande(id)}</div></div></div>`).join('');
+document.getElementById('flujo').innerHTML = [['dd', 'D'], ['de', 'E'], ['df', 'F']].map(([id, letra]) =>
+  `<div><p class="op-nombre">${letra}</p><div class="fondos"><div class="fondo claro">${filaGrande(id)}</div><div class="fondo oscuro">${filaGrande(id)}</div></div></div>`).join('');
+document.getElementById('tres-ramas').innerHTML = [['ta', 'A'], ['tb', 'B'], ['tc', 'C']].map(([id, letra]) =>
+  `<div><p class="op-nombre">${letra}</p><div class="fondos"><div class="fondo claro">${filaGrande(id)}</div><div class="fondo oscuro">${filaGrande(id)}</div></div></div>`).join('');
+document.getElementById('comparar').innerHTML = ['c-ch', 'c-alg'].map(id =>
+  `<div class="fondos"><div class="fondo claro">${filaGrande(id)}</div><div class="fondo oscuro">${filaGrande(id)}</div></div>`).join('');
 const fila = id => tamanos.map(t => `<div class="tam"><svg width="${t}" height="${t}" aria-hidden="true"><use href="#${id}"/></svg>${t} px</div>`).join('');
 // El favicon real, en sus dos versiones (se fuerza una u otra quitando la consulta del tema)
 fetch('../public/favicon.svg', {cache: 'reload'}).then(r => r.text()).then(svg => {

@@ -1,13 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-  <!-- Favicon: el algoritmo en lima dentro de un círculo verde oscuro. Un archivo suelto
-       no lee las variables del manual, así que lleva sus valores: side #2a4927 · brand #c1e187.
-       Se ve igual en pestaña clara y oscura. -->
+  <!-- Favicon: CH en lima sobre un círculo verde oscuro. Un archivo suelto no lee las
+       variables del manual, así que lleva sus valores: side #2a4927 · brand #c1e187.
+       Letras de DM Sans 800 convertidas en trazos (un favicon no carga fuentes). -->
   <circle cx="24" cy="24" r="24" fill="#2a4927"/>
-  <g transform="translate(8.64 7.84) scale(.64)" fill="#c1e187">
-    <path d="M24 12V18M17 26H12.5Q9 26 9 29.5V37M31 26H35.5Q39 26 39 29.5V37" fill="none" stroke="#c1e187" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="24" cy="7.5" r="6.5"/>
-    <path d="M24 17.5L32.5 26L24 34.5L15.5 26Z"/>
-    <circle cx="9" cy="43.5" r="6"/>
-    <circle cx="39" cy="43.5" r="6"/>
+  <g transform="translate(6.642 32.575) scale(0.0245 -0.0245)" fill="#c1e187">
+    <path d="M384 -12Q279 -12 203.0 33.5Q127 79 86.0 160.5Q45 242 45 349Q45 456 86.0 538.0Q127 620 203.0 666.0Q279 712 384 712Q511 712 593.0 648.0Q675 584 695 468H541Q529 524 488.5 554.5Q448 585 382 585Q321 585 277.5 556.5Q234 528 211.0 475.0Q188 422 188 349Q188 276 211.0 223.5Q234 171 277.5 142.5Q321 114 382 114Q448 114 488.0 142.5Q528 171 541 222H695Q675 113 593.0 50.5Q511 -12 384 -12Z"/>
+    <path transform="translate(700 0)" d="M509 0V700H649V0ZM68 0V700H208V0ZM190 301V414H532V301Z"/>
   </g>
 </svg>
