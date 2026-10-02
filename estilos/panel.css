@@ -148,7 +148,7 @@ button.ch-cuenta-fila:hover{background:var(--side-hover);color:var(--side-faint)
 /* El nombre en su línea y «Próximamente» debajo, en chico: así no se aprieta en el menú angosto */
 .ch-menu-bloqueado .ch-menu-nombre{display:flex;flex-direction:column;gap:1px;padding:var(--esp-6) 0;line-height:1.3}
 .ch-menu-bloqueado .ch-menu-texto{overflow:hidden;text-overflow:ellipsis}
-.ch-menu-pronto{font-size:11.5px;font-weight:500;color:var(--side-faint)}
+.ch-menu-pronto{font-size:11.5px;font-weight:600;color:var(--brand)}   /* como «New»: lima y 600, debajo del nombre */
 
 /* ---------- Ediciones: línea de tiempo horizontal ----------
    Abre en el número de hoy, a la derecha; se desliza hacia atrás. La línea
