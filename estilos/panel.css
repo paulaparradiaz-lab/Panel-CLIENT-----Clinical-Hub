@@ -285,7 +285,6 @@ button.ch-accion:hover,a.ch-accion:hover{color:var(--ink)}
 .ch-boton.chico{min-height:44px;padding:var(--esp-8) var(--esp-16);font-size:14px}
 .ch-datos-aviso{margin:var(--esp-12) 0 0;font-size:13px}
 /* Huella o Face ID (passkeys), como «Tus passkeys» del admin: filas con Borrar y Agregar abajo */
-.ch-passkeys{margin-top:var(--esp-32)}
 .ch-passkeys-lista{display:grid;gap:var(--esp-8);margin:var(--esp-12) 0 var(--esp-16)}
 .ch-passkey-fila{display:flex;align-items:center;gap:var(--esp-12);padding:var(--esp-8) var(--esp-8) var(--esp-8) var(--esp-12);border-radius:var(--r-item);background:var(--surface2)}
 .ch-passkey-fila > span{flex:1;min-width:0;display:grid;gap:2px}
@@ -297,6 +296,21 @@ button.ch-accion:hover,a.ch-accion:hover{color:var(--ink)}
 .ch-passkeys-vacio > span{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--surface2);color:var(--ink)}
 .ch-passkeys svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .ch-passkeys-agregar svg{stroke-width:2}
+.ch-ventana p.ch-passkeys-explica{margin:0 0 var(--esp-16)}
+button.ch-boton-chico{flex:none;min-height:44px;color:var(--brand-ink)}   /* «Borrar», como en el admin; 44 px para el dedo */
+
+/* ---------- Ventanas de la cuenta (Mis datos, Huella o Face ID, Suscripción, Términos) ----------
+   La ventana del manual (.ch-ventana) sobre un velo; por debajo de Entrar y de Aceptar. */
+.ch-modal{position:fixed;inset:0;z-index:6;display:grid;place-items:center;padding:var(--esp-22);overflow-y:auto;background:color-mix(in srgb, var(--ink) 45%, transparent)}
+.con-ventana{overflow:hidden}
+.ch-ventana-cabeza{display:flex;justify-content:space-between;align-items:center;gap:var(--esp-12)}
+.ch-ventana-cuenta .ch-ventana-bajada{margin:var(--esp-8) 0 var(--esp-20)}
+.ch-ventana-pie{display:flex;flex-direction:column;gap:var(--esp-8);margin-top:var(--esp-20)}
+.ch-ventana-cuenta .ch-ficha-nota p{margin:0 0 var(--esp-16);color:var(--ink)}
+@media (max-width:720px){
+  .ch-modal{padding:var(--esp-12)}
+  .ch-ventana-cuenta{padding:var(--esp-22) var(--esp-20)}
+}
 @media (max-width:720px){.ch-ficha > div{grid-template-columns:minmax(0,1fr);gap:var(--esp-4)}}
 
 /* ---------- Lista tipo índice ---------- */

@@ -10,6 +10,7 @@ import { Entrar } from './Entrar';
 import { Iconos } from './Iconos';
 import { MenuLateral } from './MenuLateral';
 import { OfrecerPasskey } from './OfrecerPasskey';
+import { Ventanas } from './Ventanas';
 
 // El marco: lo que se queda quieto en todas las páginas (cabecera, menú, cuenta) y lo que
 // lo protege (entrar, firmar los documentos). Cada vista se pinta en el centro.
@@ -41,7 +42,7 @@ export function Marco({ children }: { children: React.ReactNode }) {
   }, [entrar, porFirmar, menuAbierto]);
 
   return (
-    <>
+    <Ventanas>
       <Iconos />
       <Cabecera menuAbierto={menuAbierto} onAbrirMenu={() => setMenuAbierto(true)} />
       <div className="ch-cuerpo">
@@ -56,6 +57,6 @@ export function Marco({ children }: { children: React.ReactNode }) {
       {entrar && <Entrar />}
       {porFirmar && <Aceptar onFirmado={() => setOfrecer(true)} />}
       <OfrecerPasskey puede={ofrecer && !!s.firma && s.dentro} />
-    </>
+    </Ventanas>
   );
 }

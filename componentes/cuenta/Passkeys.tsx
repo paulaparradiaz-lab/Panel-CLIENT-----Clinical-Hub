@@ -13,7 +13,16 @@ import { CLAVE_OFRECIDA } from '../OfrecerPasskey';
 // Las passkeys se guardan en el dispositivo; Supabase solo guarda la parte pública.
 const cuando = (t: string) => new Date(t).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' });
 
-export function Passkeys() {
+// «¿Cómo funciona?» en la cabeza de la ventana: muestra u oculta la explicación.
+export function ComoFunciona({ abierto, onCambiar }: { abierto: boolean; onCambiar: () => void }) {
+  return (
+    <button type="button" className="ch-ayuda" aria-expanded={abierto} aria-controls="como-funciona" onClick={onCambiar}>
+      <Icono id="info" />¿Cómo funciona?
+    </button>
+  );
+}
+
+export function Passkeys({ explicar }: { explicar: boolean }) {
   const { usuario } = useSesion();
   const [lista, setLista] = useState<PasskeyListItem[] | null>(null);
   const [aviso, setAviso] = useState<{ ok: boolean; texto: string } | null>(null);
@@ -52,17 +61,23 @@ export function Passkeys() {
   }
 
   return (
-    <div className="ch-bloque ch-passkeys">
-      <h2 className="ch-titulo-seccion" id="bloque-passkeys">Huella o Face ID</h2>
-      <p className="ch-subtitulo-seccion">Entra con tu huella, Face ID o el PIN de tu dispositivo, sin esperar el correo.</p>
-      <div className="ch-passkeys-lista" aria-labelledby="bloque-passkeys">
+    <div className="ch-passkeys">
+      {explicar && (
+        <p className="ch-passkeys-explica" id="como-funciona">
+          La huella o Face ID funciona con una passkey: una llave que queda guardada en tu celular, tu computador o tu
+          gestor de contraseñas (el llavero de iCloud, Google o 1Password) y se sincroniza entre tus dispositivos.
+          Clinical Hub solo guarda la parte pública: nadie puede copiarla ni adivinarla. Agrega una en cada dispositivo
+          o llavero que uses; si pierdes uno, borra su passkey aquí.
+        </p>
+      )}
+      <div className="ch-passkeys-lista">
         {lista && lista.length > 0 && lista.map(p => (
           <div className="ch-passkey-fila" key={p.id}>
             <span>
               <b>{p.friendly_name || 'Passkey'}</b>
               <small>Creada el {cuando(p.created_at)} · {p.last_used_at ? `usada el ${cuando(p.last_used_at)}` : 'sin usar todavía'}</small>
             </span>
-            <button type="button" className="ch-boton secundario chico" onClick={() => borrar(p.id)}
+            <button type="button" className="ch-boton-chico" onClick={() => borrar(p.id)}
               aria-label={confirmando === p.id ? `Confirmar: borrar ${p.friendly_name || 'passkey'}` : `Borrar ${p.friendly_name || 'passkey'}`}>
               {confirmando === p.id ? '¿Seguro? Borrar' : 'Borrar'}
             </button>
@@ -75,10 +90,10 @@ export function Passkeys() {
           </div>
         )}
       </div>
-      <button type="button" className="ch-boton ch-passkeys-agregar" onClick={agregar} disabled={ocupado}>
+      {aviso && <p className={`ch-aviso ${aviso.ok ? 'ok' : 'mal'} ch-datos-aviso`} role="status">{aviso.texto}</p>}
+      <button type="button" className="ch-boton ancho ch-passkeys-agregar" onClick={agregar} disabled={ocupado}>
         <Icono id="mas" />{ocupado ? 'Esperando la huella o Face ID…' : 'Agregar huella o Face ID'}
       </button>
-      {aviso && <p className={`ch-aviso ${aviso.ok ? 'ok' : 'mal'} ch-datos-aviso`} role="status">{aviso.texto}</p>}
     </div>
   );
 }

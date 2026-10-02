@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { whatsapp } from '@/lib/datos';
 import { useSesion, type Cuenta } from '@/lib/sesion';
 import { sb } from '@/lib/supabase';
-import { Passkeys } from './Passkeys';
+import { useVentanas } from '../Ventanas';
 
 // Mis datos: nombre y especialidad se cambian (solo en la plataforma). El correo de ingreso
 // une la cuenta con Hotmart: no se edita aquí, solo vía WhatsApp con el equipo.
@@ -21,6 +21,13 @@ export function MisDatos() {
   const botones = useRef<Partial<Record<Campo, HTMLButtonElement | null>>>({});
 
   const datos: Record<Campo, string> = { nombre, especialidad };
+  // Huella o Face ID: cuántas tiene; «Administrar» abre su ventana (agregar y borrar).
+  const { abrir } = useVentanas();
+  const [huellas, setHuellas] = useState<number | null>(null);
+  useEffect(() => {
+    if (!usuario) { setHuellas(0); return; }
+    sb.auth.passkey.list().then(({ data }) => setHuellas((data || []).length));
+  }, [usuario]);
   const correo = cuenta?.correo || usuario?.email || '[correo]';
 
   useEffect(() => { if (editando) { campo.current?.focus(); campo.current?.select(); } }, [editando]);
@@ -83,9 +90,15 @@ export function MisDatos() {
           </dd>
         </div>
         {fila('especialidad')}
+        <div>
+          <dt>Huella o Face ID</dt>
+          <dd className="ch-ficha-accion">
+            <span>{huellas === null ? '' : huellas === 0 ? 'No la has activado' : huellas === 1 ? 'Activa en 1 dispositivo' : `Activa en ${huellas} dispositivos`}</span>
+            <button type="button" className="ch-accion" aria-label="Administrar huella o Face ID" onClick={() => abrir('passkeys')}>Administrar</button>
+          </dd>
+        </div>
       </dl>
       {aviso && <p className={`ch-aviso ${aviso.ok ? 'ok' : 'mal'} ch-datos-aviso`} role="status">{aviso.texto}</p>}
-      <Passkeys />
     </>
   );
 }
