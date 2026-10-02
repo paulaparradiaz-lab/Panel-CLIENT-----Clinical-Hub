@@ -22,8 +22,25 @@ const errorPasskey = (m = '') => {
 };
 export { errorPasskey };
 
-export function Entrar() {
+// Al entrar bien (código o huella), la tarjeta muestra un círculo verde que se dibuja y un
+// check adentro; el marco la deja a la vista un momento antes de dar paso al panel.
+function Exito() {
+  return (
+    <div className="ch-entrar-exito" role="status">
+      <svg className="ch-check" viewBox="0 0 72 72" aria-hidden="true">
+        <circle cx="36" cy="36" r="34" />
+        <path d="M22 37.5l9.5 9.5L51 27.5" />
+      </svg>
+      <h1 className="ch-titulo" id="entrar-titulo">Código correcto</h1>
+      <p className="ch-bajada">Entrando a Clinical Hub…</p>
+    </div>
+  );
+}
+
+export function Entrar({ exito = false }: { exito?: boolean }) {
   const [paso, setPaso] = useState<Paso>('correo');
+  // Solo en este computador: con ?probar-entrada, cualquier código de 6 números muestra el check
+  const [probarCheck, setProbarCheck] = useState(false);
   const [correo, setCorreo] = useState('');
   const [codigo, setCodigo] = useState('');
   const [error, setError] = useState('');
@@ -37,6 +54,7 @@ export function Entrar() {
 
   async function enviarEnlace() {
     setError('');
+    if (['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('probar-entrada')) { setCodigo(''); setPaso('codigo'); return; }
     const { error: e } = await sb.auth.signInWithOtp({
       email: correo,
       options: { shouldCreateUser: false, emailRedirectTo: location.origin + location.pathname },
@@ -49,6 +67,9 @@ export function Entrar() {
 
   async function verificar(e: React.FormEvent) {
     e.preventDefault();
+    if (['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('probar-entrada')) {
+      setProbarCheck(true); setTimeout(() => setProbarCheck(false), 2500); return;
+    }
     const { error: err } = await sb.auth.verifyOtp({ email: correo, token: codigo.trim(), type: 'email' });
     if (err) setError('El código no es válido o ya venció. Pide uno nuevo con «Reenviar el correo».');
   }
@@ -65,7 +86,9 @@ export function Entrar() {
       <div className="ch-entrar-caja">
         <span className="ch-logotipo">Clinical <span>hub</span><small>Medicina basada en la evidencia y experiencia</small></span>
 
-        {paso === 'correo' && (
+        {(exito || probarCheck) && <Exito />}
+
+        {!exito && !probarCheck && paso === 'correo' && (
           <form onSubmit={e => { e.preventDefault(); enviarEnlace(); }}>
             <h1 className="ch-titulo" id="entrar-titulo">Bienvenido</h1>
             <p className="ch-bajada">Escribe el correo con el que compraste tu suscripción.</p>
@@ -83,7 +106,7 @@ export function Entrar() {
           </form>
         )}
 
-        {paso === 'codigo' && (
+        {!exito && !probarCheck && paso === 'codigo' && (
           <form onSubmit={verificar}>
             <h1 className="ch-titulo" id="entrar-titulo">Revisa tu correo</h1>
             <p className="ch-bajada">Te enviamos un enlace y un código a <strong>{correo}</strong>. Abre el enlace en este dispositivo o escribe el código.</p>
@@ -99,7 +122,7 @@ export function Entrar() {
           </form>
         )}
 
-        {paso === 'sin-compra' && (
+        {!exito && !probarCheck && paso === 'sin-compra' && (
           <div>
             <h1 className="ch-titulo" id="entrar-titulo">No encontramos una compra con este correo</h1>
             <p className="ch-bajada">Si compraste con otro correo o no recuerdas cuál usaste, escríbenos y lo verificamos.</p>

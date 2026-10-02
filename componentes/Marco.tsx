@@ -30,16 +30,28 @@ export function Marco({ children }: { children: React.ReactNode }) {
   }, []);
 
   const entrar = s.listo && !s.dentro;
+  // Cuando la persona entra, la tarjeta se queda un momento con el check verde
+  const [despedida, setDespedida] = useState(false);
+  const habiaEntrada = useRef(false);
+  useEffect(() => {
+    if (habiaEntrada.current && !entrar) {
+      setDespedida(true);
+      const t = setTimeout(() => setDespedida(false), 1400);
+      habiaEntrada.current = false;
+      return () => clearTimeout(t);
+    }
+    if (entrar) habiaEntrada.current = true;
+  }, [entrar]);
   // Los documentos se pueden leer completos antes de firmar.
   const porFirmar = s.listo && s.dentro && s.firmasLeidas && !s.firma && !ruta.startsWith('/documentos/');
 
   useEffect(() => { if (s.recienEntro) setOfrecer(true); }, [s.recienEntro]);
   useEffect(() => {
     const b = document.body.classList;
-    b.toggle('sin-sesion', entrar);
+    b.toggle('sin-sesion', entrar || despedida);
     b.toggle('por-aceptar', porFirmar);
     b.toggle('menu-abierto', menuAbierto);
-  }, [entrar, porFirmar, menuAbierto]);
+  }, [entrar, despedida, porFirmar, menuAbierto]);
 
   return (
     <Ventanas>
@@ -54,7 +66,7 @@ export function Marco({ children }: { children: React.ReactNode }) {
           </div>
         </main>
       </div>
-      {entrar && <Entrar />}
+      {(entrar || despedida) && <Entrar exito={despedida} />}
       {porFirmar && <Aceptar onFirmado={() => setOfrecer(true)} />}
       <OfrecerPasskey puede={ofrecer && !!s.firma && s.dentro} />
     </Ventanas>
