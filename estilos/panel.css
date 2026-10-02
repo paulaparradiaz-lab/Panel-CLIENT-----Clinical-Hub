@@ -400,7 +400,7 @@ button.ch-boton-chico{flex:none;min-height:44px;color:var(--brand-ink)}   /* «B
 
   /* Cabecera más baja: el nombre en un tamaño de celular, para dejarle alto al contenido */
   .ch-cabecera .ch-logotipo{font-size:24px}
-  .ch-cabecera .ch-logotipo small{margin-top:2px;font-size:11.5px}
+  .ch-cabecera .ch-logotipo small{margin-top:2px;font-size:10px}   /* más angosto que «Clinical hub» */
 
   /* Título de página en 28 px (escala del manual): los nombres largos caben en una línea */
   .ch-pagina{padding:var(--esp-20) var(--esp-22) var(--esp-32)}
