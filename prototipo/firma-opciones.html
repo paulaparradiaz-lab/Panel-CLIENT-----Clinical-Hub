@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Firma de la cabecera · opciones</title>
+<link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<link rel="stylesheet" href="../estilos/panel.css">
+<style>
+  .pag{max-width:1100px;margin:0 auto;padding:var(--esp-32) var(--esp-22);background:var(--bg);min-height:100vh}
+  .op{margin-top:var(--esp-22);padding:var(--esp-16) var(--esp-20);border:1px solid var(--border2);border-radius:var(--r-bloque);background:var(--surface)}
+  .op-nombre{margin:0 0 var(--esp-4);font-size:14px;font-weight:600;color:var(--ink)}
+  .op-nota{margin:0 0 var(--esp-12);font-size:12.5px;line-height:1.45;color:var(--faint)}
+  .dos{display:flex;flex-wrap:wrap;gap:var(--esp-16);align-items:flex-start}
+  .disp{font-size:11.5px;color:var(--faint);margin:0 0 var(--esp-6)}
+  /* Cabeceras a tamaño real: celular (375 px) y computador */
+  .cab{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:var(--r-item);background:var(--surface)}
+  .cab.celu{width:375px;max-width:100%;height:68px;padding:0 var(--esp-22)}
+  .cab.compu{width:420px;max-width:100%;height:96px;padding:0 var(--esp-22)}
+  .cab .ch-logotipo{color:var(--side)}
+  .cab.celu .ch-logotipo{font-size:24px}
+  .cab.celu .ch-logotipo small{margin-top:2px;font-size:11.5px}
+  .cab .ch-logotipo small span{color:inherit}
+  .cab .ch-logotipo sup{margin-left:1px;font-size:.7em;line-height:0}
+  .boton-falso{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface2)}
+  .boton-falso svg{width:20px;height:20px;fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+</style>
+</head>
+<body class="ch ch-panel">
+<main class="pag">
+  <h1 class="ch-titulo">Firma de la cabecera · opciones</h1>
+  <p class="ch-bajada">Debajo de «Clinical hub». Cada opción en celular y en computador, a tamaño real. La tarjeta de entrada hoy dice «Powered by Sustancia Pro™»; se puede igualar a la que elijas.</p>
+  <div id="opciones"></div>
+</main>
+<script>
+const opciones = [
+  ['1 · powered by Sustancia Pro™', 'La de hoy en computador. La forma más usada en productos digitales; suena a tecnología.', 'powered by Sustancia Pro'],
+  ['2 · by Sustancia Pro™', 'Más corta. Dice quién está detrás sin el tono técnico de «powered».', 'by Sustancia Pro'],
+  ['3 · Sustancia Pro™', 'Solo el nombre, como un sello. La más limpia; la de hoy en celular.', 'Sustancia Pro'],
+  ['4 · de Sustancia Pro™', 'En español y corta. «Clinical hub de Sustancia Pro»: dice que es suyo, con naturalidad.', 'de Sustancia Pro'],
+  ['5 · una publicación de Sustancia Pro™', 'En español y editorial: dice qué es Clinical Hub (una publicación), no solo de quién es. La más larga.', 'una publicación de Sustancia Pro'],
+  ['6 · editado por Sustancia Pro™', 'En español y editorial, como en una revista: quién hace la edición.', 'editado por Sustancia Pro'],
+];
+const menu = '<span class="boton-falso"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span>';
+const logo = t => `<span class="ch-logotipo">Clinical <span>hub</span><small>${t}<sup>™</sup></small></span>`;
+document.getElementById('opciones').innerHTML = opciones.map(([n, nota, t]) => `<section class="op">
+  <p class="op-nombre">${n}</p><p class="op-nota">${nota}</p>
+  <div class="dos"><div><p class="disp">Celular</p><div class="cab celu">${logo(t)}${menu}</div></div>
+  <div><p class="disp">Computador</p><div class="cab compu">${logo(t)}</div></div></div></section>`).join('');
+</script>
+</body>
+</html>
