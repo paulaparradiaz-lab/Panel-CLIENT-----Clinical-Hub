@@ -29,6 +29,9 @@
 }
 .ch-marca{justify-self:start;display:flex;align-items:center;margin-left:var(--esp-22);color:var(--ink);text-decoration:none}
 .ch-marca .ch-logotipo{color:var(--side)}
+/* La firma de la cabecera: sus partes no toman el verde de «hub»; la ™ va chica y arriba */
+.ch-marca .ch-logotipo small span{color:inherit}
+.ch-marca .ch-logotipo sup{margin-left:1px;font-size:.7em;line-height:0}
 .ch-cuenta{position:relative}
 /* Área de toque mínima de 44 px (el botón redondo del manual mide 42) */
 .ch-panel .ch-boton-redondo{width:44px;height:44px}
@@ -400,7 +403,9 @@ button.ch-boton-chico{flex:none;min-height:44px;color:var(--brand-ink)}   /* «B
 
   /* Cabecera más baja: el nombre en un tamaño de celular, para dejarle alto al contenido */
   .ch-cabecera .ch-logotipo{font-size:24px}
-  .ch-cabecera .ch-logotipo small{margin-top:2px;font-size:10px}   /* más angosto que «Clinical hub» */
+  .ch-cabecera .ch-logotipo small{margin-top:2px;font-size:11.5px}
+  /* En celular dice solo «by Sustancia Pro»: así queda más angosto que «Clinical hub» */
+  .ch-solo-computador{display:none}
 
   /* Título de página en 28 px (escala del manual): los nombres largos caben en una línea */
   .ch-pagina{padding:var(--esp-20) var(--esp-22) var(--esp-32)}
