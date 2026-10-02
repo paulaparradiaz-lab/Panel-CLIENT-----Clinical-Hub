@@ -6,7 +6,7 @@ export function Cabecera({ menuAbierto, onAbrirMenu }: { menuAbierto: boolean; o
   return (
     <header className="ch-cabecera">
       <Link className="ch-marca" href="/">
-        <span className="ch-logotipo">Clinical <span>hub</span><small><span className="ch-solo-computador">powered </span>by Sustancia Pro<sup>™</sup></small></span>
+        <span className="ch-logotipo">Clinical <span>hub</span><small><span className="ch-solo-computador">powered by </span>Sustancia Pro<sup>™</sup></small></span>
       </Link>
       <button type="button" className="ch-boton-redondo ch-abrir-menu" id="abrir-menu" aria-label="Abrir el menú"
         aria-expanded={menuAbierto} aria-controls="menu-lateral" onClick={onAbrirMenu}>
