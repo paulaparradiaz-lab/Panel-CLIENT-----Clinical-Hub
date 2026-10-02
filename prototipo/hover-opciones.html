@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pasar el mouse · opciones</title>
+<link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<link rel="stylesheet" href="../estilos/panel.css">
+<style>
+  .pag{max-width:1100px;margin:0 auto;padding:var(--esp-32) var(--esp-22);background:var(--bg);min-height:100vh}
+  .opciones{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--esp-22);margin-top:var(--esp-26)}
+  .op-nombre{margin:0 0 var(--esp-4);font-size:14px;font-weight:600;color:var(--ink)}
+  .op-nota{margin:0 0 var(--esp-12);min-height:54px;font-size:12.5px;line-height:1.45;color:var(--faint)}
+  .muestra{display:flex;flex-direction:column;gap:var(--esp-12);padding:var(--esp-16) var(--esp-12);border-radius:var(--r-bloque);background:var(--side);color:var(--side-faint)}
+  .muestra .ch-menu-lista{gap:var(--esp-4)}
+  .muestra .ch-cuenta-despliegue{visibility:visible;background:var(--side-hover);border-radius:var(--r-bloque)}
+
+  /* A · Todo en verde claro; al pasar el mouse solo aparece el fondo */
+  .a .ch-menu-item:hover{color:var(--side-faint)}
+  .a .ch-cuenta-opcion,.a button.ch-cuenta-opcion,.a .ch-cuenta-opcion:hover,.a button.ch-cuenta-opcion-salir{color:var(--side-faint)}
+  /* B · Las opciones de la cuenta en blanco fijo; el menú en verde claro fijo; solo cambia el fondo */
+  .b .ch-menu-item:hover{color:var(--side-faint)}
+  .b .ch-cuenta-opcion:hover{color:var(--side-ink)}
+  /* C · Como A, pero el fondo al pasar el mouse es más tenue */
+  .c .ch-menu-item:hover{color:var(--side-faint);background:color-mix(in srgb, var(--side-hover) 55%, transparent)}
+  .c .ch-cuenta-opcion,.c button.ch-cuenta-opcion,.c button.ch-cuenta-opcion-salir{color:var(--side-faint)}
+  .c .ch-cuenta-opcion:hover{color:var(--side-faint);background:color-mix(in srgb, var(--side-hover) 55%, transparent)}
+</style>
+</head>
+<body class="ch ch-panel">
+<main class="pag">
+  <h1 class="ch-titulo">Pasar el mouse · opciones</h1>
+  <p class="ch-bajada">Pasa el mouse por encima de cada fila. En ninguna cambia el color de la letra; solo aparece un fondo.</p>
+  <div class="opciones" id="opciones"></div>
+</main>
+<svg class="ch-sprite" aria-hidden="true">
+  <symbol id="i-estrella" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+  <symbol id="i-nuevo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+  <symbol id="i-autoevaluacion" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11l2 2 4-4M9 17h6"/></symbol>
+  <symbol id="i-cuenta" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></symbol>
+</svg>
+<script>
+const opciones = [
+  ['a', 'A · Todo en verde claro', 'El menú y las opciones de la cuenta en el mismo verde claro. Al pasar el mouse solo aparece el fondo; la letra no cambia.'],
+  ['b', 'B · Cuenta en blanco, menú en verde claro', 'Cada uno conserva su color de siempre (la cuenta en blanco, el menú en verde claro). Al pasar el mouse solo aparece el fondo.'],
+  ['c', 'C · Como A, con un fondo más tenue', 'Todo en verde claro y, al pasar el mouse, un fondo apenas visible. Lo más discreto.'],
+];
+const menu = [['i-estrella', 'Mis favoritos'], ['i-nuevo', 'Nuevo'], ['i-autoevaluacion', 'Autoevaluación']]
+  .map(([i, n]) => `<li><a class="ch-menu-item" href="#"><svg aria-hidden="true"><use href="#${i}"/></svg><span class="ch-menu-nombre">${n}</span></a></li>`).join('');
+const cuenta = `<div class="ch-cuenta-despliegue"><div class="ch-cuenta-opciones">
+  <button type="button" class="ch-cuenta-opcion">Mis datos</button>
+  <button type="button" class="ch-cuenta-opcion">Suscripción</button>
+  <button type="button" class="ch-cuenta-opcion">Términos y políticas</button>
+  <a class="ch-cuenta-opcion" href="#">Ayuda o contacto</a>
+  <button type="button" class="ch-cuenta-opcion ch-cuenta-opcion-salir">Cerrar sesión</button></div></div>`;
+document.getElementById('opciones').innerHTML = opciones.map(([c, n, nota]) =>
+  `<section><p class="op-nombre">${n}</p><p class="op-nota">${nota}</p><div class="muestra ${c}"><ul class="ch-menu-lista">${menu}</ul>${cuenta}</div></section>`).join('');
+document.getElementById('opciones').addEventListener('click', e => { if (e.target.closest('a,button')) e.preventDefault(); });
+</script>
+</body>
+</html>
