@@ -12,6 +12,9 @@ type Paso = 'correo' | 'codigo' | 'sin-compra';
 const errorPasskey = (m = '') => {
   m = m.toLowerCase();
   if (m.includes('credential_not_found') || m.includes('credential not found')) return 'Este dispositivo no tiene una passkey de Clinical Hub. Entra con tu correo y actívala adentro.';
+  if (m.includes('credential_exists') || m.includes('credential already')) return 'Este dispositivo ya tiene una huella o Face ID registrada.';
+  if (m.includes('too_many_passkeys')) return 'Ya tienes el máximo. Borra una para agregar otra.';
+  if (m.includes('verification_failed')) return 'No se pudo verificar. Inténtalo de nuevo.';
   if (m.includes('passkey_disabled')) return 'Las passkeys no están activadas en Supabase.';
   if (m.includes('challenge_expired')) return 'Pasó demasiado tiempo. Inténtalo de nuevo.';
   if (m.includes('notallowed') || m.includes('abort') || m.includes('cancel')) return 'Se canceló la huella o Face ID. Inténtalo de nuevo.';

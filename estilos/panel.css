@@ -284,6 +284,19 @@ button.ch-accion:hover,a.ch-accion:hover{color:var(--ink)}
 .ch-editar-botones{display:flex;gap:var(--esp-8)}
 .ch-boton.chico{min-height:44px;padding:var(--esp-8) var(--esp-16);font-size:14px}
 .ch-datos-aviso{margin:var(--esp-12) 0 0;font-size:13px}
+/* Huella o Face ID (passkeys), como «Tus passkeys» del admin: filas con Borrar y Agregar abajo */
+.ch-passkeys{margin-top:var(--esp-32)}
+.ch-passkeys-lista{display:grid;gap:var(--esp-8);margin:var(--esp-12) 0 var(--esp-16)}
+.ch-passkey-fila{display:flex;align-items:center;gap:var(--esp-12);padding:var(--esp-8) var(--esp-8) var(--esp-8) var(--esp-12);border-radius:var(--r-item);background:var(--surface2)}
+.ch-passkey-fila > span{flex:1;min-width:0;display:grid;gap:2px}
+.ch-passkey-fila b{font-size:14px;font-weight:600;overflow-wrap:anywhere}
+.ch-passkey-fila small{font-size:12.5px;color:var(--faint)}
+.ch-passkey-fila .ch-boton{flex:none}
+/* Sin ninguna: recuadro punteado con la huella */
+.ch-passkeys-vacio{display:grid;justify-items:center;gap:var(--esp-8);padding:var(--esp-22) var(--esp-16);border:1.5px dashed var(--border2);border-radius:var(--r-item);font-size:14px;line-height:1.5;text-align:center;color:var(--faint)}
+.ch-passkeys-vacio > span{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--surface2);color:var(--ink)}
+.ch-passkeys svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ch-passkeys-agregar svg{stroke-width:2}
 @media (max-width:720px){.ch-ficha > div{grid-template-columns:minmax(0,1fr);gap:var(--esp-4)}}
 
 /* ---------- Lista tipo índice ---------- */
