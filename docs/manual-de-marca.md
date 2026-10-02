@@ -51,8 +51,9 @@ Encima de `--brand` el texto siempre va en `--brand-ink`, nunca en blanco.
 
 ## Tipografía
 
-Una sola familia: **DM Sans**. La mono (IBM Plex Mono) solo en el campo del código de
-6 dígitos.
+Una sola familia: **Plus Jakarta Sans** (elegida por Paula en octubre de 2026; antes, DM Sans).
+La mono (IBM Plex Mono) solo en el campo del código de 6 dígitos. Con esta letra el
+espaciado negativo es menor: títulos −0,01 em y logotipo −0,02 em.
 
 | Estilo | Tamaño | Peso | Uso |
 |---|---|---|---|
@@ -104,7 +105,7 @@ Una sola familia: **DM Sans**. La mono (IBM Plex Mono) solo en el campo del cód
 
 ## Logotipo
 
-- DM Sans 800: «Clinical» en `--ink` y «hub» en `--hub-verde`, con el lema «Medicina
+- Plus Jakarta Sans 800: «Clinical» en `--ink` y «hub» en `--hub-verde`, con el lema «Medicina
   basada en la evidencia y experiencia» debajo, en `--muted`.
 - El ícono redondo (`public/icono-clinical-hub.png`) va en círculo con un anillo blanco
   de 2 px.

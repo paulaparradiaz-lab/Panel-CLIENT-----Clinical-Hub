@@ -69,7 +69,7 @@ Ayuda o contacto (los documentos de `docs/legal/`, que se muestran tal cual). Pr
 - Degradados, texto degradado, resplandores, vidrio esmerilado, neón, morados; y los
   «nuevos defaults»: crema + serif + terracota, negro + verde ácido, verde esmeralda.
 - Numeración 01/02/03 sin una secuencia real; raya larga (—) en los textos.
-- Otra letra que no sea DM Sans; títulos de página en negrita; MAYÚSCULAS espaciadas.
+- Otra letra que no sea Plus Jakarta Sans; títulos de página en negrita; MAYÚSCULAS espaciadas.
 - Héroe centrado con dos botones, rejilla de tres tarjetas iguales con ícono arriba,
   fila de cifras, «cómo funciona 1-2-3», testimonios, precios con «Más popular»,
   franja de logos, FAQ y banda final de «Empieza hoy», salvo que Paula lo pida.

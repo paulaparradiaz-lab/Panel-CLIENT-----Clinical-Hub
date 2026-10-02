@@ -91,7 +91,7 @@ Cada familia: **lo que la IA hace** → **lo que hace Clinical Hub**.
 - Párrafos centrados y largos.
 
 **Clinical Hub hace:**
-- Una familia: **DM Sans**. La mono (IBM Plex Mono) solo en el campo del código de 6
+- Una familia: **Plus Jakarta Sans**. La mono (IBM Plex Mono) solo en el campo del código de 6
   dígitos.
 - La firma de la marca: **título de página liviano (400)**, 34 px. Títulos de sección
   18 px en 700. Cuerpo 15,5 px con interlineado 1,65.
@@ -269,7 +269,7 @@ sin marca. Clinical Hub ya tiene decisiones tomadas, así que estas recomendacio
 | Recomendación general | En Clinical Hub |
 |---|---|
 | Elegir una dirección estética nueva y variar entre proyectos | La dirección es la del manual; no se reinventa por pantalla |
-| Pares tipográficos con carácter (display + cuerpo + utilitaria) | Una familia: DM Sans. Contraste por tamaño y peso (el título liviano 400 frente a 700) |
+| Pares tipográficos con carácter (display + cuerpo + utilitaria) | Una familia: Plus Jakarta Sans. Contraste por tamaño y peso (el título liviano 400 frente a 700) |
 | Fondos con atmósfera, gradientes en capas, texturas | Fondo liso `--bg` |
 | Un momento de animación orquestado al cargar la página | Nada se anima al cargar; movimiento solo como respuesta a la persona |
 | Borde **o** sombra, nunca los dos; radios pequeños | El manual pide borde fino **y** sombra suave en tarjetas, y píldora en todo lo interactivo. Es decisión de marca, no un default |

@@ -4,7 +4,7 @@
    Cómo usarla: enlaza este archivo y pon class="ch" en el <body>
    (o en el contenedor). Todas las piezas llevan el prefijo ch-.
    ============================================================ */
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=IBM+Plex+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&display=swap");
 
 :root{
   /* Colores */
@@ -44,7 +44,7 @@
   --login-boton:#7ab447;
   --login-campo:#eff0f2;
   /* Letra */
-  --font-sans:"DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans:"Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   /* Espacios */
   --esp-4:4px;
@@ -96,13 +96,13 @@
 @media (prefers-reduced-motion:reduce){.ch *,.ch *::before,.ch *::after{transition:none!important;animation:none!important}}
 
 /* ---------- Logotipo escrito ---------- */
-.ch-logotipo{margin:0;font-size:33px;font-weight:800;letter-spacing:-.035em;line-height:1.02;color:var(--ink)}
+.ch-logotipo{margin:0;font-size:33px;font-weight:800;letter-spacing:-.02em;line-height:1.02;color:var(--ink)}
 .ch-logotipo span{color:var(--hub-verde)}
 .ch-logotipo small{display:block;font-size:13px;font-weight:500;letter-spacing:0;line-height:1.4;color:var(--muted);margin-top:5px}
 
 /* ---------- Títulos ---------- */
 .ch-miga{font-size:12.5px;font-weight:500;color:var(--faint)}
-.ch-titulo{font-size:34px;font-weight:400;letter-spacing:-.02em;line-height:1.1;margin:4px 0 0}
+.ch-titulo{font-size:34px;font-weight:400;letter-spacing:-.01em;line-height:1.1;margin:4px 0 0}
 .ch-bajada{margin:6px 0 0;color:var(--muted);font-size:14px}
 .ch-cabeza-seccion{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .ch-titulo-seccion{margin:0;font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.25;color:var(--ink)}
@@ -270,7 +270,7 @@ textarea.ch-campo{min-height:90px;resize:vertical}
   animation:ch-pop .4s var(--ease);
 }
 .ch-ventana.ancha{max-width:620px}
-.ch-ventana h2{margin:0;font-size:21px;font-weight:400;letter-spacing:-.02em;line-height:1.1}
+.ch-ventana h2{margin:0;font-size:21px;font-weight:400;letter-spacing:-.01em;line-height:1.1}
 .ch-ventana p{margin:12px 0 18px;color:var(--muted);font-size:14px}
 .ch-ventana-botones{display:flex;gap:8px;margin-top:8px}
 .ch-ventana-botones .ch-boton{flex:1}
