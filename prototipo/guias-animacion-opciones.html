@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guías · animación editorial</title>
+<link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<link rel="stylesheet" href="../estilos/panel.css">
+<style>
+  .pag{max-width:1100px;margin:0 auto;padding:var(--esp-32) var(--esp-22);background:var(--bg);min-height:100vh}
+  .opciones{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--esp-22);margin-top:var(--esp-26)}
+  .op-nombre{margin:0 0 var(--esp-4);font-size:14px;font-weight:600;color:var(--ink)}
+  .op-nota{margin:0 0 var(--esp-12);min-height:54px;font-size:12.5px;line-height:1.45;color:var(--faint)}
+  /* Un trozo del menú real, quieto dentro de la hoja */
+  .muestra{padding:var(--esp-16);border-radius:var(--r-bloque);background:var(--side);color:var(--side-faint);min-height:300px}
+  .muestra .ch-menu-lista{gap:var(--esp-4)}
+
+  /* Las tres maneras de abrir la rama. Todas con ease-out (frena al final, sin rebote) y cortas. */
+  /* A · Fundido: la rama aparece de una vez y sus filas se aclaran */
+  .a .ch-menu-rama .ch-menu-item{opacity:0;transition:opacity .18s ease-out}
+  .a .ch-menu-grupo.abierto .ch-menu-rama .ch-menu-item{opacity:1}
+  .a .ch-menu-flecha{transition:transform .18s ease-out}
+  /* B · Despliegue: la rama crece hacia abajo, sin pasarse, y las filas se aclaran */
+  .b .ch-menu-grupo{transition:grid-template-rows .22s ease-out}
+  .b .ch-menu-rama{transition:visibility .22s}
+  .b .ch-menu-rama .ch-menu-item{opacity:0;transition:opacity .22s ease-out}
+  .b .ch-menu-grupo.abierto .ch-menu-rama .ch-menu-item{opacity:1}
+  .b .ch-menu-flecha{transition:transform .22s ease-out}
+  /* C · Asentar: las filas bajan 4 px mientras se aclaran, como tinta que se asienta */
+  .c .ch-menu-rama .ch-menu-item{opacity:0;transform:translateY(-4px);transition:opacity .2s ease-out,transform .2s ease-out}
+  .c .ch-menu-grupo.abierto .ch-menu-rama .ch-menu-item{opacity:1;transform:none}
+  .c .ch-menu-flecha{transition:transform .2s ease-out}
+  @media (prefers-reduced-motion:reduce){ .muestra *{transition:none} }
+</style>
+</head>
+<body class="ch ch-panel">
+<main class="pag">
+  <h1 class="ch-titulo">Guías · animación editorial</h1>
+  <p class="ch-bajada">Toca «Guías de práctica clínica» en cada una para abrirla y cerrarla.</p>
+  <div class="opciones" id="opciones"></div>
+</main>
+
+<svg class="ch-sprite" aria-hidden="true">
+  <symbol id="i-guias" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h13"/><path d="M9 7h6"/></symbol>
+  <symbol id="i-nuevo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+  <symbol id="i-autoevaluacion" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11l2 2 4-4M9 17h6"/></symbol>
+  <symbol id="i-flecha" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+</svg>
+
+<script>
+const opciones = [
+  ['a', 'A · Fundido', 'La lista aparece en su lugar y las filas se aclaran en menos de dos décimas de segundo. Lo más quieto.'],
+  ['b', 'B · Despliegue', 'La lista crece hacia abajo y frena suave al llegar, sin pasarse ni rebotar; las filas se aclaran al mismo tiempo.'],
+  ['c', 'C · Asentar', 'Las filas bajan apenas 4 px mientras se aclaran, como tinta que se asienta en la página.'],
+];
+const rama = ['Resúmenes individuales', 'Guías contrastadas', 'Herramientas interactivas', 'Videos de procedimientos']
+  .map(n => `<li><a class="ch-menu-item sub" href="#">${n}</a></li>`).join('');
+document.getElementById('opciones').innerHTML = opciones.map(([clase, nombre, nota]) => `<section>
+  <p class="op-nombre">${nombre}</p><p class="op-nota">${nota}</p>
+  <div class="muestra ${clase}"><ul class="ch-menu-lista">
+    <li><a class="ch-menu-item" href="#"><svg aria-hidden="true"><use href="#i-nuevo"/></svg><span class="ch-menu-nombre">Nuevo</span></a></li>
+    <li class="ch-menu-grupo"><a class="ch-menu-item" href="#" aria-expanded="false"><svg aria-hidden="true"><use href="#i-guias"/></svg><span class="ch-menu-nombre">Guías de práctica clínica</span><svg class="ch-menu-flecha" aria-hidden="true"><use href="#i-flecha"/></svg></a>
+      <ul class="ch-menu-rama">${rama}</ul></li>
+    <li><a class="ch-menu-item" href="#"><svg aria-hidden="true"><use href="#i-autoevaluacion"/></svg><span class="ch-menu-nombre">Autoevaluación</span></a></li>
+  </ul></div></section>`).join('');
+document.getElementById('opciones').addEventListener('click', e => {
+  const a = e.target.closest('a'); if (!a) return;
+  e.preventDefault();
+  const g = a.closest('.ch-menu-grupo');
+  if (!g || a.parentElement !== g) return;
+  const abierto = !g.classList.contains('abierto');
+  g.classList.toggle('abierto', abierto);
+  a.setAttribute('aria-expanded', abierto);
+});
+</script>
+</body>
+</html>

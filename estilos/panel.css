@@ -97,12 +97,16 @@ button.ch-cuenta-fila:hover{background:var(--side-hover);color:var(--side-ink)}
 .ch-menu-item[aria-current="page"]{color:var(--brand-ink);background:var(--brand)}
 
 /* Grupos que se despliegan (hoy, Guías de práctica clínica).
-   Sin animación, por el estilo editorial: la rama aparece de una vez. */
+   Animación editorial: la rama crece hacia abajo y frena suave al llegar, sin rebote
+   (ease-out, 0,22 s), y sus filas se aclaran al mismo tiempo. */
 .ch-menu-grupo{
   display:grid; grid-template-columns:minmax(0,1fr); grid-template-rows:auto 0fr;
+  transition:grid-template-rows .22s ease-out;
 }
 .ch-menu-grupo.abierto{grid-template-rows:auto 1fr}
-.ch-menu-rama{min-height:0;overflow:hidden;visibility:hidden;list-style:none;margin:0;padding:0}
+.ch-menu-rama{min-height:0;overflow:hidden;visibility:hidden;list-style:none;margin:0;padding:0;transition:visibility .22s}
+.ch-menu-rama .ch-menu-item{opacity:0;transition:opacity .22s ease-out,color .3s,background .3s}
+.ch-menu-grupo.abierto .ch-menu-rama .ch-menu-item{opacity:1}
 .ch-menu-grupo.abierto > .ch-menu-rama{visibility:visible;padding-bottom:var(--esp-6)}
 
 /* Puntos: cada sección de adentro lleva un punto bajo el ícono del grupo. */
@@ -116,7 +120,7 @@ button.ch-cuenta-fila:hover{background:var(--side-hover);color:var(--side-ink)}
   width:6px; height:6px; border-radius:50%; background:currentColor;
 }
 .ch-menu-nombre{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
-.ch-menu-item .ch-menu-flecha{width:16px;height:16px;margin-left:calc(var(--esp-6) - var(--esp-12))}
+.ch-menu-item .ch-menu-flecha{width:16px;height:16px;margin-left:calc(var(--esp-6) - var(--esp-12));transition:transform .22s ease-out}
 .ch-menu-item[aria-expanded="true"] .ch-menu-flecha{transform:rotate(90deg)}
 
 /* Marca «New» en secciones con contenido reciente: la palabra en lima, sin fondo.
