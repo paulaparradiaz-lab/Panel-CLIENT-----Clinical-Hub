@@ -1,10 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 50">
-  <!-- Favicon: el logo de algoritmo. Un archivo suelto no lee las variables
-       del manual, así que lleva sus valores: side #2a4927 · brand #c1e187 -->
-  <path d="M24 12V19M16.5 26.3H12.5Q8.5 26.3 8.5 30.3V35M31.5 26.3H35.5Q39.5 26.3 39.5 30.3V35" fill="none" stroke="#2a4927" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M5.2 34.4H11.8L8.5 38.2ZM36.2 34.4H42.8L39.5 38.2Z" fill="#2a4927"/>
-  <circle cx="24" cy="7.5" r="5.8" fill="#2a4927"/>
-  <path d="M24 18.8L31.5 26.3L24 33.8L16.5 26.3Z" fill="#c1e187" stroke="#2a4927" stroke-width="2.4" stroke-linejoin="round"/>
-  <circle cx="8.5" cy="44" r="5.5" fill="#2a4927"/>
-  <circle cx="39.5" cy="44" r="5.5" fill="#c1e187"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <!-- Favicon: CH. Un archivo suelto no lee las variables del manual, así que lleva sus
+       valores: side #2a4927 · hub-verde #7d9c3c · brand #c1e187.
+       Navegador claro: como el logo (C verde oscuro, H verde «hub»), sin fondo.
+       Navegador oscuro: círculo verde oscuro con la C blanca y la H lima.
+       Las letras son DM Sans 800 convertida en trazos (un favicon no carga fuentes). -->
+  <style>
+    .oscuro{display:none}
+    @media (prefers-color-scheme: dark){ .claro{display:none} .oscuro{display:inline} }
+  </style>
+  <g class="claro"><g transform="translate(0.619 35.55) scale(0.033 -0.033)"><path fill="#2a4927" d="M384 -12Q279 -12 203.0 33.5Q127 79 86.0 160.5Q45 242 45 349Q45 456 86.0 538.0Q127 620 203.0 666.0Q279 712 384 712Q511 712 593.0 648.0Q675 584 695 468H541Q529 524 488.5 554.5Q448 585 382 585Q321 585 277.5 556.5Q234 528 211.0 475.0Q188 422 188 349Q188 276 211.0 223.5Q234 171 277.5 142.5Q321 114 382 114Q448 114 488.0 142.5Q528 171 541 222H695Q675 113 593.0 50.5Q511 -12 384 -12Z"/><path fill="#7d9c3c" transform="translate(700 0)" d="M509 0V700H649V0ZM68 0V700H208V0ZM190 301V414H532V301Z"/></g></g>
+  <g class="oscuro"><circle cx="24" cy="24" r="24" fill="#2a4927"/><g transform="translate(6.642 32.575) scale(0.0245 -0.0245)"><path fill="#ffffff" d="M384 -12Q279 -12 203.0 33.5Q127 79 86.0 160.5Q45 242 45 349Q45 456 86.0 538.0Q127 620 203.0 666.0Q279 712 384 712Q511 712 593.0 648.0Q675 584 695 468H541Q529 524 488.5 554.5Q448 585 382 585Q321 585 277.5 556.5Q234 528 211.0 475.0Q188 422 188 349Q188 276 211.0 223.5Q234 171 277.5 142.5Q321 114 382 114Q448 114 488.0 142.5Q528 171 541 222H695Q675 113 593.0 50.5Q511 -12 384 -12Z"/><path fill="#c1e187" transform="translate(700 0)" d="M509 0V700H649V0ZM68 0V700H208V0ZM190 301V414H532V301Z"/></g></g>
 </svg>

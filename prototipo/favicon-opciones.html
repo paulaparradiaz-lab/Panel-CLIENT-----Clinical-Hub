@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Favicon · opciones</title>
+<link rel="icon" href="../public/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../estilos/clinical-hub.css">
+<style>
+  .pag{max-width:1100px;margin:0 auto;padding:var(--esp-32) var(--esp-22);background:var(--bg);min-height:100vh}
+  .op{margin-top:var(--esp-26);padding:var(--esp-20) var(--esp-22);border:1px solid var(--border2);border-radius:var(--r-bloque);background:var(--surface)}
+  .op-nombre{margin:0 0 var(--esp-4);font-size:14px;font-weight:600;color:var(--ink)}
+  .op-nota{margin:0 0 var(--esp-16);max-width:760px;font-size:12.5px;line-height:1.45;color:var(--faint)}
+  .fondos{display:flex;flex-wrap:wrap;gap:var(--esp-12)}
+  .fondo{display:flex;align-items:flex-end;gap:var(--esp-20);padding:var(--esp-16) var(--esp-20);border-radius:var(--r-item);border:1px solid var(--border)}
+  .fondo.claro{background:var(--surface2)}
+  .fondo.oscuro{background:var(--ink)}
+  .tam{display:grid;justify-items:center;gap:var(--esp-6);font-size:11.5px;color:var(--faint)}
+  .oscuro .tam{color:var(--side-faint)}
+  .tam svg{display:block}
+  /* Colores del manual dentro de los SVG */
+  .side{fill:var(--side)} .side-trazo{stroke:var(--side)}
+  .lima{fill:var(--brand)} .lima-trazo{stroke:var(--brand)}
+  .hub{fill:var(--hub-verde)} .blanco{fill:var(--surface)}
+  .letra{font-family:var(--font-sans);font-weight:800;letter-spacing:-.04em}
+  .sin-relleno{fill:none}
+</style>
+</head>
+<body class="ch">
+<main class="pag">
+  <h1 class="ch-titulo">Favicon · opciones</h1>
+  <p class="ch-bajada">Cada opción a 16, 32 y 64 px, sobre una pestaña clara y una oscura. El de 16 px es el tamaño real de la pestaña del navegador.</p>
+  <section class="op">
+    <p class="op-nombre">Elegido · la 4 en navegador claro y la 5 en círculo en navegador oscuro</p>
+    <p class="op-nota">El archivo real (public/favicon.svg), con las letras de DM Sans convertidas en trazos. Cambia solo según el tema del navegador.</p>
+    <div class="fondos"><div class="fondo claro" id="real-claro"></div><div class="fondo oscuro" id="real-oscuro"></div></div>
+  </section>
+  <div id="opciones"></div>
+</main>
+
+<svg width="0" height="0" aria-hidden="true">
+  <!-- Hoy: el algoritmo en dos colores -->
+  <symbol id="f0" viewBox="0 0 48 50">
+    <path class="sin-relleno side-trazo" d="M24 12V19M16.5 26.3H12.5Q8.5 26.3 8.5 30.3V35M31.5 26.3H35.5Q39.5 26.3 39.5 30.3V35" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path class="side" d="M5.2 34.4H11.8L8.5 38.2ZM36.2 34.4H42.8L39.5 38.2Z"/>
+    <circle class="side" cx="24" cy="7.5" r="5.8"/>
+    <path class="lima side-trazo" d="M24 18.8L31.5 26.3L24 33.8L16.5 26.3Z" stroke-width="2.4" stroke-linejoin="round"/>
+    <circle class="side" cx="8.5" cy="44" r="5.5"/>
+    <circle class="lima" cx="39.5" cy="44" r="5.5"/>
+  </symbol>
+  <!-- 1 · El algoritmo en un solo color, con trazos más gruesos -->
+  <symbol id="f1" viewBox="0 0 48 50">
+    <path class="sin-relleno side-trazo" d="M24 12V18M17 26H12.5Q9 26 9 29.5V37M31 26H35.5Q39 26 39 29.5V37" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle class="side" cx="24" cy="7.5" r="6.5"/>
+    <path class="side" d="M24 17.5L32.5 26L24 34.5L15.5 26Z"/>
+    <circle class="side" cx="9" cy="43.5" r="6"/>
+    <circle class="side" cx="39" cy="43.5" r="6"/>
+  </symbol>
+  <!-- 2 · El algoritmo en lima sobre un cuadro verde oscuro -->
+  <symbol id="f2" viewBox="0 0 48 48">
+    <rect class="side" width="48" height="48" rx="11"/>
+    <g transform="translate(6.5 5) scale(.73)">
+      <path class="sin-relleno lima-trazo" d="M24 12V18M17 26H12.5Q9 26 9 29.5V37M31 26H35.5Q39 26 39 29.5V37" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle class="lima" cx="24" cy="7.5" r="6.5"/>
+      <path class="lima" d="M24 17.5L32.5 26L24 34.5L15.5 26Z"/>
+      <circle class="lima" cx="9" cy="43.5" r="6"/>
+      <circle class="lima" cx="39" cy="43.5" r="6"/>
+    </g>
+  </symbol>
+  <!-- 3 · CH: C verde oscuro y H lima, sin fondo -->
+  <symbol id="f3" viewBox="0 0 48 48"><text class="letra" x="24" y="36" font-size="34" text-anchor="middle"><tspan class="side">C</tspan><tspan class="lima">H</tspan></text></symbol>
+  <!-- 4 · CH como el logo: C verde oscuro y H en el verde de «hub», sin fondo -->
+  <symbol id="f4" viewBox="0 0 48 48"><text class="letra" x="24" y="36" font-size="34" text-anchor="middle"><tspan class="side">C</tspan><tspan class="hub">H</tspan></text></symbol>
+  <!-- 5 · CH sobre cuadro verde oscuro: C blanca y H lima -->
+  <symbol id="f5" viewBox="0 0 48 48"><rect class="side" width="48" height="48" rx="11"/><text class="letra" x="24" y="33.5" font-size="27" text-anchor="middle"><tspan class="blanco">C</tspan><tspan class="lima">H</tspan></text></symbol>
+</svg>
+
+<script>
+const opciones = [
+  ['Hoy · el algoritmo en dos colores', 'El actual, para comparar. A 16 px las líneas delgadas casi no se ven.', 'f0'],
+  ['1 · Algoritmo de un solo color', 'El mismo algoritmo en verde oscuro, con trazos más gruesos. Se lee mejor en chiquito; en pestaña oscura se pierde un poco.', 'f1'],
+  ['2 · Algoritmo lima sobre cuadro verde oscuro', 'El algoritmo en lima dentro de un cuadro redondeado verde oscuro. Se ve igual de bien en pestaña clara y oscura.', 'f2'],
+  ['3 · CH: C verde oscuro y H lima', 'Lo que propusiste tal cual. Fíjate en la H sobre la pestaña clara: el lima casi no se ve.', 'f3'],
+  ['4 · CH como el logo: C verde oscuro y H verde «hub»', 'Los mismos colores del logo (Clinical en verde oscuro, hub en su verde). La H sí se lee en pestaña clara.', 'f4'],
+  ['5 · CH sobre cuadro verde oscuro: C blanca y H lima', 'Con fondo, el lima sí se ve. Funciona en pestaña clara y oscura.', 'f5'],
+];
+const tamanos = [16, 32, 64];
+const fila = id => tamanos.map(t => `<div class="tam"><svg width="${t}" height="${t}" aria-hidden="true"><use href="#${id}"/></svg>${t} px</div>`).join('');
+// El favicon real, en sus dos versiones (se fuerza una u otra quitando la consulta del tema)
+fetch('../public/favicon.svg', {cache: 'reload'}).then(r => r.text()).then(svg => {
+  // Sin su <style> (sus clases chocarían con las de esta página) y sin el grupo que no toca
+  const version = oscura => svg.replace(/<style>[\s\S]*?<\/style>/, '')
+    .replace(oscura ? /<g class="claro">[\s\S]*?<\/g><\/g>/ : /<g class="oscuro">[\s\S]*?<\/g><\/g>/, '');
+  for (const [id, oscura] of [['real-claro', false], ['real-oscuro', true]])
+    document.getElementById(id).innerHTML = tamanos.map(t => `<div class="tam">${version(oscura).replace('<svg ', `<svg width="${t}" height="${t}" aria-hidden="true" `)}${t} px</div>`).join('');
+});
+document.getElementById('opciones').innerHTML = opciones.map(([n, nota, id]) => `<section class="op">
+  <p class="op-nombre">${n}</p><p class="op-nota">${nota}</p>
+  <div class="fondos"><div class="fondo claro">${fila(id)}</div><div class="fondo oscuro">${fila(id)}</div></div></section>`).join('');
+</script>
+</body>
+</html>
