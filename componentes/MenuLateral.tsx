@@ -33,10 +33,8 @@ export function MenuLateral({ abierto, onCerrar }: { abierto: boolean; onCerrar:
     const contenido = (
       <>
         {s.icono && <Icono id={s.icono} />}
-        {s.proximamente
-          // Bloqueada: el nombre en su línea y «Próximamente» debajo, en chico
-          ? <span className="ch-menu-nombre"><span className="ch-menu-texto">{s.nombre}</span><span className="ch-menu-pronto">Próximamente</span></span>
-          : <span className="ch-menu-nombre">{s.nombre}</span>}
+        <span className="ch-menu-nombre">{s.nombre}</span>
+        {s.proximamente && <span className="ch-menu-pronto">Pronto</span>}
         {s.nuevo && <span className="ch-menu-nuevo">New</span>}
         {s.hijos && <Icono id="flecha" className="ch-menu-flecha" />}
       </>
